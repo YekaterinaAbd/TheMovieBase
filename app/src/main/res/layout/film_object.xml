@@ -9,43 +9,94 @@
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvPostId"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/poster"
+        app:layout_constraintTop_toBottomOf="@+id/number"
+        tools:text="TextView"
+        android:maxLines="1"/>
+
+    <TextView
+        android:id="@+id/tvGenres"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvReleaseDate"
+        app:layout_constraintStart_toStartOf="@+id/tvReleaseDate"
+        app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate"
         tools:text="TextView" />
 
     <TextView
-        android:id="@+id/tvUserId"
+        android:id="@+id/tvReleaseDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="84dp"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="@+id/tvTitle"
+        app:layout_constraintStart_toStartOf="@+id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        tools:text="TextView" />
+
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/poster"
+        android:layout_width="64dp"
+        android:layout_height="98dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/poster"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        app:layout_constraintVertical_bias="0.462"
-        tools:text="TextView" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/number"
+        tools:srcCompat="@tools:sample/avatars"
+        app:riv_corner_radius="5dip"/>
 
     <TextView
-        android:id="@+id/tvPostId"
+        android:id="@+id/number"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:background="#F7F7F7"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:text="1"
+        android:textAlignment="viewStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="TextView" />
+        android:text="9.2"
+        android:textColor="#2F7C52"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/tvGenres"
+        app:layout_constraintTop_toBottomOf="@+id/tvGenres" />
+
+    <TextView
+        android:id="@+id/tvVotesCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:gravity="center"
+        android:text="TextView"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvRating"
+        app:layout_constraintStart_toEndOf="@+id/tvRating"
+        app:layout_constraintTop_toTopOf="@+id/tvRating" />
 
     <ImageView
-        android:id="@+id/poster"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/tvPostId"
-        app:layout_constraintTop_toBottomOf="@+id/tvPostId"
-        tools:srcCompat="@tools:sample/avatars"/>
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/tvGenres"
+        app:layout_constraintTop_toBottomOf="@+id/tvGenres"
+        app:srcCompat="@drawable/ic_turned_in_not_black_24dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,8 +8,9 @@ data class MovieDetailed (
     @SerializedName("title") val title: String,
     @SerializedName("vote_average") val vote_average: Float,
     @SerializedName("poster_path") val poster_path: String,
-    @SerializedName("genre_ids") val genres: List<Genre>,
+    @SerializedName("genres") val genres: List<Genre>,
     @SerializedName("original_title") val original_title: String,
+    @SerializedName("runtime") val runtime: Int,
 
     @SerializedName("release_date") val release_date: String,
     @SerializedName("budget") val budget: Int,

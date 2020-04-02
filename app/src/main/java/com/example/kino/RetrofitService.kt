@@ -1,9 +1,10 @@
 package com.example.kino
 
 import android.util.Log
-import com.example.kino.MovieClasses.Movie
-import com.example.kino.MovieClasses.MovieDetailed
-import com.example.kino.MovieClasses.MovieResults
+import com.example.kino.AccountClasses.LoginValidationData
+import com.example.kino.AccountClasses.SessionResult
+import com.example.kino.AccountClasses.TokenResult
+import com.example.kino.MovieClasses.*
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.Deferred
@@ -13,9 +14,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 object RetrofitService {
@@ -52,9 +51,35 @@ object RetrofitService {
 
 interface PostApi {
 
-    @GET("movie/popular")
+    @GET("movie/top_rated")
     fun getMovieList(@Query("api_key") apiKey: String): Call<MovieResults>
 
     @GET("movie/{id}")
     fun getMovieById(@Path("id")  id: Int, @Query("api_key") apiKey: String): Call<MovieDetailed>
+
+    @GET("genre/movie/list")
+    fun getGenres(@Query("api_key") apiKey: String): Call<GenreResults>
+
+    @GET("authentication/token/new")
+    fun createRequestToken(@Query("api_key") apiKey: String): Call<TokenResult>
+
+    @POST("authentication/token/validate_with_login")
+    fun validateWithLogin(@Query("api_key") apiKey: String,
+                          @Body data: LoginValidationData
+    ): Call<TokenResult>
+
+    @POST("authentication/session/new")
+    fun createSession(@Query("api_key") apiKey: String,
+                      @Body token: TokenResult): Call<SessionResult>
+
+    @GET("account/{account_id}/favorite/movies")
+    fun getFavouriteMovies(@Query("api_key") apiKey: String,
+                            @Query("session_id") sessionId: String): Call<MovieResults>
+
+    @POST("/account/{account_id}/favorite")
+    fun addRemoveFavourites(@Query("api_key") apiKey: String,
+                            @Query("session_id") sessionId: String,
+                            @Body fav: FavouritesRequest): Call<FavouritesResponse>
+
 }
+
