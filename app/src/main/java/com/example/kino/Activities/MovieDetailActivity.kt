@@ -28,6 +28,10 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var tvGenres: TextView
     private lateinit var runtime: TextView
     private lateinit var tagline: TextView
+    private lateinit var description: TextView
+    private lateinit var rating: TextView
+    private lateinit var votesCount: TextView
+    private lateinit var companies: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +46,10 @@ class MovieDetailActivity : AppCompatActivity() {
         tvGenres = findViewById(R.id.genres)
         runtime = findViewById(R.id.runtime)
         tagline = findViewById(R.id.tagline)
+        description = findViewById(R.id.description)
+        rating = findViewById(R.id.rating)
+        votesCount = findViewById(R.id.votes_count)
+        companies = findViewById(R.id.companies)
 
 
         val postId = intent.getIntExtra("movie_id", 1)
@@ -70,6 +78,17 @@ class MovieDetailActivity : AppCompatActivity() {
 
                     runtime.text = movie.runtime.toString() + " min"
                     tagline.text = "«" + movie.tagline + "»"
+                    description.text = movie.overview
+                    rating.text = movie.vote_average.toString()
+                    votesCount.text = movie.vote_count.toString()
+
+                    var companiesString = ""
+
+                    for(company in movie.production_companies){
+                        companiesString += (company.name + ", ")
+                    }
+                    companies.text = companiesString.substring(0, companiesString.length-2)
+
 
 
 
