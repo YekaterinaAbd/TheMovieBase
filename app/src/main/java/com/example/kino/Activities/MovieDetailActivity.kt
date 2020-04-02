@@ -19,8 +19,6 @@ import java.util.*
 
 class MovieDetailActivity : AppCompatActivity() {
 
-    val API_KEY: String = "d118a5a4e56930c8ce9bd2321609d877"
-
     private lateinit var progressBar: ProgressBar
     private lateinit var poster: ImageView
     private lateinit var title: TextView
@@ -57,7 +55,7 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun getMovie(id: Int) {
-        RetrofitService.getPostApi().getMovieById(id, API_KEY).enqueue(object : Callback<MovieDetailed> {
+        RetrofitService.getPostApi().getMovieById(id, getString(R.string.API_KEY)).enqueue(object : Callback<MovieDetailed> {
             override fun onFailure(call: Call<MovieDetailed>, t: Throwable) {
                 progressBar.visibility = View.GONE
             }
@@ -88,9 +86,6 @@ class MovieDetailActivity : AppCompatActivity() {
                         companiesString += (company.name + ", ")
                     }
                     companies.text = companiesString.substring(0, companiesString.length-2)
-
-
-
 
                     Picasso.get()
                         .load("https://image.tmdb.org/t/p/w500" + movie.poster_path)

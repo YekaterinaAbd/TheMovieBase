@@ -38,9 +38,5 @@ class AccountFragment: Fragment() {
             usernameData.text = sharedPref.getString("username", "null")
         if(sharedPref.contains(getString(R.string.session_id)))
             sessionIdData.text = sharedPref.getString(getString(R.string.session_id), "null")
-
-        Log.d("session", sessionIdData.text.toString())
-
-
     }
 }

@@ -25,12 +25,8 @@ import retrofit2.Response
 class FilmsFragment: Fragment(),
     MovieAdapter.RecyclerViewItemClick {
 
-
     lateinit var recyclerView: RecyclerView
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private val API_KEY: String = "d118a5a4e56930c8ce9bd2321609d877"
-        //var genresMap: MutableMap<Int, String>? = HashMap()
-
     private var movieAdapter: MovieAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -45,7 +41,6 @@ class FilmsFragment: Fragment(),
 
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
-
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
 
         swipeRefreshLayout.setOnRefreshListener {
@@ -68,7 +63,7 @@ class FilmsFragment: Fragment(),
 
     private fun getPosts() {
         swipeRefreshLayout.isRefreshing = true
-        RetrofitService.getPostApi().getMovieList(API_KEY).enqueue(object : Callback<MovieResults> {
+        RetrofitService.getPostApi().getMovieList(getString(R.string.API_KEY)).enqueue(object : Callback<MovieResults> {
             override fun onFailure(call: Call<MovieResults>, t: Throwable) {
                 swipeRefreshLayout.isRefreshing = false
             }
@@ -90,6 +85,4 @@ class FilmsFragment: Fragment(),
             }
         })
     }
-
-
 }

@@ -14,8 +14,6 @@ class FavouritesFragment: Fragment() {
 
     lateinit var recyclerView: RecyclerView
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private val API_KEY: String = "d118a5a4e56930c8ce9bd2321609d877"
-
     private var movieAdapter: MovieAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

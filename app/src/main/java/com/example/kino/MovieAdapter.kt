@@ -18,7 +18,6 @@ class MovieAdapter(
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     var num = 1
-
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.film_object, p0, false)
         return MovieViewHolder(view)
@@ -46,7 +45,6 @@ class MovieAdapter(
             val tvVotesCount = view.findViewById<TextView>(R.id.tvVotesCount)
             val tvRating = view.findViewById<TextView>(R.id.tvRating)
             val number = view.findViewById<TextView>(R.id.number)
-           // val popularity = view.findViewById<TextView>(R.id.tvPopularity)
 
             if(movie?.number == 0){
             movie.number = num

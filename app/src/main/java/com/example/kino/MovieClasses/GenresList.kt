@@ -7,7 +7,6 @@ import retrofit2.Response
 
 object GenresList {
     var genres: MutableMap<Int, String>? = HashMap()
-
     private val API_KEY: String = "d118a5a4e56930c8ce9bd2321609d877"
 
     fun getGenres() {
