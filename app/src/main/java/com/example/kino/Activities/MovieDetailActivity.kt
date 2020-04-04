@@ -1,7 +1,6 @@
 package com.example.kino.Activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -11,7 +10,6 @@ import com.example.kino.MovieClasses.MovieDetailed
 import com.example.kino.R
 import com.example.kino.RetrofitService
 import com.squareup.picasso.Picasso
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

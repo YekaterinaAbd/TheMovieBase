@@ -2,7 +2,6 @@ package com.example.kino.Fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.MovieAdapter
-import com.example.kino.MovieClasses.GenreResults
 import com.example.kino.MovieClasses.Movie
 import com.example.kino.MovieClasses.MovieResults
 import com.example.kino.Activities.MovieDetailActivity

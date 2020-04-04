@@ -23,39 +23,34 @@
 
         <EditText
             android:id="@+id/tvUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="88dp"
-            android:backgroundTint="#000000"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="64dp"
+            android:background="@drawable/edittext_border"
             android:ems="10"
             android:hint="Username"
             android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            android:paddingLeft="8dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/textView"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <EditText
             android:id="@+id/tvPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#000000"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/edittext_border"
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:paddingLeft="8dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/tvUsername"
+            app:layout_constraintStart_toStartOf="@+id/tvUsername"
             app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="221dp"
-            android:layout_height="94dp"
-            android:layout_marginTop="120dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.478"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/images" />
 
         <TextView
             android:id="@+id/wrongData"
@@ -65,7 +60,8 @@
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/tvPassword"
             app:layout_constraintTop_toBottomOf="@+id/tvPassword"
-            tools:text="Wrong data" />
+            tools:text="Wrong data"
+            android:background="@drawable/textview_border"/>
 
         <TextView
             android:id="@+id/accountLink"
@@ -76,6 +72,33 @@
             android:textColor="#3C3C3E"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/textview_border"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="64dp"
+            android:layout_marginEnd="48dp"
+            android:text="Specify the username and password that you used to log in to TheMovieDB"
+            android:textAlignment="center"
+            android:textColor="#B1B1B1"
+            android:textSize="14.5sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/pBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_sign_in" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
