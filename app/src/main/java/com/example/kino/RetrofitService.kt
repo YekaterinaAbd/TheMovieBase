@@ -76,10 +76,13 @@ interface PostApi {
     fun getFavouriteMovies(@Query("api_key") apiKey: String,
                            @Query("session_id") sessionId: String): Call<MovieResults>
 
-    @POST("/account/{account_id}/favorite")
+    @POST("account/{account_id}/favorite")
     fun addRemoveFavourites(@Query("api_key") apiKey: String,
                             @Query("session_id") sessionId: String,
                             @Body fav: FavouritesRequest): Call<FavouritesResponse>
-
+    @GET("movie/{movie_id}/account_states")
+    fun getMovieStates(  @Path("movie_id") movieId: Int,
+                         @Query("api_key") apiKey: String,
+                         @Query("session_id") sessionId: String):Call<MovieStatsResponse>
 }
 
