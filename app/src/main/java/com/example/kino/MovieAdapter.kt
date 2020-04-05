@@ -1,9 +1,6 @@
 package com.example.kino
 
-
 import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,11 +18,6 @@ class MovieAdapter(val context: Context,
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     var num = 1
-    lateinit var sharedPref: SharedPreferences
-    var status: Boolean = false
-    private var getSession: String? = " "
-    private val API_KEY: String = "d118a5a4e56930c8ce9bd2321609d877"
-
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.film_object, p0, false)
@@ -52,13 +44,6 @@ class MovieAdapter(val context: Context,
 
         fun bind(movie: Movie?) {
 
-            Log.d("movieM", movie?.isClicked.toString())
-             //sharedPref = context.getSharedPreferences("shared_preferences", Context.MODE_PRIVATE)
-
-           // if (movie != null) {
-            //    getMovieStats(movie)
-            //}
-
             val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
             val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
             val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
@@ -73,26 +58,27 @@ class MovieAdapter(val context: Context,
             } else {
                 addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
             }
-            // val popularity = view.findViewById<TextView>(R.id.tvPopularity)
+
             if (movie.number == 0) {
                 movie.number = num
                 num++
             }
 
             tvTitle.text = movie.title
-            tvReleaseDate.text = movie.release_date.substring(0, 4).toString()
-            tvVotesCount.text = movie.vote_count.toString()
-            tvRating.text = movie.vote_average.toString()
+            tvReleaseDate.text = movie.releaseDate.substring(0, 4)
+            tvVotesCount.text = movie.voteCount.toString()
+            tvRating.text = movie.voteAverage.toString()
             number.text = movie.number.toString()
             tvGenres.text = ""
-            for (i in 0 until movie.genre_names.size) {
+
+            for (i in 0 until movie.genreNames.size) {
                 if (i <= 3) {
-                    if (i == 0) tvGenres.text = movie.genre_names[i].toLowerCase(Locale.ROOT)
-                    else tvGenres.append(", ${movie.genre_names[i].toLowerCase(Locale.ROOT)}")
+                    if (i == 0) tvGenres.text = movie.genreNames[i].toLowerCase(Locale.ROOT)
+                    else tvGenres.append(", ${movie.genreNames[i].toLowerCase(Locale.ROOT)}")
                 }
             }
             Picasso.get()
-                .load("https://image.tmdb.org/t/p/w500" + movie.poster_path)
+                .load("https://image.tmdb.org/t/p/w500" + movie.posterPath)
                 .into(poster)
 
             view.setOnClickListener {
@@ -108,13 +94,10 @@ class MovieAdapter(val context: Context,
                 }
             }
         }
-
     }
-
 
     interface RecyclerViewItemClick {
         fun itemClick(position: Int, item: Movie)
         fun addToFavouritesClick(position: Int, item: Movie)
     }
-
 }

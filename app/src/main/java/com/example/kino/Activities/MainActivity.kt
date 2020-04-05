@@ -17,9 +17,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity()  {
 
-    lateinit var sharedPref: SharedPreferences
-
-    lateinit var toolbar: TextView
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var toolbar: TextView
 
     private val fm: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
@@ -42,7 +41,6 @@ class MainActivity : AppCompatActivity()  {
         bottomNav.setOnNavigationItemSelectedListener(navListener)
 
         fm.beginTransaction().add(R.id.main,FilmsFragment(), "1").commit()
-
     }
 
     private val navListener =
@@ -57,11 +55,13 @@ class MainActivity : AppCompatActivity()  {
                 R.id.favourites -> {
                     activeFragment=FavouritesFragment()
                     fm.beginTransaction().replace(R.id.main,activeFragment).commit()
+                    toolbar.text = "Favourite movies"
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.profile -> {
                     activeFragment=AccountFragment()
                     fm.beginTransaction().replace(R.id.main,activeFragment).commit()
+                    toolbar.visibility= View.GONE
                     return@OnNavigationItemSelectedListener true
                 }
             }

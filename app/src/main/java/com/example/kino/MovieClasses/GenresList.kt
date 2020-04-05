@@ -19,7 +19,7 @@ object GenresList {
                     if (ans != null) {
                         val array = ans.genres
                         for (a in array){
-                            genres?.set(a.genre_id, a.genre)
+                            genres?.set(a.genreId, a.genre)
                         }
                     }
                 }

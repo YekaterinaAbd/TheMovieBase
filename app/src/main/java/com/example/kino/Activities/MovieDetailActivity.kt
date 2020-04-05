@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.kino.ApiKey
 import com.example.kino.MovieClasses.MovieDetailed
 import com.example.kino.R
 import com.example.kino.RetrofitService
@@ -35,7 +36,6 @@ class MovieDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_movie_detail)
 
         progressBar = findViewById(R.id.progressBar)
-
         poster = findViewById(R.id.poster)
         title = findViewById(R.id.name)
         year = findViewById(R.id.year)
@@ -47,13 +47,12 @@ class MovieDetailActivity : AppCompatActivity() {
         votesCount = findViewById(R.id.votes_count)
         companies = findViewById(R.id.companies)
 
-
         val postId = intent.getIntExtra("movie_id", 1)
         getMovie(id = postId)
     }
 
     private fun getMovie(id: Int) {
-        RetrofitService.getPostApi().getMovieById(id, getString(R.string.API_KEY)).enqueue(object : Callback<MovieDetailed> {
+        RetrofitService.getPostApi().getMovieById(id, ApiKey).enqueue(object : Callback<MovieDetailed> {
             override fun onFailure(call: Call<MovieDetailed>, t: Throwable) {
                 progressBar.visibility = View.GONE
             }
@@ -63,7 +62,7 @@ class MovieDetailActivity : AppCompatActivity() {
                 val movie = response.body()
                 if (movie != null) {
                     title.text = movie.title
-                    year.text = movie.release_date
+                    year.text = movie.releaseDate
 
                     tvGenres.text = ""
 
@@ -75,18 +74,18 @@ class MovieDetailActivity : AppCompatActivity() {
                     runtime.text = movie.runtime.toString() + " min"
                     tagline.text = "«" + movie.tagline + "»"
                     description.text = movie.overview
-                    rating.text = movie.vote_average.toString()
-                    votesCount.text = movie.vote_count.toString()
+                    rating.text = movie.voteAverage.toString()
+                    votesCount.text = movie.voteCount.toString()
 
                     var companiesString = ""
 
-                    for(company in movie.production_companies){
+                    for(company in movie.productionCompanies){
                         companiesString += (company.name + ", ")
                     }
                     companies.text = companiesString.substring(0, companiesString.length-2)
 
                     Picasso.get()
-                        .load("https://image.tmdb.org/t/p/w500" + movie.poster_path)
+                        .load("https://image.tmdb.org/t/p/w500" + movie.posterPath)
                         .into(poster)
                 }
             }

@@ -5,10 +5,6 @@ import com.example.kino.AccountClasses.LoginValidationData
 import com.example.kino.AccountClasses.SessionResult
 import com.example.kino.AccountClasses.TokenResult
 import com.example.kino.MovieClasses.*
-import com.google.gson.Gson
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import kotlinx.coroutines.Deferred
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -80,9 +76,10 @@ interface PostApi {
     fun addRemoveFavourites(@Query("api_key") apiKey: String,
                             @Query("session_id") sessionId: String,
                             @Body fav: FavouritesRequest): Call<FavouritesResponse>
+
     @GET("movie/{movie_id}/account_states")
-    fun getMovieStates(  @Path("movie_id") movieId: Int,
-                         @Query("api_key") apiKey: String,
-                         @Query("session_id") sessionId: String):Call<MovieStatsResponse>
+    fun getMovieStates(@Path("movie_id") movieId: Int,
+                       @Query("api_key") apiKey: String,
+                       @Query("session_id") sessionId: String):Call<MovieStatsResponse>
 }
 
