@@ -39,10 +39,10 @@ class SignInActivity : AppCompatActivity() {
 
         sharedPref = getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
 
-          if(sharedPref.contains(getString(R.string.session_id))){
+            /*   if(sharedPref.contains(getString(R.string.session_id))){
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-         }
+         }*/
 
         tvUsername = findViewById(R.id.tvUsername)
         tvPassword = findViewById(R.id.tvPassword)
