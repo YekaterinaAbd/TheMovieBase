@@ -21,12 +21,8 @@ class MainActivity : AppCompatActivity()  {
 
     lateinit var toolbar: TextView
 
-    private val fragment1: Fragment = FilmsFragment()
-    private val fragment2: Fragment = FavouritesFragment()
-    private val fragment3: Fragment = AccountFragment()
-
     private val fm: FragmentManager = supportFragmentManager
-    private var active: Fragment = fragment1;
+    private var activeFragment: Fragment = FilmsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,33 +40,32 @@ class MainActivity : AppCompatActivity()  {
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNav.setOnNavigationItemSelectedListener(navListener)
-        fm.beginTransaction().add(R.id.main, fragment2, "2").hide(fragment2).commit()
-        fm.beginTransaction().add(R.id.main,fragment1, "1").commit()
-        fm.beginTransaction().add(R.id.main, fragment3, "3").hide(fragment3).commit()
+
+        fm.beginTransaction().add(R.id.main,FilmsFragment(), "1").commit()
+
     }
 
     private val navListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.films -> {
-                     fm.beginTransaction().hide(active).show(fragment1).commit()
-                    active = fragment1
+                    activeFragment=FilmsFragment()
+                    fm.beginTransaction().replace(R.id.main,activeFragment).commit()
                     toolbar.text = "Top-rated movies"
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.favourites -> {
-                    fm.beginTransaction().hide(active).show(fragment2).commit()
-                    active = fragment2
-                    toolbar.text = "Favourite movies"
+                    activeFragment=FavouritesFragment()
+                    fm.beginTransaction().replace(R.id.main,activeFragment).commit()
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.profile -> {
-                    fm.beginTransaction().hide(active).show(fragment3).commit()
-                    active = fragment3
-                    toolbar.visibility= View.GONE
+                    activeFragment=AccountFragment()
+                    fm.beginTransaction().replace(R.id.main,activeFragment).commit()
                     return@OnNavigationItemSelectedListener true
                 }
             }
             return@OnNavigationItemSelectedListener false
         }
+
 }

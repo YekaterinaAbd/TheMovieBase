@@ -11,5 +11,6 @@ data class Movie(
     @SerializedName("release_date") val release_date: String,
     @SerializedName("popularity") val popularity: String,
     var genre_names: MutableList<String>,
-    var number: Int = 0
+    var number: Int = 0,
+    var isClicked:Boolean=false
 )
