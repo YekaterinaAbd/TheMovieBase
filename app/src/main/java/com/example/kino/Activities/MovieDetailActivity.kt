@@ -35,6 +35,13 @@ class MovieDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
 
+        bindViews()
+
+        val postId = intent.getIntExtra("movie_id", 1)
+        getMovie(id = postId)
+    }
+
+    private fun bindViews(){
         progressBar = findViewById(R.id.progressBar)
         poster = findViewById(R.id.poster)
         title = findViewById(R.id.name)
@@ -46,9 +53,6 @@ class MovieDetailActivity : AppCompatActivity() {
         rating = findViewById(R.id.rating)
         votesCount = findViewById(R.id.votes_count)
         companies = findViewById(R.id.companies)
-
-        val postId = intent.getIntExtra("movie_id", 1)
-        getMovie(id = postId)
     }
 
     private fun getMovie(id: Int) {

@@ -37,6 +37,16 @@ class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bindViews(view)
+
+        movieAdapter = this.context?.let { MovieAdapter(it, itemClickListener = this) }
+        recyclerView.adapter = movieAdapter
+
+        getPosts()
+
+    }
+
+    private fun bindViews(view: View) = with(view) {
         recyclerView=view.findViewById(R.id.favRecyclerView)
         recyclerView.layoutManager=LinearLayoutManager(context)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
@@ -45,10 +55,6 @@ class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
             movieAdapter?.clearAll()
             getPosts()
         }
-        movieAdapter = this.context?.let { MovieAdapter(it, itemClickListener = this) }
-        recyclerView.adapter = movieAdapter
-        getPosts()
-
     }
 
     override fun itemClick(position: Int, item: Movie) {

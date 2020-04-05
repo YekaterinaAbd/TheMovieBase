@@ -22,6 +22,10 @@ class AccountFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
+    }
+
+    private fun bindViews(view: View) = with(view) {
 
         usernameData = view.findViewById(R.id.usernameData)
 

@@ -59,6 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="no email address"
+                android:textAlignment="viewStart"
                 app:layout_constraintStart_toStartOf="@+id/usernameData"
                 app:layout_constraintTop_toBottomOf="@+id/usernameData" />
 

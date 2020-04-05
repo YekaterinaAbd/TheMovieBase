@@ -39,6 +39,15 @@ class SignInActivity : AppCompatActivity() {
 
         sharedPref = getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
 
+        if(sharedPref.contains(getString(R.string.session_id))){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        bindViews()
+    }
+
+    private fun bindViews(){
         tvUsername = findViewById(R.id.tvUsername)
         tvPassword = findViewById(R.id.tvPassword)
         signInButton = findViewById(R.id.button_sign_in)
@@ -58,6 +67,8 @@ class SignInActivity : AppCompatActivity() {
             createRequestToken()
         }
     }
+
+
 
     private fun createRequestToken() {
         RetrofitService.getPostApi().createRequestToken(ApiKey).enqueue(object :

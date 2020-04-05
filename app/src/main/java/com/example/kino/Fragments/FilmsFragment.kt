@@ -132,6 +132,7 @@ class FilmsFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
     }
 
     fun getMovieStats(movie:Movie){
+
         RetrofitService.getPostApi().getMovieStates(movie.id,ApiKey,sessionId).enqueue(object: Callback<MovieStatsResponse>{
             override fun onFailure(call: Call<MovieStatsResponse>, t: Throwable) {}
             override fun onResponse(call: Call<MovieStatsResponse>, response: Response<MovieStatsResponse>) {
