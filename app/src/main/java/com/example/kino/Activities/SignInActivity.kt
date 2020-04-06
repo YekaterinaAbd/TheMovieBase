@@ -69,7 +69,6 @@ class SignInActivity : AppCompatActivity() {
     }
 
 
-
     private fun createRequestToken() {
         RetrofitService.getPostApi().createRequestToken(ApiKey).enqueue(object :
             Callback<TokenResult> {
@@ -87,7 +86,6 @@ class SignInActivity : AppCompatActivity() {
                         requestToken = ans.requestToken
                         loginValidationData = LoginValidationData(tvUsername.text.toString(),
                             tvPassword.text.toString(), requestToken)
-
                         validateWithLogin()
                     }
                 }
@@ -131,7 +129,7 @@ class SignInActivity : AppCompatActivity() {
                 if(response.isSuccessful) {
                     sessionId = response.body()?.sessionId.toString()
 
-                    saveToPreferences()
+                    saveToSharedPreferences()
 
                     val intent = Intent(this@SignInActivity, MainActivity::class.java)
                     startActivity(intent)
@@ -140,11 +138,11 @@ class SignInActivity : AppCompatActivity() {
         })
     }
 
-    private fun saveToPreferences() {
+    private fun saveToSharedPreferences() {
 
         val editor = sharedPref.edit()
         editor.putString(getString(R.string.username), tvUsername.text.toString())
-        editor.putString(getString(R.string.session_id), sessionId) // change to sessionId?
+        editor.putString(getString(R.string.session_id), sessionId)
         editor.apply()
     }
 }

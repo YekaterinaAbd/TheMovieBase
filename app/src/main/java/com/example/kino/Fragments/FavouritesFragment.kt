@@ -27,7 +27,7 @@ class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     var movieAdapter: MovieAdapter? = null
     private var sessionId: String= ""
-    private lateinit var getSharedPref: SharedPreferences
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -36,6 +36,13 @@ class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        sharedPref = requireActivity().getSharedPreferences(
+            getString(R.string.preference_file), Context.MODE_PRIVATE)
+
+        if(sharedPref.contains(getString(R.string.session_id))) {
+            sessionId = sharedPref.getString(getString(R.string.session_id), "null") as String
+        }
 
         bindViews(view)
 
@@ -59,18 +66,12 @@ class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
 
     override fun itemClick(position: Int, item: Movie) {
         val intent = Intent(context, MovieDetailActivity::class.java)
-        intent.putExtra("movie_id", item.id) //change to movieId?
+        intent.putExtra("movie_id", item.id)
         startActivity(intent)
     }
 
    private fun getPosts(){
 
-        getSharedPref = requireActivity().getSharedPreferences(
-            getString(R.string.preference_file), Context.MODE_PRIVATE)
-
-        if(getSharedPref.contains(getString(R.string.session_id))) {
-            sessionId = getSharedPref.getString(getString(R.string.session_id), "null") as String
-        }
         RetrofitService.getPostApi().getFavouriteMovies(ApiKey, sessionId).enqueue(object : Callback<MovieResults> {
             override fun onFailure(call: Call<MovieResults>, t: Throwable) {
                 swipeRefreshLayout.isRefreshing = false
@@ -100,12 +101,6 @@ class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
 
     override fun addToFavouritesClick(position: Int, item: Movie) {
         lateinit var favouritesRequest: FavouritesRequest
-        getSharedPref = requireActivity().getSharedPreferences(
-            getString(R.string.preference_file), Context.MODE_PRIVATE)
-
-        if(getSharedPref.contains(getString(R.string.session_id))){
-            sessionId=getSharedPref.getString(getString(R.string.session_id),"null") as String
-        }
 
         if (!item.isClicked){
             item.isClicked=true

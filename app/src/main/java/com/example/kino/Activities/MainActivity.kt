@@ -31,10 +31,11 @@ class MainActivity : AppCompatActivity()  {
         sharedPref = getSharedPreferences(
             getString(R.string.preference_file), Context.MODE_PRIVATE)
 
+
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnNavigationItemSelectedListener(navListener)
 
-        fm.beginTransaction().add(R.id.main,FilmsFragment(), "1").commit()
+        fm.beginTransaction().add(R.id.frame,FilmsFragment(), "1").commit()
     }
 
     private val navListener =
@@ -42,19 +43,19 @@ class MainActivity : AppCompatActivity()  {
             when (item.itemId) {
                 R.id.films -> {
                     activeFragment=FilmsFragment()
-                    fm.beginTransaction().replace(R.id.main,activeFragment).commit()
+                    fm.beginTransaction().replace(R.id.frame,activeFragment).commit()
                     toolbar.text = "Top-rated movies"
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.favourites -> {
                     activeFragment=FavouritesFragment()
-                    fm.beginTransaction().replace(R.id.main,activeFragment).commit()
+                    fm.beginTransaction().replace(R.id.frame,activeFragment).commit()
                     toolbar.text = "Favourite movies"
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.account -> {
                     activeFragment=AccountFragment()
-                    fm.beginTransaction().replace(R.id.main,activeFragment).commit()
+                    fm.beginTransaction().replace(R.id.frame,activeFragment).commit()
                     toolbar.visibility= View.GONE
                     return@OnNavigationItemSelectedListener true
                 }

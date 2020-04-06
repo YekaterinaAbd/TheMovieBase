@@ -37,7 +37,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
         bindViews()
 
-        val postId = intent.getIntExtra("movie_id", 1) //change movie_id to movieId?
+        val postId = intent.getIntExtra("movie_id", 1)
         getMovie(id = postId)
     }
 
