@@ -27,10 +27,10 @@ class AccountFragment: Fragment() {
 
     private fun bindViews(view: View) = with(view) {
 
-        usernameData = view.findViewById(R.id.usernameData)
+        usernameData = view.findViewById(R.id.tvUsernameData)
 
         sharedPref = activity?.getSharedPreferences(
-            getString(R.string.preference_file), Context.MODE_PRIVATE)!!
+            getString(R.string.preference_file), Context.MODE_PRIVATE)!! //change to sharedPreferences?
 
         if (sharedPref.contains("username"))
             usernameData.text = sharedPref.getString("username", "null")

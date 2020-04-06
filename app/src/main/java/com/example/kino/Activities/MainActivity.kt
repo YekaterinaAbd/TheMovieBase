@@ -1,7 +1,6 @@
 package com.example.kino.Activities
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity()  {
         sharedPref = getSharedPreferences(
             getString(R.string.preference_file), Context.MODE_PRIVATE)
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnNavigationItemSelectedListener(navListener)
 
         fm.beginTransaction().add(R.id.main,FilmsFragment(), "1").commit()
@@ -53,7 +52,7 @@ class MainActivity : AppCompatActivity()  {
                     toolbar.text = "Favourite movies"
                     return@OnNavigationItemSelectedListener true
                 }
-                R.id.profile -> {
+                R.id.account -> {
                     activeFragment=AccountFragment()
                     fm.beginTransaction().replace(R.id.main,activeFragment).commit()
                     toolbar.visibility= View.GONE

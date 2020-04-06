@@ -25,7 +25,7 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/ConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="#F7F7F7"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content">
 
                 <com.makeramen.roundedimageview.RoundedImageView
-                    android:id="@+id/poster"
+                    android:id="@+id/ivPoster"
                     android:layout_width="98dp"
                     android:layout_height="132dp"
                     android:layout_marginStart="12dp"
@@ -60,7 +60,7 @@
                     tools:srcCompat="@tools:sample/avatars" />
 
                 <TextView
-                    android:id="@+id/name"
+                    android:id="@+id/tvName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -69,8 +69,8 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/poster"
-                    app:layout_constraintTop_toTopOf="@+id/poster" />
+                    app:layout_constraintStart_toEndOf="@+id/ivPoster"
+                    app:layout_constraintTop_toTopOf="@+id/ivPoster" />
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -83,78 +83,78 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/year"
+                    android:id="@+id/tvYear"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="year"
                     android:textColor="#000000"
-                    app:layout_constraintStart_toStartOf="@+id/name"
-                    app:layout_constraintTop_toBottomOf="@+id/name" />
+                    app:layout_constraintStart_toStartOf="@+id/tvName"
+                    app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
                 <TextView
-                    android:id="@+id/genres"
+                    android:id="@+id/tvGenres"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="genres"
                     android:textColor="#000000"
                     android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="@+id/year"
-                    app:layout_constraintTop_toBottomOf="@+id/year" />
+                    app:layout_constraintStart_toStartOf="@+id/tvYear"
+                    app:layout_constraintTop_toBottomOf="@+id/tvYear" />
 
                 <TextView
-                    android:id="@+id/runtime"
+                    android:id="@+id/tvRuntime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="runtime"
                     android:textColor="#000000"
-                    app:layout_constraintStart_toStartOf="@+id/genres"
-                    app:layout_constraintTop_toBottomOf="@+id/genres" />
+                    app:layout_constraintStart_toStartOf="@+id/tvGenres"
+                    app:layout_constraintTop_toBottomOf="@+id/tvGenres" />
 
                 <TextView
-                    android:id="@+id/tagline"
+                    android:id="@+id/tvTagline"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="tagline"
                     android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="@+id/name"
-                    app:layout_constraintStart_toStartOf="@+id/runtime"
-                    app:layout_constraintTop_toBottomOf="@+id/runtime" />
+                    app:layout_constraintEnd_toEndOf="@+id/tvName"
+                    app:layout_constraintStart_toStartOf="@+id/tvRuntime"
+                    app:layout_constraintTop_toBottomOf="@+id/tvRuntime" />
 
                 <View
-                    android:id="@+id/view"
+                    android:id="@+id/line"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="32dp"
                     android:background="#81C0C0C0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/poster" />
+                    app:layout_constraintTop_toBottomOf="@+id/ivPoster" />
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/btnSubscription"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/button_background"
                     android:text="View by subscription"
                     android:textColor="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/tagline"
-                    app:layout_constraintStart_toStartOf="@+id/poster"
-                    app:layout_constraintTop_toBottomOf="@+id/view" />
+                    app:layout_constraintEnd_toEndOf="@+id/tvTagline"
+                    app:layout_constraintStart_toStartOf="@+id/ivPoster"
+                    app:layout_constraintTop_toBottomOf="@+id/line" />
 
                 <View
-                    android:id="@+id/view2"
+                    android:id="@+id/line2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="16dp"
                     android:background="#81C0C0C0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/button" />
+                    app:layout_constraintTop_toBottomOf="@+id/btnSubscription" />
 
                 <TextView
                     android:id="@+id/description"
@@ -165,12 +165,12 @@
                     android:text="overview"
                     android:textColor="#000000"
                     android:textSize="13.5sp"
-                    app:layout_constraintEnd_toEndOf="@+id/button"
-                    app:layout_constraintStart_toStartOf="@+id/button"
-                    app:layout_constraintTop_toBottomOf="@+id/view2" />
+                    app:layout_constraintEnd_toEndOf="@+id/btnSubscription"
+                    app:layout_constraintStart_toStartOf="@+id/btnSubscription"
+                    app:layout_constraintTop_toBottomOf="@+id/line2" />
 
                 <View
-                    android:id="@+id/view3"
+                    android:id="@+id/line3"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="20dp"
@@ -187,7 +187,7 @@
                     android:text="TheMovieDB rating:"
                     android:textColor="#000000"
                     app:layout_constraintStart_toStartOf="@+id/description"
-                    app:layout_constraintTop_toBottomOf="@+id/view7" />
+                    app:layout_constraintTop_toBottomOf="@+id/line7" />
 
                 <TextView
                     android:id="@+id/rating"
@@ -199,10 +199,10 @@
                     android:textColor="#2F7C52"
                     android:textSize="18sp"
                     app:layout_constraintStart_toEndOf="@+id/textView2"
-                    app:layout_constraintTop_toBottomOf="@+id/view7" />
+                    app:layout_constraintTop_toBottomOf="@+id/line7" />
 
                 <TextView
-                    android:id="@+id/votes_count"
+                    android:id="@+id/votesCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
@@ -211,7 +211,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView2" />
 
                 <View
-                    android:id="@+id/view4"
+                    android:id="@+id/line4"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="20dp"
@@ -221,7 +221,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/tvCompanies"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -230,7 +230,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/textView2"
-                    app:layout_constraintTop_toBottomOf="@+id/view4" />
+                    app:layout_constraintTop_toBottomOf="@+id/line4" />
 
                 <TextView
                     android:id="@+id/companies"
@@ -240,11 +240,11 @@
                     android:lineSpacingExtra="4sp"
                     android:textColor="#000000"
                     app:layout_constraintEnd_toEndOf="@+id/description"
-                    app:layout_constraintStart_toStartOf="@+id/textView5"
-                    app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                    app:layout_constraintStart_toStartOf="@+id/tvCompanies"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCompanies" />
 
                 <View
-                    android:id="@+id/view5"
+                    android:id="@+id/line5"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="20dp"
@@ -254,7 +254,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/companies" />
 
                 <TextView
-                    android:id="@+id/textView7"
+                    android:id="@+id/tvAwards"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -263,28 +263,29 @@
                     android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/description"
-                    app:layout_constraintTop_toBottomOf="@+id/view3" />
+                    app:layout_constraintTop_toBottomOf="@+id/line3" />
 
                 <View
-                    android:id="@+id/view6"
+                    android:id="@+id/line6"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="16dp"
                     android:background="#81C0C0C0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvAwards" />
 
                 <LinearLayout
-                    android:id="@+id/linearLayout"
+                    android:id="@+id/LinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view6">
+                    app:layout_constraintTop_toBottomOf="@+id/line6">
 
                     <TextView
+                        android:id="@+id/tvTrailer"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -298,6 +299,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvReviews"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -314,13 +316,13 @@
                 </LinearLayout>
 
                 <View
-                    android:id="@+id/view7"
+                    android:id="@+id/line7"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#81C0C0C0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/LinearLayout" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>

@@ -47,7 +47,7 @@ class MovieAdapter(val context: Context,
             val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
             val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
             val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
-            val poster = view.findViewById<ImageView>(R.id.poster)
+            val poster = view.findViewById<ImageView>(R.id.ivPoster)
             val tvVotesCount = view.findViewById<TextView>(R.id.tvVotesCount)
             val tvRating = view.findViewById<TextView>(R.id.tvRating)
             val number = view.findViewById<TextView>(R.id.number)
@@ -59,8 +59,8 @@ class MovieAdapter(val context: Context,
                 addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
             }
 
-            if (movie.number == 0) {
-                movie.number = num
+            if (movie.position == 0) {
+                movie.position = num
                 num++
             }
 
@@ -68,7 +68,7 @@ class MovieAdapter(val context: Context,
             tvReleaseDate.text = movie.releaseDate.substring(0, 4)
             tvVotesCount.text = movie.voteCount.toString()
             tvRating.text = movie.voteAverage.toString()
-            number.text = movie.number.toString()
+            number.text = movie.position.toString()
             tvGenres.text = ""
 
             for (i in 0 until movie.genreNames.size) {

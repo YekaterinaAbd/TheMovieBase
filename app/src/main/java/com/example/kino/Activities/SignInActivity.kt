@@ -48,13 +48,13 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun bindViews(){
-        tvUsername = findViewById(R.id.tvUsername)
-        tvPassword = findViewById(R.id.tvPassword)
-        signInButton = findViewById(R.id.button_sign_in)
-        wrongData = findViewById(R.id.wrongData)
-        registrationLink = findViewById(R.id.accountLink)
+        tvUsername = findViewById(R.id.evUsername)
+        tvPassword = findViewById(R.id.evPassword)
+        signInButton = findViewById(R.id.btnSignIn)
+        wrongData = findViewById(R.id.tvWrongData)
+        registrationLink = findViewById(R.id.tvAccountLink)
 
-        progressBar = findViewById(R.id.pBar)
+        progressBar = findViewById(R.id.progressBar)
         progressBar.visibility = View.GONE
 
         registrationLink.setOnClickListener {
@@ -144,7 +144,7 @@ class SignInActivity : AppCompatActivity() {
 
         val editor = sharedPref.edit()
         editor.putString(getString(R.string.username), tvUsername.text.toString())
-        editor.putString(getString(R.string.session_id), sessionId)
+        editor.putString(getString(R.string.session_id), sessionId) // change to sessionId?
         editor.apply()
     }
 }

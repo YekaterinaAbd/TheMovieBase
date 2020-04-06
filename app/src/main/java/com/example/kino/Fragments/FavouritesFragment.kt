@@ -59,7 +59,7 @@ class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
 
     override fun itemClick(position: Int, item: Movie) {
         val intent = Intent(context, MovieDetailActivity::class.java)
-        intent.putExtra("movie_id", item.id)
+        intent.putExtra("movie_id", item.id) //change to movieId?
         startActivity(intent)
     }
 

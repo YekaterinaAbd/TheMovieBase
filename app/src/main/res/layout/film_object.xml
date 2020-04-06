@@ -16,7 +16,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/poster"
+        app:layout_constraintStart_toEndOf="@+id/ivPoster"
         app:layout_constraintTop_toBottomOf="@+id/number"
         tools:text="TextView"
         android:maxLines="1"/>
@@ -43,7 +43,7 @@
 
 
     <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/poster"
+        android:id="@+id/ivPoster"
         android:layout_width="64dp"
         android:layout_height="98dp"
         android:layout_marginStart="16dp"

@@ -22,7 +22,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var poster: ImageView
     private lateinit var title: TextView
     private lateinit var year: TextView
-    private lateinit var tvGenres: TextView
+    private lateinit var genres: TextView
     private lateinit var runtime: TextView
     private lateinit var tagline: TextView
     private lateinit var description: TextView
@@ -37,21 +37,21 @@ class MovieDetailActivity : AppCompatActivity() {
 
         bindViews()
 
-        val postId = intent.getIntExtra("movie_id", 1)
+        val postId = intent.getIntExtra("movie_id", 1) //change movie_id to movieId?
         getMovie(id = postId)
     }
 
     private fun bindViews(){
         progressBar = findViewById(R.id.progressBar)
-        poster = findViewById(R.id.poster)
-        title = findViewById(R.id.name)
-        year = findViewById(R.id.year)
-        tvGenres = findViewById(R.id.genres)
-        runtime = findViewById(R.id.runtime)
-        tagline = findViewById(R.id.tagline)
+        poster = findViewById(R.id.ivPoster)
+        title = findViewById(R.id.tvName)
+        year = findViewById(R.id.tvYear)
+        genres = findViewById(R.id.tvGenres)
+        runtime = findViewById(R.id.tvRuntime)
+        tagline = findViewById(R.id.tvTagline)
         description = findViewById(R.id.description)
         rating = findViewById(R.id.rating)
-        votesCount = findViewById(R.id.votes_count)
+        votesCount = findViewById(R.id.votesCount)
         companies = findViewById(R.id.companies)
     }
 
@@ -68,11 +68,11 @@ class MovieDetailActivity : AppCompatActivity() {
                     title.text = movie.title
                     year.text = movie.releaseDate
 
-                    tvGenres.text = ""
+                    genres.text = ""
 
                    for(i in movie.genres.indices){
-                        if(i == 0) tvGenres.text  = movie.genres[i].genre.toLowerCase(Locale.ROOT)
-                        else tvGenres.append(", " + movie.genres[i].genre.toLowerCase(Locale.ROOT))
+                        if(i == 0) genres.text  = movie.genres[i].genre.toLowerCase(Locale.ROOT)
+                        else genres.append(", " + movie.genres[i].genre.toLowerCase(Locale.ROOT))
                     }
 
                     runtime.text = movie.runtime.toString() + " min"

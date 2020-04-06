@@ -27,7 +27,7 @@
 
 
             <TextView
-                android:id="@+id/usernameData"
+                android:id="@+id/tvUsernameData"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -38,13 +38,13 @@
                 android:textColor="#000000"
                 android:textSize="28sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/imageView5"
+                app:layout_constraintEnd_toStartOf="@+id/ivPhoto"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/ivPhoto"
                 android:layout_width="48sp"
                 android:layout_height="48sp"
                 android:layout_marginTop="44dp"
@@ -54,17 +54,17 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="no email address"
                 android:textAlignment="viewStart"
-                app:layout_constraintStart_toStartOf="@+id/usernameData"
-                app:layout_constraintTop_toBottomOf="@+id/usernameData" />
+                app:layout_constraintStart_toStartOf="@+id/tvUsernameData"
+                app:layout_constraintTop_toBottomOf="@+id/tvUsernameData" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/tvSubscriptions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -72,11 +72,11 @@
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/textView3"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                app:layout_constraintStart_toStartOf="@+id/tvEmail"
+                app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
 
             <LinearLayout
-                android:id="@+id/linearLayout2"
+                android:id="@+id/LinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -88,17 +88,19 @@
                 android:paddingTop="24sp"
                 android:paddingRight="8sp"
                 android:paddingBottom="24sp"
-                app:layout_constraintEnd_toEndOf="@+id/imageView5"
-                app:layout_constraintStart_toStartOf="@+id/textView4"
-                app:layout_constraintTop_toBottomOf="@+id/textView4">
+                app:layout_constraintEnd_toEndOf="@+id/ivPhoto"
+                app:layout_constraintStart_toStartOf="@+id/tvSubscriptions"
+                app:layout_constraintTop_toBottomOf="@+id/tvSubscriptions">
 
                 <LinearLayout
+                    android:id="@+id/LinearLayoutInner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="4sp"
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tvSubsHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TheMovieDB HD"
@@ -107,7 +109,7 @@
                         tools:text="TheMovieDB HD" />
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/tvSubsText"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -116,7 +118,7 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/btnSubscr"
                     android:layout_width="91dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="8sp"
@@ -131,7 +133,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/tvMyMovieDb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -139,11 +141,11 @@
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+                app:layout_constraintStart_toStartOf="@+id/LinearLayout"
+                app:layout_constraintTop_toBottomOf="@+id/LinearLayout" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/tvStars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -151,11 +153,11 @@
                 android:text="My stars"
                 android:textColor="#000000"
                 android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="@+id/textView8"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                app:layout_constraintStart_toStartOf="@+id/tvMyMovieDb"
+                app:layout_constraintTop_toBottomOf="@+id/tvMyMovieDb" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/tvFilms"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -163,11 +165,11 @@
                 android:text="My films"
                 android:textColor="#000000"
                 android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="@+id/textView9"
-                app:layout_constraintTop_toBottomOf="@+id/textView9" />
+                app:layout_constraintStart_toStartOf="@+id/tvStars"
+                app:layout_constraintTop_toBottomOf="@+id/tvStars" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/tvPurchases"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -175,11 +177,11 @@
                 android:text="My purchases"
                 android:textColor="#000000"
                 android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="@+id/textView10"
-                app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                app:layout_constraintStart_toStartOf="@+id/tvFilms"
+                app:layout_constraintTop_toBottomOf="@+id/tvFilms" />
 
             <TextView
-                android:id="@+id/textView12"
+                android:id="@+id/tvDownloads"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -187,11 +189,11 @@
                 android:text="My downloads"
                 android:textColor="#000000"
                 android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="@+id/textView11"
-                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                app:layout_constraintStart_toStartOf="@+id/tvPurchases"
+                app:layout_constraintTop_toBottomOf="@+id/tvPurchases" />
 
             <TextView
-                android:id="@+id/textView13"
+                android:id="@+id/tvApplication"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -199,11 +201,11 @@
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/textView12"
-                app:layout_constraintTop_toBottomOf="@+id/textView12" />
+                app:layout_constraintStart_toStartOf="@+id/tvDownloads"
+                app:layout_constraintTop_toBottomOf="@+id/tvDownloads" />
 
             <TextView
-                android:id="@+id/textView14"
+                android:id="@+id/tvSettings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -211,11 +213,11 @@
                 android:text="Settings"
                 android:textColor="#000000"
                 android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="@+id/textView13"
-                app:layout_constraintTop_toBottomOf="@+id/textView13" />
+                app:layout_constraintStart_toStartOf="@+id/tvApplication"
+                app:layout_constraintTop_toBottomOf="@+id/tvApplication" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/tvSupport"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -223,11 +225,11 @@
                 android:text="Support service"
                 android:textColor="#000000"
                 android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="@+id/textView14"
-                app:layout_constraintTop_toBottomOf="@+id/textView14" />
+                app:layout_constraintStart_toStartOf="@+id/tvSettings"
+                app:layout_constraintTop_toBottomOf="@+id/tvSettings" />
 
             <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/tvHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -235,8 +237,8 @@
                 android:text="History"
                 android:textColor="#000000"
                 android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="@+id/textView15"
-                app:layout_constraintTop_toBottomOf="@+id/textView15" />
+                app:layout_constraintStart_toStartOf="@+id/tvSupport"
+                app:layout_constraintTop_toBottomOf="@+id/tvSupport" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
