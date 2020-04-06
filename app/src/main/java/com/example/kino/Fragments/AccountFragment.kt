@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import com.example.kino.R
 
 class AccountFragment: Fragment() {
-    //Привет Катя 
+
     private lateinit var usernameData: TextView
     private lateinit var sharedPref: SharedPreferences
 
