@@ -22,8 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
-
-    //test
+    
 
     private lateinit var recyclerView: RecyclerView
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
