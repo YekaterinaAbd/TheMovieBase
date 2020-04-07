@@ -2,7 +2,7 @@ package com.example.kino
 
 import android.util.Log
 import com.example.kino.AccountClasses.LoginValidationData
-import com.example.kino.AccountClasses.SessionReciever
+import com.example.kino.AccountClasses.Session
 import com.example.kino.AccountClasses.Token
 import com.example.kino.MovieClasses.*
 import okhttp3.OkHttpClient
@@ -66,7 +66,7 @@ interface PostApi {
 
     @POST("authentication/session/new")
     fun createSession(@Query("api_key") apiKey: String,
-                      @Body token: Token): Call<SessionReciever>
+                      @Body token: Token): Call<Session>
 
     @GET("account/{account_id}/favorite/movies")
     fun getFavouriteMovies(@Query("api_key") apiKey: String,
