@@ -104,7 +104,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvYear" />
 
                 <TextView
-                    android:id="@+id/tvRuntime"
+                    android:id="@+id/duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -121,8 +121,8 @@
                     android:text="tagline"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="@+id/tvName"
-                    app:layout_constraintStart_toStartOf="@+id/tvRuntime"
-                    app:layout_constraintTop_toBottomOf="@+id/tvRuntime" />
+                    app:layout_constraintStart_toStartOf="@+id/duration"
+                    app:layout_constraintTop_toBottomOf="@+id/duration" />
 
                 <View
                     android:id="@+id/line"

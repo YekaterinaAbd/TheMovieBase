@@ -1,7 +1,7 @@
 package com.example.kino.MovieClasses
 import com.google.gson.annotations.SerializedName
 
-data class MovieStatsResponse(
+data class MovieStatus(
     @SerializedName("id") val movieId: Int,
-    @SerializedName("favorite") val favourite: Boolean
+    @SerializedName("favorite") val selectedStatus: Boolean
 )

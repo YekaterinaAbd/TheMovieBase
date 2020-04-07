@@ -16,10 +16,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity()  {
 
-    private lateinit var sharedPref: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var toolbar: TextView
 
-    private val fm: FragmentManager = supportFragmentManager
+    private val fragmentManager: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,14 +28,14 @@ class MainActivity : AppCompatActivity()  {
 
         toolbar = findViewById(R.id.toolbar)
 
-        sharedPref = getSharedPreferences(
+        sharedPreferences = getSharedPreferences(
             getString(R.string.preference_file), Context.MODE_PRIVATE)
 
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNav.setOnNavigationItemSelectedListener(navListener)
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNavigation.setOnNavigationItemSelectedListener(navListener)
 
-        fm.beginTransaction().add(R.id.frame,FilmsFragment(), "1").commit()
+        fragmentManager.beginTransaction().add(R.id.frame,FilmsFragment(), "1").commit()
     }
 
     private val navListener =
@@ -43,19 +43,19 @@ class MainActivity : AppCompatActivity()  {
             when (item.itemId) {
                 R.id.films -> {
                     activeFragment=FilmsFragment()
-                    fm.beginTransaction().replace(R.id.frame,activeFragment).commit()
+                    fragmentManager.beginTransaction().replace(R.id.frame,activeFragment).commit()
                     toolbar.text = "Top-rated movies"
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.favourites -> {
                     activeFragment=FavouritesFragment()
-                    fm.beginTransaction().replace(R.id.frame,activeFragment).commit()
+                    fragmentManager.beginTransaction().replace(R.id.frame,activeFragment).commit()
                     toolbar.text = "Favourite movies"
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.account -> {
                     activeFragment=AccountFragment()
-                    fm.beginTransaction().replace(R.id.frame,activeFragment).commit()
+                    fragmentManager.beginTransaction().replace(R.id.frame,activeFragment).commit()
                     toolbar.visibility= View.GONE
                     return@OnNavigationItemSelectedListener true
                 }
