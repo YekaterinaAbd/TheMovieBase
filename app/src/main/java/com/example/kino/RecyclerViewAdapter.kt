@@ -11,11 +11,11 @@ import com.example.kino.MovieClasses.Movie
 import com.squareup.picasso.Picasso
 import java.util.*
 
-class MovieAdapter(val context: Context,
-    var movies: List<Movie>? = null,
-    val itemClickListener: RecyclerViewItemClick? = null
+class RecyclerViewAdapter(val context: Context,
+                          var movies: List<Movie>? = null,
+                          val itemClickListener: RecyclerViewItemClick? = null
 
-) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+) : RecyclerView.Adapter<RecyclerViewAdapter.MovieViewHolder>() {
 
     var num = 1
 

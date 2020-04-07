@@ -9,8 +9,8 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kino.AccountClasses.LoginValidationData
-import com.example.kino.AccountClasses.SessionResult
-import com.example.kino.AccountClasses.TokenResult
+import com.example.kino.AccountClasses.SessionReciever
+import com.example.kino.AccountClasses.Token
 import com.example.kino.ApiKey
 import com.example.kino.R
 import com.example.kino.RetrofitService
@@ -20,14 +20,14 @@ import retrofit2.Response
 
 class SignInActivity : AppCompatActivity() {
 
-    lateinit var requestToken: String
+    lateinit var receivedToken: String
     lateinit var loginValidationData: LoginValidationData
-    lateinit var tokenResult: TokenResult
-    private lateinit var sharedPref:SharedPreferences
-    lateinit var wrongData: TextView
+    lateinit var token: Token
+    private lateinit var sharedPreferences:SharedPreferences
+    lateinit var wrongDataText: TextView
     private lateinit var signInButton: Button
-    private lateinit var tvUsername: EditText
-    private lateinit var tvPassword: EditText
+    private lateinit var username: EditText
+    private lateinit var password: EditText
     private lateinit var registrationLink: TextView
     private lateinit var progressBar: ProgressBar
 
@@ -37,9 +37,9 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
-        sharedPref = getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
 
-        if(sharedPref.contains(getString(R.string.session_id))){
+        if(sharedPreferences.contains(getString(R.string.session_id))){
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
@@ -48,10 +48,10 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun bindViews(){
-        tvUsername = findViewById(R.id.evUsername)
-        tvPassword = findViewById(R.id.evPassword)
+        username = findViewById(R.id.evUsername)
+        password = findViewById(R.id.evPassword)
         signInButton = findViewById(R.id.btnSignIn)
-        wrongData = findViewById(R.id.tvWrongData)
+        wrongDataText = findViewById(R.id.tvWrongData)
         registrationLink = findViewById(R.id.tvAccountLink)
 
         progressBar = findViewById(R.id.progressBar)
@@ -64,28 +64,28 @@ class SignInActivity : AppCompatActivity() {
 
         signInButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
-            createRequestToken()
+            createTokenRequest()
         }
     }
 
 
-    private fun createRequestToken() {
+    private fun createTokenRequest() {
         RetrofitService.getPostApi().createRequestToken(ApiKey).enqueue(object :
-            Callback<TokenResult> {
+            Callback<Token> {
 
-            override fun onFailure(call: Call<TokenResult>, t: Throwable) {
+            override fun onFailure(call: Call<Token>, t: Throwable) {
                 Toast.makeText(this@SignInActivity, "Error occured", Toast.LENGTH_SHORT).show()
                 progressBar.visibility = View.GONE
-                requestToken = ""
+                receivedToken = ""
             }
 
-            override fun onResponse(call: Call<TokenResult>, response: Response<TokenResult>) {
+            override fun onResponse(call: Call<Token>, response: Response<Token>) {
                 if(response.isSuccessful){
-                    val ans = response.body()
-                    if (ans != null) {
-                        requestToken = ans.requestToken
-                        loginValidationData = LoginValidationData(tvUsername.text.toString(),
-                            tvPassword.text.toString(), requestToken)
+                    val requestedToken = response.body()
+                    if (requestedToken != null) {
+                        receivedToken = requestedToken.token
+                        loginValidationData = LoginValidationData(username.text.toString(),
+                            password.text.toString(), receivedToken)
                         validateWithLogin()
                     }
                 }
@@ -98,19 +98,19 @@ class SignInActivity : AppCompatActivity() {
 
     private fun validateWithLogin(){
         RetrofitService.getPostApi().validateWithLogin(ApiKey, loginValidationData).enqueue(object :
-            Callback<TokenResult> {
-            override fun onFailure(call: Call<TokenResult>, t: Throwable) {
+            Callback<Token> {
+            override fun onFailure(call: Call<Token>, t: Throwable) {
                 progressBar.visibility = View.GONE
                 Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onResponse(call: Call<TokenResult>, response: Response<TokenResult>) {
+            override fun onResponse(call: Call<Token>, response: Response<Token>) {
                 if(response.isSuccessful) {
-                    tokenResult = TokenResult(requestToken)
+                    token = Token(receivedToken)
                     createSession()
                 }
                else{
-                    wrongData.text = "Wrong data"
+                    wrongDataText.text = "Wrong data"
                     progressBar.visibility = View.GONE
                 }
             }
@@ -118,14 +118,14 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun createSession(){
-        RetrofitService.getPostApi().createSession(ApiKey, tokenResult).enqueue(object :
-            Callback<SessionResult> {
-            override fun onFailure(call: Call<SessionResult>, t: Throwable) {
+        RetrofitService.getPostApi().createSession(ApiKey, token).enqueue(object :
+            Callback<SessionReciever> {
+            override fun onFailure(call: Call<SessionReciever>, t: Throwable) {
                 progressBar.visibility = View.GONE
                 Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onResponse(call: Call<SessionResult>, response: Response<SessionResult>) {
+            override fun onResponse(call: Call<SessionReciever>, response: Response<SessionReciever>) {
                 if(response.isSuccessful) {
                     sessionId = response.body()?.sessionId.toString()
 
@@ -140,8 +140,8 @@ class SignInActivity : AppCompatActivity() {
 
     private fun saveToSharedPreferences() {
 
-        val editor = sharedPref.edit()
-        editor.putString(getString(R.string.username), tvUsername.text.toString())
+        val editor = sharedPreferences.edit()
+        editor.putString(getString(R.string.username), username.text.toString())
         editor.putString(getString(R.string.session_id), sessionId)
         editor.apply()
     }

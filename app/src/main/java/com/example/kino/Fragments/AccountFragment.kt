@@ -12,8 +12,8 @@ import com.example.kino.R
 
 class AccountFragment: Fragment() {
 
-    private lateinit var usernameData: TextView
-    private lateinit var sharedPref: SharedPreferences
+    private lateinit var username: TextView
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -27,12 +27,12 @@ class AccountFragment: Fragment() {
 
     private fun bindViews(view: View) = with(view) {
 
-        usernameData = view.findViewById(R.id.tvUsernameData)
+        username = view.findViewById(R.id.tvUsernameData)
 
-        sharedPref = activity?.getSharedPreferences(
+        sharedPreferences = activity?.getSharedPreferences(
             getString(R.string.preference_file), Context.MODE_PRIVATE)!!
 
-        if (sharedPref.contains("username"))
-            usernameData.text = sharedPref.getString("username", "null")
+        if (sharedPreferences.contains("username"))
+            username.text = sharedPreferences.getString("username", "null")
     }
 }
