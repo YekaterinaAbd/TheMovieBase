@@ -21,7 +21,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FilmsFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
+class FilmsFragment: Fragment(), MovieAdapter.RecyclerViewItemClick{
 
     private lateinit var recyclerView: RecyclerView
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -54,14 +54,13 @@ class FilmsFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
 
         swipeRefreshLayout.setOnRefreshListener {
             movieAdapter?.clearAll()
-            getPosts()
+            getMovies()
         }
 
         movieAdapter = this.context?.let { MovieAdapter(it, itemClickListener = this) }
         recyclerView.adapter = movieAdapter
-        getPosts()
+        getMovies()
     }
-
 
     override fun itemClick(position: Int, item: Movie) {
         val intent = Intent(context, MovieDetailActivity::class.java)
@@ -70,38 +69,7 @@ class FilmsFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
     }
 
 
-    override fun addToFavouritesClick(position: Int, item: Movie) {
-        lateinit var favouritesRequest: FavouritesRequest
-
-        if (!item.isClicked){
-            item.isClicked=true
-            favouritesRequest=FavouritesRequest("movie",item.id, item.isClicked)
-
-            RetrofitService.getPostApi().addRemoveFavourites(ApiKey,sessionId,favouritesRequest).enqueue(object: Callback<FavouritesResponse>{
-                override fun onFailure(call: Call<FavouritesResponse>, t: Throwable) {}
-
-                override fun onResponse(
-                    call: Call<FavouritesResponse>,
-                    response: Response<FavouritesResponse>
-                ) {}
-            })
-        }
-        else{
-            item.isClicked=false
-            favouritesRequest=FavouritesRequest("movie",item.id, item.isClicked)
-
-            RetrofitService.getPostApi().addRemoveFavourites(ApiKey, sessionId, favouritesRequest)
-                .enqueue(object: Callback<FavouritesResponse>{
-                override fun onFailure(call: Call<FavouritesResponse>, t: Throwable) {}
-                override fun onResponse(
-                    call: Call<FavouritesResponse>,
-                    response: Response<FavouritesResponse>
-                ) {}
-            })
-        }
-    }
-
-      private fun getPosts() {
+      private fun getMovies() {
         swipeRefreshLayout.isRefreshing = true
         RetrofitService.getPostApi().getMovieList(ApiKey).enqueue(object : Callback<MovieResults> {
             override fun onFailure(call: Call<MovieResults>, t: Throwable) {
@@ -134,6 +102,37 @@ class FilmsFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
         })
     }
 
+    override fun addToFavouritesClick(position: Int, item: Movie) {
+        lateinit var favouritesRequest: FavouritesRequest
+
+        if (!item.isClicked){
+            item.isClicked=true
+            favouritesRequest=FavouritesRequest("movie",item.id, item.isClicked)
+
+            RetrofitService.getPostApi().addRemoveFavourites(ApiKey,sessionId,favouritesRequest).enqueue(object: Callback<FavouritesResponse>{
+                override fun onFailure(call: Call<FavouritesResponse>, t: Throwable) {}
+
+                override fun onResponse(
+                    call: Call<FavouritesResponse>,
+                    response: Response<FavouritesResponse>
+                ) {}
+            })
+        }
+        else{
+            item.isClicked=false
+            favouritesRequest=FavouritesRequest("movie",item.id, item.isClicked)
+
+            RetrofitService.getPostApi().addRemoveFavourites(ApiKey, sessionId, favouritesRequest)
+                .enqueue(object: Callback<FavouritesResponse>{
+                    override fun onFailure(call: Call<FavouritesResponse>, t: Throwable) {}
+                    override fun onResponse(
+                        call: Call<FavouritesResponse>,
+                        response: Response<FavouritesResponse>
+                    ) {}
+                })
+        }
+    }
+
     fun getMovieStats(movie:Movie){
 
         RetrofitService.getPostApi().getMovieStates(movie.id,ApiKey,sessionId).enqueue(object: Callback<MovieStatsResponse>{
@@ -147,4 +146,6 @@ class FilmsFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
             }
         })
     }
+
+
 }

@@ -50,7 +50,7 @@ class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
         movieAdapter = this.context?.let { MovieAdapter(it, itemClickListener = this) }
         recyclerView.adapter = movieAdapter
 
-        getPosts()
+        getMovies()
 
     }
 
@@ -61,7 +61,7 @@ class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
 
         swipeRefreshLayout.setOnRefreshListener {
             movieAdapter?.clearAll()
-            getPosts()
+            getMovies()
         }
     }
 
@@ -71,7 +71,7 @@ class FavouritesFragment: Fragment(), MovieAdapter.RecyclerViewItemClick {
         startActivity(intent)
     }
 
-   private fun getPosts(){
+   private fun getMovies(){
 
         RetrofitService.getPostApi().getFavouriteMovies(ApiKey, sessionId).enqueue(object : Callback<MovieResults> {
             override fun onFailure(call: Call<MovieResults>, t: Throwable) {
