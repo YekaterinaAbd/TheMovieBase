@@ -86,7 +86,7 @@ class RecyclerViewAdapter(val context: Context,
             }
 
             addToFav.setOnClickListener {
-                itemClickListener?.addToFavouritesClick(adapterPosition, movie)
+                itemClickListener?.addToFavourites(adapterPosition, movie)
                 if (movie.isClicked) {
                     addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
                 } else {
@@ -98,6 +98,6 @@ class RecyclerViewAdapter(val context: Context,
 
     interface RecyclerViewItemClick {
         fun itemClick(position: Int, item: Movie)
-        fun addToFavouritesClick(position: Int, item: Movie)
+        fun addToFavourites(position: Int, item: Movie)
     }
 }

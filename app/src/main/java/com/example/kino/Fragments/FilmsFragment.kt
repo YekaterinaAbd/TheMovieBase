@@ -102,7 +102,7 @@ class FilmsFragment: Fragment(), RecyclerViewAdapter.RecyclerViewItemClick{
         })
     }
 
-    override fun addToFavouritesClick(position: Int, item: Movie) {
+    override fun addToFavourites(position: Int, item: Movie) {
         lateinit var selectedMovie: SelectedMovie
 
         if (!item.isClicked){

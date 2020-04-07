@@ -17,9 +17,9 @@ object GenresList {
                 if(response.isSuccessful){
                     val receivedGenres = response.body()
                     if (receivedGenres!= null) {
-                        val genreResults = receivedGenres.genres
-                        for (genreRes in genreResults){
-                            genres?.set(genreRes.genreId, genreRes.genre)
+                        val genresBunch = receivedGenres.genres
+                        for (genre in genresBunch){
+                            genres?.set(genre.genreId, genre.genre)
                         }
                     }
                 }

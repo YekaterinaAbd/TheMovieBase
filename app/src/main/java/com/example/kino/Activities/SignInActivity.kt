@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kino.AccountClasses.LoginValidationData
-import com.example.kino.AccountClasses.SessionReciever
+import com.example.kino.AccountClasses.Session
 import com.example.kino.AccountClasses.Token
 import com.example.kino.ApiKey
 import com.example.kino.R
@@ -119,13 +119,13 @@ class SignInActivity : AppCompatActivity() {
 
     private fun createSession(){
         RetrofitService.getPostApi().createSession(ApiKey, token).enqueue(object :
-            Callback<SessionReciever> {
-            override fun onFailure(call: Call<SessionReciever>, t: Throwable) {
+            Callback<Session> {
+            override fun onFailure(call: Call<Session>, t: Throwable) {
                 progressBar.visibility = View.GONE
                 Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onResponse(call: Call<SessionReciever>, response: Response<SessionReciever>) {
+            override fun onResponse(call: Call<Session>, response: Response<Session>) {
                 if(response.isSuccessful) {
                     sessionId = response.body()?.sessionId.toString()
 
