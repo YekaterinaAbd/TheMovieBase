@@ -9,17 +9,19 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kino.AccountClasses.LoginValidationData
-import com.example.kino.AccountClasses.Session
 import com.example.kino.AccountClasses.Token
 import com.example.kino.ApiKey
 import com.example.kino.R
 import com.example.kino.RetrofitService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class SignInActivity : AppCompatActivity() {
+class SignInActivity : AppCompatActivity(), CoroutineScope {
 
+    private val job = Job()
     private lateinit var receivedToken: String
     private lateinit var loginValidationData: LoginValidationData
     private lateinit var token: Token
@@ -32,6 +34,10 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
 
     private var sessionId: String = ""
+
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,42 +78,33 @@ class SignInActivity : AppCompatActivity() {
 
 
     private fun createTokenRequest() {
-        RetrofitService.getPostApi().createRequestToken(ApiKey).enqueue(object :
-            Callback<Token> {
+        launch {
+            val response = RetrofitService.getPostApi().createRequestToken(ApiKey)
+            if (response.isSuccessful) {
+                val requestedToken = response.body()
+                if (requestedToken != null) {
+                    receivedToken = requestedToken.token
+                    loginValidationData = LoginValidationData(
+                        username.text.toString(),
+                        password.text.toString(), receivedToken
+                    )
+                    validateWithLogin()
+                }
 
-            override fun onFailure(call: Call<Token>, t: Throwable) {
+            } else {
                 Toast.makeText(this@SignInActivity, "Error occured", Toast.LENGTH_SHORT).show()
                 progressBar.visibility = View.GONE
                 receivedToken = ""
             }
-
-            override fun onResponse(call: Call<Token>, response: Response<Token>) {
-                if (response.isSuccessful) {
-                    val requestedToken = response.body()
-                    if (requestedToken != null) {
-                        receivedToken = requestedToken.token
-                        loginValidationData = LoginValidationData(
-                            username.text.toString(),
-                            password.text.toString(), receivedToken
-                        )
-                        validateWithLogin()
-                    }
-                } else {
-                    progressBar.visibility = View.GONE
-                }
-            }
-        })
+        }
     }
 
     private fun validateWithLogin() {
-        RetrofitService.getPostApi().validateWithLogin(ApiKey, loginValidationData).enqueue(object :
-            Callback<Token> {
-            override fun onFailure(call: Call<Token>, t: Throwable) {
-                progressBar.visibility = View.GONE
-                Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
-            }
+        launch {
+            val response =
+                RetrofitService.getPostApi().validateWithLogin(ApiKey, loginValidationData)
+            if (response.isSuccessful) {
 
-            override fun onResponse(call: Call<Token>, response: Response<Token>) {
                 if (response.isSuccessful) {
                     token = Token(receivedToken)
                     createSession()
@@ -116,28 +113,25 @@ class SignInActivity : AppCompatActivity() {
                     progressBar.visibility = View.GONE
                 }
             }
-        })
+        }
     }
 
     private fun createSession() {
-        RetrofitService.getPostApi().createSession(ApiKey, token).enqueue(object :
-            Callback<Session> {
-            override fun onFailure(call: Call<Session>, t: Throwable) {
+        launch {
+            val response = RetrofitService.getPostApi().createSession(ApiKey, token)
+            if (response.isSuccessful) {
+                sessionId = response.body()?.sessionId.toString()
+
+                saveToSharedPreferences()
+
+                val intent = Intent(this@SignInActivity, MainActivity::class.java)
+                startActivity(intent)
+
+            } else {
                 progressBar.visibility = View.GONE
                 Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
             }
-
-            override fun onResponse(call: Call<Session>, response: Response<Session>) {
-                if (response.isSuccessful) {
-                    sessionId = response.body()?.sessionId.toString()
-
-                    saveToSharedPreferences()
-
-                    val intent = Intent(this@SignInActivity, MainActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-        })
+        }
     }
 
     private fun saveToSharedPreferences() {
@@ -147,4 +141,5 @@ class SignInActivity : AppCompatActivity() {
         editor.putString(getString(R.string.session_id), sessionId)
         editor.apply()
     }
+
 }

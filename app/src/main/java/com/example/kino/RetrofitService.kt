@@ -7,7 +7,7 @@ import com.example.kino.AccountClasses.Token
 import com.example.kino.MovieClasses.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
@@ -48,49 +48,49 @@ object RetrofitService {
 interface PostApi {
 
     @GET("movie/top_rated")
-    fun getMovieList(@Query("api_key") apiKey: String): Call<Movies>
+    suspend fun getMovieList(@Query("api_key") apiKey: String): Response<Movies>
 
     @GET("movie/{id}")
-    fun getMovieById(
+    suspend fun getMovieById(
         @Path("id") id: Int,
         @Query("api_key") apiKey: String
-    ): Call<MovieDetails>
+    ): Response<MovieDetails>
 
     @GET("genre/movie/list")
-    fun getGenres(@Query("api_key") apiKey: String): Call<Genres>
+    suspend fun getGenres(@Query("api_key") apiKey: String): Response<Genres>
 
     @GET("authentication/token/new")
-    fun createRequestToken(@Query("api_key") apiKey: String): Call<Token>
+    suspend fun createRequestToken(@Query("api_key") apiKey: String): Response<Token>
 
     @POST("authentication/token/validate_with_login")
-    fun validateWithLogin(
+    suspend fun validateWithLogin(
         @Query("api_key") apiKey: String,
         @Body data: LoginValidationData
-    ): Call<Token>
+    ): Response<Token>
 
     @POST("authentication/session/new")
-    fun createSession(
+    suspend fun createSession(
         @Query("api_key") apiKey: String,
         @Body token: Token
-    ): Call<Session>
+    ): Response<Session>
 
     @GET("account/{account_id}/favorite/movies")
-    fun getFavouriteMovies(
+    suspend fun getFavouriteMovies(
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String
-    ): Call<Movies>
+    ): Response<Movies>
 
     @POST("account/{account_id}/favorite")
-    fun addRemoveFavourites(
+    suspend fun addRemoveFavourites(
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String,
         @Body fav: SelectedMovie
-    ): Call<StatusResponse>
+    ): Response<StatusResponse>
 
     @GET("movie/{movie_id}/account_states")
-    fun getMovieStates(
+    suspend fun getMovieStates(
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String
-    ): Call<MovieStatus>
+    ): Response<MovieStatus>
 }
