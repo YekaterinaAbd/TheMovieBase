@@ -14,11 +14,11 @@ object GenresList {
             override fun onFailure(call: Call<Genres>, t: Throwable) {}
 
             override fun onResponse(call: Call<Genres>, response: Response<Genres>) {
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     val receivedGenres = response.body()
-                    if (receivedGenres!= null) {
+                    if (receivedGenres != null) {
                         val genresBunch = receivedGenres.genres
-                        for (genre in genresBunch){
+                        for (genre in genresBunch) {
                             genres?.set(genre.genreId, genre.genre)
                         }
                     }

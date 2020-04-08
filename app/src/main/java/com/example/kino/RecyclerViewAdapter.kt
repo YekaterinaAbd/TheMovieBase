@@ -1,6 +1,5 @@
 package com.example.kino
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,9 @@ import com.example.kino.MovieClasses.Movie
 import com.squareup.picasso.Picasso
 import java.util.*
 
-class RecyclerViewAdapter(val context: Context,
-                          var movies: List<Movie>? = null,
-                          val itemClickListener: RecyclerViewItemClick? = null
+class RecyclerViewAdapter(
+    var movies: List<Movie>? = null,
+    val itemClickListener: RecyclerViewItemClick? = null
 
 ) : RecyclerView.Adapter<RecyclerViewAdapter.MovieViewHolder>() {
 

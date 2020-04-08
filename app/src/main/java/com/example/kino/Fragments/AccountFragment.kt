@@ -10,12 +10,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.kino.R
 
-class AccountFragment: Fragment() {
+class AccountFragment : Fragment() {
 
     private lateinit var username: TextView
     private lateinit var sharedPreferences: SharedPreferences
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.account_fragment, container, false)
     }
@@ -30,7 +31,8 @@ class AccountFragment: Fragment() {
         username = view.findViewById(R.id.tvUsernameData)
 
         sharedPreferences = activity?.getSharedPreferences(
-            getString(R.string.preference_file), Context.MODE_PRIVATE)!!
+            getString(R.string.preference_file), Context.MODE_PRIVATE
+        )!!
 
         if (sharedPreferences.contains("username"))
             username.text = sharedPreferences.getString("username", "null")
