@@ -11,26 +11,27 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.kino.RecyclerViewAdapter
 import com.example.kino.Activities.MovieDetailActivity
 import com.example.kino.ApiKey
 import com.example.kino.MovieClasses.*
 import com.example.kino.R
+import com.example.kino.RecyclerViewAdapter
 import com.example.kino.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FilmsFragment: Fragment(), RecyclerViewAdapter.RecyclerViewItemClick{
+class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
     private lateinit var recyclerView: RecyclerView
-    lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var sessionId:String
-    lateinit var processedMovies:MutableList<Movie>
+    private lateinit var sessionId: String
+    private lateinit var processedMovies: MutableList<Movie>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.films_fragment, container, false)
     }
@@ -39,10 +40,11 @@ class FilmsFragment: Fragment(), RecyclerViewAdapter.RecyclerViewItemClick{
         super.onViewCreated(view, savedInstanceState)
 
         sharedPref = requireActivity().getSharedPreferences(
-            getString(R.string.preference_file), Context.MODE_PRIVATE)
+            getString(R.string.preference_file), Context.MODE_PRIVATE
+        )
 
-        if(sharedPref.contains(getString(R.string.session_id))){
-            sessionId=sharedPref.getString(getString(R.string.session_id),"null") as String
+        if (sharedPref.contains(getString(R.string.session_id))) {
+            sessionId = sharedPref.getString(getString(R.string.session_id), "null") as String
         }
 
         GenresList.getGenres()
@@ -57,7 +59,8 @@ class FilmsFragment: Fragment(), RecyclerViewAdapter.RecyclerViewItemClick{
             getMovies()
         }
 
-        recyclerViewAdapter = this.context?.let { RecyclerViewAdapter(it, itemClickListener = this) }
+        recyclerViewAdapter =
+            this.context?.let { RecyclerViewAdapter(itemClickListener = this) }
         recyclerView.adapter = recyclerViewAdapter
         getMovies()
     }
@@ -69,7 +72,7 @@ class FilmsFragment: Fragment(), RecyclerViewAdapter.RecyclerViewItemClick{
     }
 
 
-      private fun getMovies() {
+    private fun getMovies() {
         swipeRefreshLayout.isRefreshing = true
         RetrofitService.getPostApi().getMovieList(ApiKey).enqueue(object : Callback<Movies> {
             override fun onFailure(call: Call<Movies>, t: Throwable) {
@@ -77,21 +80,24 @@ class FilmsFragment: Fragment(), RecyclerViewAdapter.RecyclerViewItemClick{
             }
 
             override fun onResponse(call: Call<Movies>, response: Response<Movies>) {
-                processedMovies= mutableListOf()
+                processedMovies = mutableListOf()
 
                 if (response.isSuccessful) {
                     val movies = response.body()
-                    for(movie: Movie in movies!!.movieList){
-                        likeStatusSaver(movie)
-                        processedMovies.add(movie)
+                    if (movies != null) {
+                        for (movie: Movie in movies.movieList) {
+                            likeStatusSaver(movie)
+                            processedMovies.add(movie)
+                        }
                     }
                     recyclerViewAdapter?.movies = processedMovies
-
-                    for(movie in recyclerViewAdapter?.movies!!){
-                        movie.genreNames = mutableListOf()
-                        for(genre_id in movie.genres) {
-                            GenresList.genres?.get(genre_id)?.let {
-                                movie.genreNames.add(it)
+                    if (recyclerViewAdapter?.movies != null) {
+                        for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
+                            movie.genreNames = mutableListOf()
+                            for (genreId in movie.genres) {
+                                GenresList.genres?.get(genreId)?.let {
+                                    movie.genreNames.add(it)
+                                }
                             }
                         }
                     }
@@ -105,46 +111,51 @@ class FilmsFragment: Fragment(), RecyclerViewAdapter.RecyclerViewItemClick{
     override fun addToFavourites(position: Int, item: Movie) {
         lateinit var selectedMovie: SelectedMovie
 
-        if (!item.isClicked){
-            item.isClicked=true
-            selectedMovie=SelectedMovie("movie",item.id, item.isClicked)
-
-            RetrofitService.getPostApi().addRemoveFavourites(ApiKey,sessionId,selectedMovie).enqueue(object: Callback<StatusResponse>{
-                override fun onFailure(call: Call<StatusResponse>, t: Throwable) {}
-
-                override fun onResponse(
-                    call: Call<StatusResponse>,
-                    response: Response<StatusResponse>
-                ) {}
-            })
-        }
-        else{
-            item.isClicked=false
-            selectedMovie=SelectedMovie("movie",item.id, item.isClicked)
+        if (!item.isClicked) {
+            item.isClicked = true
+            selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
 
             RetrofitService.getPostApi().addRemoveFavourites(ApiKey, sessionId, selectedMovie)
-                .enqueue(object: Callback<StatusResponse>{
+                .enqueue(object : Callback<StatusResponse> {
+                    override fun onFailure(call: Call<StatusResponse>, t: Throwable) {}
+
+                    override fun onResponse(
+                        call: Call<StatusResponse>,
+                        response: Response<StatusResponse>
+                    ) {
+                    }
+                })
+        } else {
+            item.isClicked = false
+            selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
+
+            RetrofitService.getPostApi().addRemoveFavourites(ApiKey, sessionId, selectedMovie)
+                .enqueue(object : Callback<StatusResponse> {
                     override fun onFailure(call: Call<StatusResponse>, t: Throwable) {}
                     override fun onResponse(
                         call: Call<StatusResponse>,
                         response: Response<StatusResponse>
-                    ) {}
+                    ) {
+                    }
                 })
         }
     }
 
-    fun likeStatusSaver(movie:Movie){
+    fun likeStatusSaver(movie: Movie) {
 
-        RetrofitService.getPostApi().getMovieStates(movie.id,ApiKey,sessionId).enqueue(object: Callback<MovieStatus>{
-            override fun onFailure(call: Call<MovieStatus>, t: Throwable) {}
-            override fun onResponse(call: Call<MovieStatus>, response: Response<MovieStatus>) {
-                if(response.isSuccessful){
-                    val movieStatus=response.body()
-                    movie.isClicked = movieStatus!!.selectedStatus
-                    recyclerViewAdapter?.notifyDataSetChanged()
+        RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
+            .enqueue(object : Callback<MovieStatus> {
+                override fun onFailure(call: Call<MovieStatus>, t: Throwable) {}
+                override fun onResponse(call: Call<MovieStatus>, response: Response<MovieStatus>) {
+                    if (response.isSuccessful) {
+                        val movieStatus = response.body()
+                        if (movieStatus != null) {
+                            movie.isClicked = movieStatus.selectedStatus
+                            recyclerViewAdapter?.notifyDataSetChanged()
+                        }
+                    }
                 }
-            }
-        })
+            })
     }
 
 

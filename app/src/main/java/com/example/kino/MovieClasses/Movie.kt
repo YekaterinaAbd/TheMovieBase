@@ -1,4 +1,5 @@
 package com.example.kino.MovieClasses
+
 import com.google.gson.annotations.SerializedName
 
 data class Movie(
@@ -12,5 +13,5 @@ data class Movie(
     @SerializedName("popularity") val popularity: String,
     var genreNames: MutableList<String>,
     var position: Int = 0,
-    var isClicked:Boolean=false
+    var isClicked: Boolean = false
 )

@@ -20,26 +20,27 @@ import retrofit2.Response
 
 class SignInActivity : AppCompatActivity() {
 
-    lateinit var receivedToken: String
-    lateinit var loginValidationData: LoginValidationData
-    lateinit var token: Token
-    private lateinit var sharedPreferences:SharedPreferences
-    lateinit var wrongDataText: TextView
+    private lateinit var receivedToken: String
+    private lateinit var loginValidationData: LoginValidationData
+    private lateinit var token: Token
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var wrongDataText: TextView
     private lateinit var signInButton: Button
     private lateinit var username: EditText
     private lateinit var password: EditText
     private lateinit var registrationLink: TextView
     private lateinit var progressBar: ProgressBar
 
-    var sessionId: String = ""
+    private var sessionId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
-        sharedPreferences = getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
+        sharedPreferences =
+            getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
 
-        if(sharedPreferences.contains(getString(R.string.session_id))){
+        if (sharedPreferences.contains(getString(R.string.session_id))) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
@@ -47,7 +48,7 @@ class SignInActivity : AppCompatActivity() {
         bindViews()
     }
 
-    private fun bindViews(){
+    private fun bindViews() {
         username = findViewById(R.id.evUsername)
         password = findViewById(R.id.evPassword)
         signInButton = findViewById(R.id.btnSignIn)
@@ -58,7 +59,8 @@ class SignInActivity : AppCompatActivity() {
         progressBar.visibility = View.GONE
 
         registrationLink.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.themoviedb.org/account/signup"))
+            val browserIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://www.themoviedb.org/account/signup"))
             startActivity(browserIntent)
         }
 
@@ -80,23 +82,24 @@ class SignInActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<Token>, response: Response<Token>) {
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     val requestedToken = response.body()
                     if (requestedToken != null) {
                         receivedToken = requestedToken.token
-                        loginValidationData = LoginValidationData(username.text.toString(),
-                            password.text.toString(), receivedToken)
+                        loginValidationData = LoginValidationData(
+                            username.text.toString(),
+                            password.text.toString(), receivedToken
+                        )
                         validateWithLogin()
                     }
-                }
-                else{
+                } else {
                     progressBar.visibility = View.GONE
                 }
             }
         })
     }
 
-    private fun validateWithLogin(){
+    private fun validateWithLogin() {
         RetrofitService.getPostApi().validateWithLogin(ApiKey, loginValidationData).enqueue(object :
             Callback<Token> {
             override fun onFailure(call: Call<Token>, t: Throwable) {
@@ -105,11 +108,10 @@ class SignInActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<Token>, response: Response<Token>) {
-                if(response.isSuccessful) {
+                if (response.isSuccessful) {
                     token = Token(receivedToken)
                     createSession()
-                }
-               else{
+                } else {
                     wrongDataText.text = "Wrong data"
                     progressBar.visibility = View.GONE
                 }
@@ -117,7 +119,7 @@ class SignInActivity : AppCompatActivity() {
         })
     }
 
-    private fun createSession(){
+    private fun createSession() {
         RetrofitService.getPostApi().createSession(ApiKey, token).enqueue(object :
             Callback<Session> {
             override fun onFailure(call: Call<Session>, t: Throwable) {
@@ -126,7 +128,7 @@ class SignInActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<Session>, response: Response<Session>) {
-                if(response.isSuccessful) {
+                if (response.isSuccessful) {
                     sessionId = response.body()?.sessionId.toString()
 
                     saveToSharedPreferences()
