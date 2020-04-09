@@ -19,16 +19,21 @@ object GenresList : CoroutineScope {
 
     fun getGenres() {
         launch {
-            val response = RetrofitService.getPostApi().getGenres(ApiKey)
-            if (response.isSuccessful) {
-                val receivedGenres = response.body()
-                if (receivedGenres != null) {
-                    val genresBunch = receivedGenres.genres
-                    for (genre in genresBunch) {
-                        genres?.set(genre.genreId, genre.genre)
+            try {
+                val response = RetrofitService.getPostApi().getGenres(ApiKey)
+                if (response.isSuccessful) {
+                    val receivedGenres = response.body()
+                    if (receivedGenres != null) {
+                        val genresBunch = receivedGenres.genres
+                        for (genre in genresBunch) {
+                            genres?.set(genre.genreId, genre.genre)
+                        }
                     }
                 }
+            } catch (e: Exception) {
+
             }
+
         }
     }
 }

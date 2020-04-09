@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -87,25 +86,29 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
     private fun getMovies() {
         launch {
-            val response = RetrofitService.getPostApi().getFavouriteMovies(ApiKey, sessionId)
-            if (response.isSuccessful) {
-                val movies: Movies? = response.body()
-                if (movies?.movieList?.size == 0) {
-                    swipeRefreshLayout.isRefreshing = false
-                } else {
-                    recyclerViewAdapter?.movies = movies?.movieList
-                    if (recyclerViewAdapter?.movies != null) {
-                        for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
-                            movie.genreNames = mutableListOf()
-                            for (genreId in movie.genres) {
-                                GenresList.genres?.get(genreId)
-                                    ?.let { movie.genreNames.add(it) }
+            try {
+                val response = RetrofitService.getPostApi().getFavouriteMovies(ApiKey, sessionId)
+                if (response.isSuccessful) {
+                    val movies: Movies? = response.body()
+                    if (movies?.movieList?.size == 0) {
+                        swipeRefreshLayout.isRefreshing = false
+                    } else {
+                        recyclerViewAdapter?.movies = movies?.movieList
+                        if (recyclerViewAdapter?.movies != null) {
+                            for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
+                                movie.genreNames = mutableListOf()
+                                for (genreId in movie.genres) {
+                                    GenresList.genres?.get(genreId)
+                                        ?.let { movie.genreNames.add(it) }
+                                }
+                                movie.isClicked = true
                             }
-                            movie.isClicked = true
                         }
+                        recyclerViewAdapter?.notifyDataSetChanged()
                     }
-                    recyclerViewAdapter?.notifyDataSetChanged()
                 }
+                swipeRefreshLayout.isRefreshing = false
+            } catch (e: Exception) {
                 swipeRefreshLayout.isRefreshing = false
             }
         }
@@ -117,27 +120,24 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         if (!item.isClicked) {
             item.isClicked = true
             selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
-            launch {
-                val response =
-                    RetrofitService.getPostApi()
-                        .addRemoveFavourites(ApiKey, sessionId, selectedMovie)
-                if (response.isSuccessful) {
-                    Toast.makeText(context, "Added to favourites", Toast.LENGTH_SHORT).show()
-                }
-            }
 
         } else {
             item.isClicked = false
             selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
             selectedMovie.selectedStatus = item.isClicked
-            launch {
+        }
+        launch {
+            try {
                 val response =
                     RetrofitService.getPostApi()
                         .addRemoveFavourites(ApiKey, sessionId, selectedMovie)
                 if (response.isSuccessful) {
-                    Toast.makeText(context, "Removed from favourites", Toast.LENGTH_SHORT).show()
+
                 }
+            } catch (e: Exception) {
+
             }
+
         }
     }
 }

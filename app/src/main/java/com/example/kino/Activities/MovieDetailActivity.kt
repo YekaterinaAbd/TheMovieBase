@@ -63,44 +63,48 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
     private fun getMovie(id: Int) {
 
         launch {
-            val response = RetrofitService.getPostApi().getMovieById(id, ApiKey)
-            if (response.isSuccessful) {
-                val movieDetails = response.body()
-                if (movieDetails != null) {
-                    title.text = movieDetails.title
-                    year.text = movieDetails.releaseDate
+            try {
+                val response = RetrofitService.getPostApi().getMovieById(id, ApiKey)
+                if (response.isSuccessful) {
+                    val movieDetails = response.body()
+                    if (movieDetails != null) {
+                        title.text = movieDetails.title
+                        year.text = movieDetails.releaseDate
 
-                    genres.text = ""
+                        genres.text = ""
 
-                    for (i in movieDetails.genres.indices) {
-                        if (i == 0) genres.text =
-                            movieDetails.genres[i].genre.toLowerCase(Locale.ROOT)
-                        else genres.append(
-                            ", " + movieDetails.genres[i].genre.toLowerCase(
-                                Locale.ROOT
+                        for (i in movieDetails.genres.indices) {
+                            if (i == 0) genres.text =
+                                movieDetails.genres[i].genre.toLowerCase(Locale.ROOT)
+                            else genres.append(
+                                ", " + movieDetails.genres[i].genre.toLowerCase(
+                                    Locale.ROOT
+                                )
                             )
-                        )
+                        }
+
+                        durationTime.text = movieDetails.runtime.toString() + " min"
+                        tagline.text = "«" + movieDetails.tagline + "»"
+                        description.text = movieDetails.overview
+                        rating.text = movieDetails.voteAverage.toString()
+                        votesCount.text = movieDetails.voteCount.toString()
+
+                        var companiesString = ""
+
+                        for (company in movieDetails.productionCompanies) {
+                            companiesString += (company.name + ", ")
+                        }
+                        companies.text = companiesString.substring(0, companiesString.length - 2)
+
+                        Picasso.get()
+                            .load("https://image.tmdb.org/t/p/w500" + movieDetails.posterPath)
+                            .into(poster)
                     }
-
-                    durationTime.text = movieDetails.runtime.toString() + " min"
-                    tagline.text = "«" + movieDetails.tagline + "»"
-                    description.text = movieDetails.overview
-                    rating.text = movieDetails.voteAverage.toString()
-                    votesCount.text = movieDetails.voteCount.toString()
-
-                    var companiesString = ""
-
-                    for (company in movieDetails.productionCompanies) {
-                        companiesString += (company.name + ", ")
-                    }
-                    companies.text = companiesString.substring(0, companiesString.length - 2)
-
-                    Picasso.get()
-                        .load("https://image.tmdb.org/t/p/w500" + movieDetails.posterPath)
-                        .into(poster)
                 }
+                progressBar.visibility = View.GONE
+            } catch (e: Exception) {
+                progressBar.visibility = View.GONE
             }
-            progressBar.visibility = View.GONE
         }
     }
 

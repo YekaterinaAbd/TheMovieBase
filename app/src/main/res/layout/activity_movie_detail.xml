@@ -195,7 +195,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="44dp"
                     android:layout_marginTop="18dp"
-                    android:text="9.2"
+                    android:text="rating"
                     android:textColor="#2F7C52"
                     android:textSize="18sp"
                     app:layout_constraintStart_toEndOf="@+id/textView2"

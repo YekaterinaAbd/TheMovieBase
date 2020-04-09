@@ -89,32 +89,37 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
     private fun getMovies() {
         launch {
             swipeRefreshLayout.isRefreshing = true
-            val response = RetrofitService.getPostApi().getMovieList(ApiKey)
-            processedMovies = mutableListOf()
-            if (response.isSuccessful) {
+            try {
+                val response = RetrofitService.getPostApi().getMovieList(ApiKey)
+                processedMovies = mutableListOf()
+                if (response.isSuccessful) {
 
-                val movies = response.body()
-                if (movies != null) {
-                    for (movie: Movie in movies.movieList) {
-                        likeStatusSaver(movie)
-                        processedMovies.add(movie)
+                    val movies = response.body()
+                    if (movies != null) {
+                        for (movie: Movie in movies.movieList) {
+                            likeStatusSaver(movie)
+                            processedMovies.add(movie)
+                        }
                     }
-                }
-                recyclerViewAdapter?.movies = processedMovies
-                if (recyclerViewAdapter?.movies != null) {
-                    for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
-                        movie.genreNames = mutableListOf()
-                        for (genreId in movie.genres) {
-                            GenresList.genres?.get(genreId)?.let {
-                                movie.genreNames.add(it)
+                    recyclerViewAdapter?.movies = processedMovies
+
+                    if (recyclerViewAdapter?.movies != null) {
+                        for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
+                            movie.genreNames = mutableListOf()
+                            for (genreId in movie.genres) {
+                                GenresList.genres?.get(genreId)?.let {
+                                    movie.genreNames.add(it)
+                                }
                             }
                         }
                     }
+                    recyclerViewAdapter?.notifyDataSetChanged()
                 }
-                recyclerViewAdapter?.notifyDataSetChanged()
-            }
-            swipeRefreshLayout.isRefreshing = false
+                swipeRefreshLayout.isRefreshing = false
 
+            } catch (e: Exception) {
+                swipeRefreshLayout.isRefreshing = false
+            }
         }
     }
 
@@ -125,43 +130,37 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
             item.isClicked = true
             selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
 
-            launch {
-                val response = RetrofitService.getPostApi()
-                    .addRemoveFavourites(ApiKey, sessionId, selectedMovie)
-                if (response.isSuccessful) {
-                    // if I do not write this "if", method does not work
-                    //add smth to do if response if successful?
-                    //if I add Toast below, it works too long
-                    //just make it empty?
-                    //Toast.makeText(context, "Added to favourites", Toast.LENGTH_SHORT).show()
-                }
-            }
-
         } else {
             item.isClicked = false
             selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
 
-            launch {
+        }
+        launch {
+            try {
                 val response = RetrofitService.getPostApi()
                     .addRemoveFavourites(ApiKey, sessionId, selectedMovie)
                 if (response.isSuccessful) {
-                    //Toast.makeText(context, "Removed from favourites", Toast.LENGTH_SHORT).show()
                 }
-            }
+            } catch (e: Exception) {
 
+            }
         }
     }
 
 
     private fun likeStatusSaver(movie: Movie) {
         launch {
-            val response = RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
-            if (response.isSuccessful) {
-                val movieStatus = response.body()
-                if (movieStatus != null) {
-                    movie.isClicked = movieStatus.selectedStatus
-                    recyclerViewAdapter?.notifyDataSetChanged()
+            try {
+                val response =
+                    RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
+                if (response.isSuccessful) {
+                    val movieStatus = response.body()
+                    if (movieStatus != null) {
+                        movie.isClicked = movieStatus.selectedStatus
+                        recyclerViewAdapter?.notifyDataSetChanged()
+                    }
                 }
+            } catch (e: Exception) {
             }
         }
 

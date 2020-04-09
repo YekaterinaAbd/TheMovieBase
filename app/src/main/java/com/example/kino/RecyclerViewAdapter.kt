@@ -16,7 +16,7 @@ class RecyclerViewAdapter(
 
 ) : RecyclerView.Adapter<RecyclerViewAdapter.MovieViewHolder>() {
 
-    var num = 1
+    var moviePosition = 1
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.film_object, p0, false)
@@ -34,7 +34,7 @@ class RecyclerViewAdapter(
     }
 
     fun clearAll() {
-        num = 1
+        moviePosition = 1
         (movies as? ArrayList<Movie>)?.clear()
         notifyDataSetChanged()
     }
@@ -59,8 +59,8 @@ class RecyclerViewAdapter(
             }
 
             if (movie.position == 0) {
-                movie.position = num
-                num++
+                movie.position = moviePosition
+                moviePosition++
             }
 
             tvTitle.text = movie.title
@@ -70,12 +70,15 @@ class RecyclerViewAdapter(
             number.text = movie.position.toString()
             tvGenres.text = ""
 
-            for (i in 0 until movie.genreNames.size) {
-                if (i <= 3) {
-                    if (i == 0) tvGenres.text = movie.genreNames[i].toLowerCase(Locale.ROOT)
-                    else tvGenres.append(", ${movie.genreNames[i].toLowerCase(Locale.ROOT)}")
+            if (movie.genreNames.isNotEmpty()) {
+                for (i in 0 until movie.genreNames.size) {
+                    if (i <= 3) {
+                        if (i == 0) tvGenres.text = movie.genreNames[i].toLowerCase(Locale.ROOT)
+                        else tvGenres.append(", ${movie.genreNames[i].toLowerCase(Locale.ROOT)}")
+                    }
                 }
             }
+
             Picasso.get()
                 .load("https://image.tmdb.org/t/p/w500" + movie.posterPath)
                 .into(poster)

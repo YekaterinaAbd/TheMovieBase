@@ -79,20 +79,26 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
 
     private fun createTokenRequest() {
         launch {
-            val response = RetrofitService.getPostApi().createRequestToken(ApiKey)
-            if (response.isSuccessful) {
-                val requestedToken = response.body()
-                if (requestedToken != null) {
-                    receivedToken = requestedToken.token
-                    loginValidationData = LoginValidationData(
-                        username.text.toString(),
-                        password.text.toString(), receivedToken
-                    )
-                    validateWithLogin()
-                }
+            try {
+                val response = RetrofitService.getPostApi().createRequestToken(ApiKey)
+                if (response.isSuccessful) {
+                    val requestedToken = response.body()
+                    if (requestedToken != null) {
+                        receivedToken = requestedToken.token
+                        loginValidationData = LoginValidationData(
+                            username.text.toString(),
+                            password.text.toString(), receivedToken
+                        )
+                        validateWithLogin()
+                    }
 
-            } else {
-                Toast.makeText(this@SignInActivity, "Error occured", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@SignInActivity, "Error occured", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                    receivedToken = ""
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@SignInActivity, "Internet error", Toast.LENGTH_SHORT).show()
                 progressBar.visibility = View.GONE
                 receivedToken = ""
             }
@@ -101,35 +107,43 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
 
     private fun validateWithLogin() {
         launch {
-            val response =
-                RetrofitService.getPostApi().validateWithLogin(ApiKey, loginValidationData)
-            if (response.isSuccessful) {
-
+            try {
+                val response =
+                    RetrofitService.getPostApi().validateWithLogin(ApiKey, loginValidationData)
                 if (response.isSuccessful) {
-                    token = Token(receivedToken)
-                    createSession()
-                } else {
-                    wrongDataText.text = "Wrong data"
-                    progressBar.visibility = View.GONE
+
+                    if (response.isSuccessful) {
+                        token = Token(receivedToken)
+                        createSession()
+                    } else {
+                        wrongDataText.text = "Wrong data"
+                        progressBar.visibility = View.GONE
+                    }
                 }
+            } catch (e: Exception) {
+
             }
         }
     }
 
     private fun createSession() {
         launch {
-            val response = RetrofitService.getPostApi().createSession(ApiKey, token)
-            if (response.isSuccessful) {
-                sessionId = response.body()?.sessionId.toString()
+            try {
+                val response = RetrofitService.getPostApi().createSession(ApiKey, token)
+                if (response.isSuccessful) {
+                    sessionId = response.body()?.sessionId.toString()
 
-                saveToSharedPreferences()
+                    saveToSharedPreferences()
 
-                val intent = Intent(this@SignInActivity, MainActivity::class.java)
-                startActivity(intent)
+                    val intent = Intent(this@SignInActivity, MainActivity::class.java)
+                    startActivity(intent)
 
-            } else {
-                progressBar.visibility = View.GONE
-                Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
+                } else {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+
             }
         }
     }
