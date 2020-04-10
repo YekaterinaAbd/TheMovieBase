@@ -7,16 +7,19 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kino.ApiKey
-import com.example.kino.MovieClasses.MovieDetails
 import com.example.kino.R
 import com.example.kino.RetrofitService
 import com.squareup.picasso.Picasso
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
-class MovieDetailActivity : AppCompatActivity() {
+class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
+
+    private val job = Job()
 
     private lateinit var progressBar: ProgressBar
     private lateinit var poster: ImageView
@@ -30,6 +33,8 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var votesCount: TextView
     private lateinit var companies: TextView
 
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,17 +61,11 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun getMovie(id: Int) {
-        RetrofitService.getPostApi().getMovieById(id, ApiKey)
-            .enqueue(object : Callback<MovieDetails> {
-                override fun onFailure(call: Call<MovieDetails>, t: Throwable) {
-                    progressBar.visibility = View.GONE
-                }
 
-                override fun onResponse(
-                    call: Call<MovieDetails>,
-                    response: Response<MovieDetails>
-                ) {
-                    progressBar.visibility = View.GONE
+        launch {
+            try {
+                val response = RetrofitService.getPostApi().getMovieById(id, ApiKey)
+                if (response.isSuccessful) {
                     val movieDetails = response.body()
                     if (movieDetails != null) {
                         title.text = movieDetails.title
@@ -102,6 +101,18 @@ class MovieDetailActivity : AppCompatActivity() {
                             .into(poster)
                     }
                 }
-            })
+                progressBar.visibility = View.GONE
+            } catch (e: Exception) {
+                progressBar.visibility = View.GONE
+
+                // get data from database
+            }
+        }
     }
+
 }
+
+
+
+
+

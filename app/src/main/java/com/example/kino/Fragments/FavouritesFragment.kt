@@ -7,28 +7,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.Activities.MovieDetailActivity
 import com.example.kino.ApiKey
-import com.example.kino.MovieClasses.*
+import com.example.kino.MovieClasses.GenresList
+import com.example.kino.MovieClasses.Movie
+import com.example.kino.MovieClasses.Movies
+import com.example.kino.MovieClasses.SelectedMovie
 import com.example.kino.R
 import com.example.kino.RecyclerViewAdapter
 import com.example.kino.RetrofitService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
+class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, CoroutineScope {
 
+    private val job = Job()
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
     private var sessionId: String = ""
     private lateinit var sharedPreferences: SharedPreferences
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -76,37 +86,35 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
     }
 
     private fun getMovies() {
-
-        RetrofitService.getPostApi().getFavouriteMovies(ApiKey, sessionId)
-            .enqueue(object : Callback<Movies> {
-                override fun onFailure(call: Call<Movies>, t: Throwable) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-
-                override fun onResponse(call: Call<Movies>, response: Response<Movies>) {
-                    if (response.isSuccessful) {
-                        val movies: Movies? = response.body()
-                        if (movies?.movieList?.size == 0) {
-                            swipeRefreshLayout.isRefreshing = false
-                        } else {
-                            recyclerViewAdapter?.movies = movies?.movieList
-                            if (recyclerViewAdapter?.movies != null) {
-                                for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
-                                    movie.genreNames = mutableListOf()
-                                    for (genreId in movie.genres) {
-                                        GenresList.genres?.get(genreId)
-                                            ?.let { movie.genreNames.add(it) }
-                                    }
-                                    movie.isClicked = true
+        launch {
+            try {
+                val response = RetrofitService.getPostApi().getFavouriteMovies(ApiKey, sessionId)
+                if (response.isSuccessful) {
+                    val movies: Movies? = response.body()
+                    if (movies?.movieList?.size == 0) {
+                        swipeRefreshLayout.isRefreshing = false
+                    } else {
+                        recyclerViewAdapter?.movies = movies?.movieList
+                        if (recyclerViewAdapter?.movies != null) {
+                            for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
+                                movie.genreNames = mutableListOf()
+                                for (genreId in movie.genres) {
+                                    GenresList.genres?.get(genreId)
+                                        ?.let { movie.genreNames.add(it) }
                                 }
+                                movie.isClicked = true
                             }
-                            recyclerViewAdapter?.notifyDataSetChanged()
-                            swipeRefreshLayout.isRefreshing = false
-
                         }
+                        recyclerViewAdapter?.notifyDataSetChanged()
                     }
                 }
-            })
+                swipeRefreshLayout.isRefreshing = false
+            } catch (e: Exception) {
+                swipeRefreshLayout.isRefreshing = false
+
+                // get data from database
+            }
+        }
     }
 
     override fun addToFavourites(position: Int, item: Movie) {
@@ -115,30 +123,24 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         if (!item.isClicked) {
             item.isClicked = true
             selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
-            RetrofitService.getPostApi().addRemoveFavourites(ApiKey, sessionId, selectedMovie)
-                .enqueue(object : Callback<StatusResponse> {
-                    override fun onFailure(call: Call<StatusResponse>, t: Throwable) {}
 
-                    override fun onResponse(
-                        call: Call<StatusResponse>,
-                        response: Response<StatusResponse>
-                    ) {
-                    }
-                })
         } else {
             item.isClicked = false
             selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
             selectedMovie.selectedStatus = item.isClicked
-            RetrofitService.getPostApi().addRemoveFavourites(ApiKey, sessionId, selectedMovie)
-                .enqueue(object : Callback<StatusResponse> {
-                    override fun onFailure(call: Call<StatusResponse>, t: Throwable) {}
+        }
+        launch {
+            try {
+                val response =
+                    RetrofitService.getPostApi()
+                        .addRemoveFavourites(ApiKey, sessionId, selectedMovie)
+                if (response.isSuccessful) {
 
-                    override fun onResponse(
-                        call: Call<StatusResponse>,
-                        response: Response<StatusResponse>
-                    ) {
-                    }
-                })
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "No Internet connection", Toast.LENGTH_SHORT).show()
+            }
+
         }
     }
 }
