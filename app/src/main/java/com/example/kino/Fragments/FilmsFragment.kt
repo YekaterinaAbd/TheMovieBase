@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -119,6 +120,8 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
 
             } catch (e: Exception) {
                 swipeRefreshLayout.isRefreshing = false
+
+                //get data from database
             }
         }
     }
@@ -142,7 +145,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                 if (response.isSuccessful) {
                 }
             } catch (e: Exception) {
-
+                Toast.makeText(context, "No Internet connection", Toast.LENGTH_SHORT).show()
             }
         }
     }

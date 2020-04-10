@@ -46,6 +46,8 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
         sharedPreferences =
             getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
 
+        sharedPreferences.edit().clear().apply()
+
         if (sharedPreferences.contains(getString(R.string.session_id))) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

@@ -104,6 +104,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                 progressBar.visibility = View.GONE
             } catch (e: Exception) {
                 progressBar.visibility = View.GONE
+
+                // get data from database
             }
         }
     }
