@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,23 +13,18 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.kino.*
 import com.example.kino.Activities.MovieDetailActivity
-import com.example.kino.ApiKey
 import com.example.kino.MovieClasses.GenresList
 import com.example.kino.MovieClasses.Movie
 import com.example.kino.MovieClasses.SelectedMovie
-import com.example.kino.R
-import com.example.kino.RecyclerViewAdapter
-import com.example.kino.RetrofitService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, CoroutineScope {
 
     private val job = Job()
+    private var movieDao: MovieDao? = null
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -48,6 +44,8 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        movieDao = MovieDatabase.getDatabase(context = requireActivity()).movieDao()
 
         sharedPref = requireActivity().getSharedPreferences(
             getString(R.string.preference_file), Context.MODE_PRIVATE
@@ -90,39 +88,49 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
     private fun getMovies() {
         launch {
             swipeRefreshLayout.isRefreshing = true
-            try {
-                val response = RetrofitService.getPostApi().getMovieList(ApiKey)
-                processedMovies = mutableListOf()
-                if (response.isSuccessful) {
+            val moviesList = withContext(Dispatchers.IO) {
+                try {
+                    val response = RetrofitService.getPostApi().getMovieList(ApiKey)
+                    Log.d("whereLiked", "response movieList got")
+                    processedMovies = mutableListOf()
+                    if (response.isSuccessful) {
 
-                    val movies = response.body()
-                    if (movies != null) {
-                        for (movie: Movie in movies.movieList) {
-                            likeStatusSaver(movie)
-                            processedMovies.add(movie)
-                        }
-                    }
-                    recyclerViewAdapter?.movies = processedMovies
-
-                    if (recyclerViewAdapter?.movies != null) {
-                        for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
-                            movie.genreNames = mutableListOf()
-                            for (genreId in movie.genres) {
-                                GenresList.genres?.get(genreId)?.let {
-                                    movie.genreNames.add(it)
-                                }
+                        val movies = response.body()
+                        if (movies != null) {
+                            for (movie: Movie in movies.movieList) {
+                                Log.d("whereLiked", "start frunction statusServer")
+                                likeStatusSaver(movie)
+                                Log.d("whereLiked", "processedMovies.add")
+                                processedMovies.add(movie)
                             }
                         }
+                        if (!processedMovies.isNullOrEmpty()) {
+                            //   for(movie in processedMovies){
+                            /*    movie.genreNames = mutableListOf()
+                                for(genreId in movie.genres){
+                                    GenresList.genres?.get(genreId)?.let{
+                                        movie.genreNames.add(it)
+                                    }
+                                }*/
+                            // }
+                            //  Log.d("moviesList", processedMovies.toString())
+                            movieDao?.deleteAll()
+                            Log.d("whereLiked", "db insert all")
+                            movieDao?.insertAll(processedMovies)
+                        }
+                        return@withContext processedMovies
+                    } else {
+                        return@withContext movieDao?.getMovies() ?: emptyList()
                     }
-                    recyclerViewAdapter?.notifyDataSetChanged()
+
+                } catch (e: Exception) {
+                    return@withContext movieDao?.getMovies() ?: emptyList()
                 }
-                swipeRefreshLayout.isRefreshing = false
-
-            } catch (e: Exception) {
-                swipeRefreshLayout.isRefreshing = false
-
-                //get data from database
             }
+            swipeRefreshLayout.isRefreshing = false
+            recyclerViewAdapter?.movies = moviesList
+            recyclerViewAdapter?.notifyDataSetChanged()
+            Log.d("listMovie", moviesList.toString())
         }
     }
 
@@ -150,13 +158,14 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
         }
     }
 
-
     private fun likeStatusSaver(movie: Movie) {
         launch {
+            Log.d("whereLiked", "function statusServer starts")
             try {
                 val response =
                     RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
                 if (response.isSuccessful) {
+                    Log.d("whereLiked", "response got")
                     val movieStatus = response.body()
                     if (movieStatus != null) {
                         movie.isClicked = movieStatus.selectedStatus
@@ -166,7 +175,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
             } catch (e: Exception) {
             }
         }
-
     }
-
 }
+
