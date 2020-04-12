@@ -19,6 +19,7 @@ import com.example.kino.MovieClasses.GenresList
 import com.example.kino.MovieClasses.Movie
 import com.example.kino.MovieClasses.SelectedMovie
 import kotlinx.coroutines.*
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, CoroutineScope {
@@ -105,19 +106,23 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                             }
                         }
                         if (!processedMovies.isNullOrEmpty()) {
-                            //   for(movie in processedMovies){
-                            /*    movie.genreNames = mutableListOf()
-                                for(genreId in movie.genres){
-                                    GenresList.genres?.get(genreId)?.let{
-                                        movie.genreNames.add(it)
+                            for (movie in processedMovies) {
+                                movie.genreNames = ""
+                                if (movie.genres != null) {
+                                    for (genreId in movie.genres!!) {
+                                        movie.genreNames += GenresList.genres?.get(genreId)
+                                            .toString().toLowerCase(Locale.ROOT) + ", "
+
                                     }
-                                }*/
-                            // }
+                                }
+                            }
+
                             //  Log.d("moviesList", processedMovies.toString())
                             movieDao?.deleteAll()
                             Log.d("whereLiked", "db insert all")
                             movieDao?.insertAll(processedMovies)
                         }
+
                         return@withContext processedMovies
                     } else {
                         return@withContext movieDao?.getMovies() ?: emptyList()
