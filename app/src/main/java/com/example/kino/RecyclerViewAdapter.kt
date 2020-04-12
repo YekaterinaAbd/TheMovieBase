@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso
 import java.util.*
 
 class RecyclerViewAdapter(
-    //TESTING3
+    //TESTING6
     var movies: List<Movie>? = null,
     val itemClickListener: RecyclerViewItemClick? = null
 
