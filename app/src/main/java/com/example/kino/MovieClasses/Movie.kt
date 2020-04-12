@@ -1,17 +1,30 @@
 package com.example.kino.MovieClasses
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "movies")
 data class Movie(
-    @SerializedName("id") val id: Int,
-    @SerializedName("vote_count") val voteCount: Int,
-    @SerializedName("title") val title: String,
-    @SerializedName("vote_average") val voteAverage: Float,
-    @SerializedName("poster_path") val posterPath: String,
-    @SerializedName("genre_ids") val genres: List<Int>,
-    @SerializedName("release_date") val releaseDate: String,
-    @SerializedName("popularity") val popularity: String,
-    var genreNames: MutableList<String>,
+    @PrimaryKey(autoGenerate = true)
+    var primaryKey: Int = 0,
+    @SerializedName("id") var id: Int,
+    @SerializedName("vote_count") var voteCount: Int,
+    @SerializedName("title") var title: String,
+    @SerializedName("vote_average") var voteAverage: Float,
+    @SerializedName("poster_path") var posterPath: String,
+    @SerializedName("release_date") var releaseDate: String,
+    @SerializedName("popularity") var popularity: String,
+    // var genreNames: MutableList<String>?,
     var position: Int = 0,
-    var isClicked: Boolean = false
+    var isClicked: Boolean
+
+
+    //@SerializedName("genre_ids")
+    //@TypeConverters(DataTypeConverter::class)
+    //var genres: List<Int>
 )
+
+
+
+

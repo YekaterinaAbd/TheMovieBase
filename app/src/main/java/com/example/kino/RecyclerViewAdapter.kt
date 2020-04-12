@@ -70,14 +70,14 @@ class RecyclerViewAdapter(
             number.text = movie.position.toString()
             tvGenres.text = ""
 
-            if (movie.genreNames.isNotEmpty()) {
-                for (i in 0 until movie.genreNames.size) {
-                    if (i <= 3) {
-                        if (i == 0) tvGenres.text = movie.genreNames[i].toLowerCase(Locale.ROOT)
-                        else tvGenres.append(", ${movie.genreNames[i].toLowerCase(Locale.ROOT)}")
-                    }
-                }
-            }
+            /*  if (movie.genreNames.isNotEmpty()) {
+                  for (i in 0 until movie.genreNames.size) {
+                      if (i <= 3) {
+                          if (i == 0) tvGenres.text = movie.genreNames[i].toLowerCase(Locale.ROOT)
+                          else tvGenres.append(", ${movie.genreNames[i].toLowerCase(Locale.ROOT)}")
+                      }
+                  }
+              }*/
 
             Picasso.get()
                 .load("https://image.tmdb.org/t/p/w500" + movie.posterPath)
