@@ -46,8 +46,6 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
         sharedPreferences =
             getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
 
-        sharedPreferences.edit().clear().apply()
-
         if (sharedPreferences.contains(getString(R.string.session_id))) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -112,7 +110,6 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
             try {
                 val response =
                     RetrofitService.getPostApi().validateWithLogin(ApiKey, loginValidationData)
-                if (response.isSuccessful) {
 
                     if (response.isSuccessful) {
                         token = Token(receivedToken)
@@ -121,9 +118,9 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
                         wrongDataText.text = "Wrong data"
                         progressBar.visibility = View.GONE
                     }
-                }
             } catch (e: Exception) {
-
+                wrongDataText.text = "Wrong data"
+                progressBar.visibility = View.GONE
             }
         }
     }
@@ -145,7 +142,8 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
                     Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-
+                progressBar.visibility = View.GONE
+                Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
             }
         }
     }
