@@ -99,8 +99,8 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                         if (recyclerViewAdapter?.movies != null) {
                             for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
                                 movie.genreNames = ""
-                                if (movie.genres != null) {
-                                    for (genreId in movie.genres!!) {
+                                if (movie.genreIds != null) {
+                                    for (genreId in movie.genreIds!!) {
                                         movie.genreNames += GenresList.genres?.get(genreId)
                                             .toString().toLowerCase(Locale.ROOT) + ", "
                                     }

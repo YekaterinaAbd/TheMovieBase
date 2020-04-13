@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -85,41 +84,34 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
         startActivity(intent)
     }
 
-
     private fun getMovies() {
         launch {
             swipeRefreshLayout.isRefreshing = true
             val moviesList = withContext(Dispatchers.IO) {
                 try {
                     val response = RetrofitService.getPostApi().getMovieList(ApiKey)
-                    Log.d("whereLiked", "response movieList got")
                     processedMovies = mutableListOf()
                     if (response.isSuccessful) {
 
                         val movies = response.body()
                         if (movies != null) {
                             for (movie: Movie in movies.movieList) {
-                                Log.d("whereLiked", "start frunction statusServer")
                                 likeStatusSaver(movie)
-                                Log.d("whereLiked", "processedMovies.add")
                                 processedMovies.add(movie)
                             }
                         }
                         if (!processedMovies.isNullOrEmpty()) {
                             for (movie in processedMovies) {
                                 movie.genreNames = ""
-                                if (movie.genres != null) {
-                                    for (genreId in movie.genres!!) {
+                                if (movie.genreIds != null) {
+                                    for (genreId in movie.genreIds!!) {
                                         movie.genreNames += GenresList.genres?.get(genreId)
                                             .toString().toLowerCase(Locale.ROOT) + ", "
 
                                     }
                                 }
                             }
-
-                            //  Log.d("moviesList", processedMovies.toString())
                             movieDao?.deleteAll()
-                            Log.d("whereLiked", "db insert all")
                             movieDao?.insertAll(processedMovies)
                         }
 
@@ -135,7 +127,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
             swipeRefreshLayout.isRefreshing = false
             recyclerViewAdapter?.movies = moviesList
             recyclerViewAdapter?.notifyDataSetChanged()
-            Log.d("listMovie", moviesList.toString())
         }
     }
 
@@ -165,12 +156,10 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
 
     private fun likeStatusSaver(movie: Movie) {
         launch {
-            Log.d("whereLiked", "function statusServer starts")
             try {
                 val response =
                     RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
                 if (response.isSuccessful) {
-                    Log.d("whereLiked", "response got")
                     val movieStatus = response.body()
                     if (movieStatus != null) {
                         movie.isClicked = movieStatus.selectedStatus

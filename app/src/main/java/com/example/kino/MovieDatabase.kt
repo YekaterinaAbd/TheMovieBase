@@ -19,9 +19,8 @@ abstract class MovieDatabase : RoomDatabase() {
                 database = Room.databaseBuilder(
                     context.applicationContext,
                     MovieDatabase::class.java,
-                    "movie_database7.db"
+                    "movie_database2.db"
                 ).build()
-
             }
             return database!!
         }
