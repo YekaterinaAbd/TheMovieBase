@@ -69,7 +69,8 @@ class RecyclerViewAdapter(
             tvVotesCount.text = movie.voteCount.toString()
             tvRating.text = movie.voteAverage.toString()
             number.text = movie.position.toString()
-            tvGenres.text = ""
+            tvGenres.text = movie.genreNames.substring(0, movie.genreNames.length - 2)
+
 
             /*  if (movie.genreNames.isNotEmpty()) {
                   for (i in 0 until movie.genreNames.size) {

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.Activities.MovieDetailActivity
 import com.example.kino.ApiKey
+import com.example.kino.MovieClasses.GenresList
 import com.example.kino.MovieClasses.Movie
 import com.example.kino.MovieClasses.Movies
 import com.example.kino.MovieClasses.SelectedMovie
@@ -24,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, CoroutineScope {
@@ -96,11 +98,13 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                         recyclerViewAdapter?.movies = movies?.movieList
                         if (recyclerViewAdapter?.movies != null) {
                             for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
-                                // movie.genreNames = mutableListOf()
-                                /* for (genreId in movie.genres) {
-                                     GenresList.genres?.get(genreId)
-                                         ?.let { movie.genreNames.add(it) }
-                                 }*/
+                                movie.genreNames = ""
+                                if (movie.genreIds != null) {
+                                    for (genreId in movie.genreIds!!) {
+                                        movie.genreNames += GenresList.genres?.get(genreId)
+                                            .toString().toLowerCase(Locale.ROOT) + ", "
+                                    }
+                                }
                                 movie.isClicked = true
                             }
                         }

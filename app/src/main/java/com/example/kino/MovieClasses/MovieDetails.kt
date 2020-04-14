@@ -8,13 +8,13 @@ data class MovieDetails(
     @SerializedName("title") val title: String,
     @SerializedName("vote_average") val voteAverage: Float,
     @SerializedName("poster_path") val posterPath: String,
-    @SerializedName("genres") val genres: List<Genre>,
-    @SerializedName("runtime") val runtime: Int,
+    @SerializedName("genres") val genres: List<Genre>? = null,
+    @SerializedName("runtime") val runtime: Int = 0,
 
     @SerializedName("release_date") val releaseDate: String,
-    @SerializedName("budget") val budget: Int,
+    @SerializedName("budget") val budget: Int = 0,
     @SerializedName("overview") val overview: String,
-    @SerializedName("tagline") val tagline: String,
-    @SerializedName("production_companies") val productionCompanies: List<Company>
+    @SerializedName("tagline") val tagline: String = "",
+    @SerializedName("production_companies") val productionCompanies: List<Company>? = null
 )
 

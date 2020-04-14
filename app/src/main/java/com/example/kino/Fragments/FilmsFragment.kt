@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import com.example.kino.MovieClasses.GenresList
 import com.example.kino.MovieClasses.Movie
 import com.example.kino.MovieClasses.SelectedMovie
 import kotlinx.coroutines.*
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, CoroutineScope {
@@ -71,6 +71,8 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
             this.context?.let { RecyclerViewAdapter(itemClickListener = this) }
         recyclerView.adapter = recyclerViewAdapter
         getMovies()
+
+
     }
 
     override fun onDestroy() {
@@ -84,40 +86,36 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
         startActivity(intent)
     }
 
-
     private fun getMovies() {
         launch {
             swipeRefreshLayout.isRefreshing = true
             val moviesList = withContext(Dispatchers.IO) {
                 try {
                     val response = RetrofitService.getPostApi().getMovieList(ApiKey)
-                    Log.d("whereLiked", "response movieList got")
                     processedMovies = mutableListOf()
                     if (response.isSuccessful) {
 
                         val movies = response.body()
                         if (movies != null) {
                             for (movie: Movie in movies.movieList) {
-                                Log.d("whereLiked", "start frunction statusServer")
                                 likeStatusSaver(movie)
-                                Log.d("whereLiked", "processedMovies.add")
+
                                 processedMovies.add(movie)
                             }
                         }
                         if (!processedMovies.isNullOrEmpty()) {
-                            //   for(movie in processedMovies){
-                            /*    movie.genreNames = mutableListOf()
-                                for(genreId in movie.genres){
-                                    GenresList.genres?.get(genreId)?.let{
-                                        movie.genreNames.add(it)
+                            for (movie in processedMovies) {
+                                movie.genreNames = ""
+                                if (movie.genreIds != null) {
+                                    for (genreId in movie.genreIds!!) {
+                                        movie.genreNames += GenresList.genres?.get(genreId)
+                                            .toString().toLowerCase(Locale.ROOT) + ", "
                                     }
-                                }*/
-                            // }
-                            //  Log.d("moviesList", processedMovies.toString())
-                            movieDao?.deleteAll()
-                            Log.d("whereLiked", "db insert all")
+                                }
+                            }
                             movieDao?.insertAll(processedMovies)
                         }
+
                         return@withContext processedMovies
                     } else {
                         return@withContext movieDao?.getMovies() ?: emptyList()
@@ -130,7 +128,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
             swipeRefreshLayout.isRefreshing = false
             recyclerViewAdapter?.movies = moviesList
             recyclerViewAdapter?.notifyDataSetChanged()
-            Log.d("listMovie", moviesList.toString())
         }
     }
 
@@ -160,16 +157,17 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
 
     private fun likeStatusSaver(movie: Movie) {
         launch {
-            Log.d("whereLiked", "function statusServer starts")
             try {
                 val response =
                     RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
                 if (response.isSuccessful) {
-                    Log.d("whereLiked", "response got")
                     val movieStatus = response.body()
                     if (movieStatus != null) {
                         movie.isClicked = movieStatus.selectedStatus
                         recyclerViewAdapter?.notifyDataSetChanged()
+                        withContext(Dispatchers.IO) {
+                            movieDao?.updateMovieIsCLicked(movie.isClicked, movie.id)
+                        }
                     }
                 }
             } catch (e: Exception) {
