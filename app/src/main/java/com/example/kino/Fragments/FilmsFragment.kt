@@ -71,6 +71,8 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
             this.context?.let { RecyclerViewAdapter(itemClickListener = this) }
         recyclerView.adapter = recyclerViewAdapter
         getMovies()
+
+
     }
 
     override fun onDestroy() {
@@ -97,6 +99,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                         if (movies != null) {
                             for (movie: Movie in movies.movieList) {
                                 likeStatusSaver(movie)
+
                                 processedMovies.add(movie)
                             }
                         }
@@ -107,11 +110,9 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                                     for (genreId in movie.genreIds!!) {
                                         movie.genreNames += GenresList.genres?.get(genreId)
                                             .toString().toLowerCase(Locale.ROOT) + ", "
-
                                     }
                                 }
                             }
-                            movieDao?.deleteAll()
                             movieDao?.insertAll(processedMovies)
                         }
 
@@ -164,6 +165,9 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                     if (movieStatus != null) {
                         movie.isClicked = movieStatus.selectedStatus
                         recyclerViewAdapter?.notifyDataSetChanged()
+                        withContext(Dispatchers.IO) {
+                            movieDao?.updateMovieIsCLicked(movie.isClicked, movie.id)
+                        }
                     }
                 }
             } catch (e: Exception) {
