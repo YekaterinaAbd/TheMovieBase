@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +33,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sessionId: String
     private lateinit var processedMovies: MutableList<Movie>
-
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -99,7 +99,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                         if (movies != null) {
                             for (movie: Movie in movies.movieList) {
                                 likeStatusSaver(movie)
-
                                 processedMovies.add(movie)
                             }
                         }
@@ -115,7 +114,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                             }
                             movieDao?.insertAll(processedMovies)
                         }
-
                         return@withContext processedMovies
                     } else {
                         return@withContext movieDao?.getMovies() ?: emptyList()
@@ -150,7 +148,10 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                 if (response.isSuccessful) {
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "No Internet connection", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.IO){
+                    movieDao?.updateMovieIsCLicked(item.isClicked, item.id)
+                }
+                Toast.makeText(context, "Selected movie will be added after internet connection", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -158,21 +159,24 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
     private fun likeStatusSaver(movie: Movie) {
         launch {
             try {
-                val response =
-                    RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
-                if (response.isSuccessful) {
-                    val movieStatus = response.body()
-                    if (movieStatus != null) {
-                        movie.isClicked = movieStatus.selectedStatus
-                        recyclerViewAdapter?.notifyDataSetChanged()
-                        withContext(Dispatchers.IO) {
-                            movieDao?.updateMovieIsCLicked(movie.isClicked, movie.id)
+                    val response =
+                        RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
+                    if (response.isSuccessful) {
+                        val movieStatus = response.body()
+                        if (movieStatus != null) {
+                            movie.isClicked = movieStatus.selectedStatus
+                            withContext(Dispatchers.IO) {
+                                movieDao?.updateMovieIsCLicked(movie.isClicked, movie.id)
+                            }
+                            recyclerViewAdapter?.notifyDataSetChanged()
                         }
                     }
-                }
+
             } catch (e: Exception) {
             }
         }
+
+
     }
 }
 
