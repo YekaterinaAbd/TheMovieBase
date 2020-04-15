@@ -29,4 +29,9 @@ interface MovieDao {
     @Query("UPDATE movies SET isClicked = :isClicked WHERE id = :id")
     fun updateMovieIsCLicked(isClicked: Boolean, id: Int)
 
+    @Query("SELECT * FROM movies WHERE id=:id")
+    fun getMovie(id: Int): Movie
+
+    @Query("SELECT * FROM movies WHERE isClicked=1")
+    fun getFavouritesMovies(): List<Movie>
 }

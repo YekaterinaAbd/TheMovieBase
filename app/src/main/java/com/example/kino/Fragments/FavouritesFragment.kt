@@ -12,19 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.kino.*
 import com.example.kino.Activities.MovieDetailActivity
-import com.example.kino.ApiKey
 import com.example.kino.MovieClasses.GenresList
 import com.example.kino.MovieClasses.Movie
 import com.example.kino.MovieClasses.Movies
 import com.example.kino.MovieClasses.SelectedMovie
-import com.example.kino.R
-import com.example.kino.RecyclerViewAdapter
-import com.example.kino.RetrofitService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -37,7 +31,7 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
     private var sessionId: String = ""
     private lateinit var sharedPreferences: SharedPreferences
-
+    private var movieDao: MovieDao? =null;
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -49,7 +43,7 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        movieDao = MovieDatabase.getDatabase(context = requireActivity()).movieDao()
         sharedPreferences = requireActivity().getSharedPreferences(
             getString(R.string.preference_file), Context.MODE_PRIVATE
         )
@@ -111,11 +105,18 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                         recyclerViewAdapter?.notifyDataSetChanged()
                     }
                 }
+                else{
+                    withContext(Dispatchers.IO){
+                        recyclerViewAdapter?.movies=movieDao?.getFavouritesMovies()
+                    }
+                }
                 swipeRefreshLayout.isRefreshing = false
             } catch (e: Exception) {
+                withContext(Dispatchers.IO){
+                    recyclerViewAdapter?.movies=movieDao?.getFavouritesMovies()
+                }
+                recyclerViewAdapter?.notifyDataSetChanged()
                 swipeRefreshLayout.isRefreshing = false
-
-                // get data from database
             }
         }
     }
