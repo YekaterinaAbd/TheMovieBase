@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +15,7 @@ import com.example.kino.*
 import com.example.kino.Activities.MovieDetailActivity
 import com.example.kino.MovieClasses.GenresList
 import com.example.kino.MovieClasses.Movie
-import com.example.kino.MovieClasses.Movies
+import com.example.kino.MovieClasses.MovieStatus
 import com.example.kino.MovieClasses.SelectedMovie
 import kotlinx.coroutines.*
 import java.util.*
@@ -24,14 +23,16 @@ import kotlin.coroutines.CoroutineContext
 
 class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, CoroutineScope {
 
-    private val job = Job()
-
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
     private var sessionId: String = ""
     private lateinit var sharedPreferences: SharedPreferences
-    private var movieDao: MovieDao? =null;
+
+    private var movieDao: MovieDao? = null
+    private var movieStatusDao: MovieStatusDao? = null
+
+    private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -43,7 +44,10 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         movieDao = MovieDatabase.getDatabase(context = requireActivity()).movieDao()
+        movieStatusDao = MovieDatabase.getDatabase(context = requireActivity()).movieStatusDao()
+
         sharedPreferences = requireActivity().getSharedPreferences(
             getString(R.string.preference_file), Context.MODE_PRIVATE
         )
@@ -60,7 +64,6 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         recyclerView.adapter = recyclerViewAdapter
 
         getMovies()
-
     }
 
     private fun bindViews(view: View) = with(view) {
@@ -82,16 +85,29 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
     private fun getMovies() {
         launch {
-            try {
-                val response = RetrofitService.getPostApi().getFavouriteMovies(ApiKey, sessionId)
-                if (response.isSuccessful) {
-                    val movies: Movies? = response.body()
-                    if (movies?.movieList?.size == 0) {
-                        swipeRefreshLayout.isRefreshing = false
-                    } else {
-                        recyclerViewAdapter?.movies = movies?.movieList
-                        if (recyclerViewAdapter?.movies != null) {
-                            for (movie in recyclerViewAdapter?.movies as MutableList<Movie>) {
+            val favouriteMoviesList = withContext(Dispatchers.IO) {
+                try {
+
+                    val moviesToUpdate = movieStatusDao?.getMovieStatuses()
+                    if (!moviesToUpdate.isNullOrEmpty()) {
+                        for (movie in moviesToUpdate) {
+                            val selectedMovie = SelectedMovie(
+                                movieId = movie.movieId,
+                                selectedStatus = movie.selectedStatus
+                            )
+                            addRemoveFavourites(selectedMovie)
+
+                        }
+                    }
+                    movieStatusDao?.deleteAll()
+
+                    val response =
+                        RetrofitService.getPostApi().getFavouriteMovies(ApiKey, sessionId)
+                    if (response.isSuccessful) {
+                        val movies = response.body()?.movieList
+                        if (!movies.isNullOrEmpty()) {
+
+                            for (movie in movies) {
                                 movie.genreNames = ""
                                 if (movie.genreIds != null) {
                                     for (genreId in movie.genreIds!!) {
@@ -102,22 +118,19 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                                 movie.isClicked = true
                             }
                         }
-                        recyclerViewAdapter?.notifyDataSetChanged()
+                        return@withContext movies
+                    } else {
+                        return@withContext movieDao?.getFavouriteMovies() ?: emptyList()
                     }
+                } catch (e: Exception) {
+                    return@withContext movieDao?.getFavouriteMovies() ?: emptyList()
                 }
-                else{
-                    withContext(Dispatchers.IO){
-                        recyclerViewAdapter?.movies=movieDao?.getFavouritesMovies()
-                    }
-                }
-                swipeRefreshLayout.isRefreshing = false
-            } catch (e: Exception) {
-                withContext(Dispatchers.IO){
-                    recyclerViewAdapter?.movies=movieDao?.getFavouritesMovies()
-                }
-                recyclerViewAdapter?.notifyDataSetChanged()
-                swipeRefreshLayout.isRefreshing = false
+
             }
+            swipeRefreshLayout.isRefreshing = false
+            recyclerViewAdapter?.movies = favouriteMoviesList
+            recyclerViewAdapter?.notifyDataSetChanged()
+
         }
     }
 
@@ -131,20 +144,32 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         } else {
             item.isClicked = false
             selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
-            selectedMovie.selectedStatus = item.isClicked
+
         }
+        addRemoveFavourites(selectedMovie)
+    }
+
+    private fun addRemoveFavourites(selectedMovie: SelectedMovie) {
         launch {
             try {
-                val response =
-                    RetrofitService.getPostApi()
-                        .addRemoveFavourites(ApiKey, sessionId, selectedMovie)
+                val response = RetrofitService.getPostApi()
+                    .addRemoveFavourites(ApiKey, sessionId, selectedMovie)
                 if (response.isSuccessful) {
-
+                    recyclerViewAdapter?.notifyDataSetChanged()
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "No Internet connection", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.IO) {
+                    val movieStatus =
+                        MovieStatus(selectedMovie.movieId, selectedMovie.selectedStatus)
+                    movieStatusDao?.insertMovieStatus(movieStatus)
+                    movieDao?.updateMovieIsCLicked(
+                        selectedMovie.selectedStatus,
+                        selectedMovie.movieId
+                    )
+                }
+                recyclerViewAdapter?.notifyDataSetChanged()
             }
-
+            recyclerViewAdapter?.notifyDataSetChanged()
         }
     }
 }

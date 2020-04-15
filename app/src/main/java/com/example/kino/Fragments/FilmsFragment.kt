@@ -4,11 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +15,7 @@ import com.example.kino.*
 import com.example.kino.Activities.MovieDetailActivity
 import com.example.kino.MovieClasses.GenresList
 import com.example.kino.MovieClasses.Movie
+import com.example.kino.MovieClasses.MovieStatus
 import com.example.kino.MovieClasses.SelectedMovie
 import kotlinx.coroutines.*
 import java.util.*
@@ -26,6 +25,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
 
     private val job = Job()
     private var movieDao: MovieDao? = null
+    private var movieStatusDao: MovieStatusDao? = null
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -33,6 +33,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sessionId: String
     private lateinit var processedMovies: MutableList<Movie>
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -46,6 +47,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
         super.onViewCreated(view, savedInstanceState)
 
         movieDao = MovieDatabase.getDatabase(context = requireActivity()).movieDao()
+        movieStatusDao = MovieDatabase.getDatabase(context = requireActivity()).movieStatusDao()
 
         sharedPref = requireActivity().getSharedPreferences(
             getString(R.string.preference_file), Context.MODE_PRIVATE
@@ -89,8 +91,22 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
     private fun getMovies() {
         launch {
             swipeRefreshLayout.isRefreshing = true
+
             val moviesList = withContext(Dispatchers.IO) {
                 try {
+                    val moviesToUpdate = movieStatusDao?.getMovieStatuses()
+                    if (!moviesToUpdate.isNullOrEmpty()) {
+                        for (movie in moviesToUpdate) {
+                            val selectedMovie = SelectedMovie(
+                                movieId = movie.movieId,
+                                selectedStatus = movie.selectedStatus
+                            )
+                            addRemoveFavourites(selectedMovie)
+                        }
+                    }
+                    movieStatusDao?.deleteAll()
+
+
                     val response = RetrofitService.getPostApi().getMovieList(ApiKey)
                     processedMovies = mutableListOf()
                     if (response.isSuccessful) {
@@ -141,6 +157,10 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
             selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
 
         }
+        addRemoveFavourites(selectedMovie)
+    }
+
+    private fun addRemoveFavourites(selectedMovie: SelectedMovie) {
         launch {
             try {
                 val response = RetrofitService.getPostApi()
@@ -148,10 +168,15 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                 if (response.isSuccessful) {
                 }
             } catch (e: Exception) {
-                withContext(Dispatchers.IO){
-                    movieDao?.updateMovieIsCLicked(item.isClicked, item.id)
+                withContext(Dispatchers.IO) {
+                    movieDao?.updateMovieIsCLicked(
+                        selectedMovie.selectedStatus,
+                        selectedMovie.movieId
+                    )
+                    val movieStatus =
+                        MovieStatus(selectedMovie.movieId, selectedMovie.selectedStatus)
+                    movieStatusDao?.insertMovieStatus(movieStatus)
                 }
-                Toast.makeText(context, "Selected movie will be added after internet connection", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -159,18 +184,18 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
     private fun likeStatusSaver(movie: Movie) {
         launch {
             try {
-                    val response =
-                        RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
-                    if (response.isSuccessful) {
-                        val movieStatus = response.body()
-                        if (movieStatus != null) {
-                            movie.isClicked = movieStatus.selectedStatus
-                            withContext(Dispatchers.IO) {
-                                movieDao?.updateMovieIsCLicked(movie.isClicked, movie.id)
-                            }
-                            recyclerViewAdapter?.notifyDataSetChanged()
+                val response =
+                    RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
+                if (response.isSuccessful) {
+                    val movieStatus = response.body()
+                    if (movieStatus != null) {
+                        movie.isClicked = movieStatus.selectedStatus
+                        withContext(Dispatchers.IO) {
+                            movieDao?.updateMovieIsCLicked(movie.isClicked, movie.id)
                         }
+                        recyclerViewAdapter?.notifyDataSetChanged()
                     }
+                }
 
             } catch (e: Exception) {
             }
