@@ -23,7 +23,6 @@ import kotlin.coroutines.CoroutineContext
 
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, CoroutineScope {
 
-    private val job = Job()
     private var movieDao: MovieDao? = null
     private var movieStatusDao: MovieStatusDao? = null
 
@@ -34,6 +33,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
     private lateinit var sessionId: String
     private lateinit var processedMovies: MutableList<Movie>
 
+    private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -52,7 +52,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
         sharedPref = requireActivity().getSharedPreferences(
             getString(R.string.preference_file), Context.MODE_PRIVATE
         )
-
         if (sharedPref.contains(getString(R.string.session_id))) {
             sessionId = sharedPref.getString(getString(R.string.session_id), "null") as String
         }
@@ -63,7 +62,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-
         swipeRefreshLayout.setOnRefreshListener {
             recyclerViewAdapter?.clearAll()
             getMovies()
@@ -73,8 +71,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
             this.context?.let { RecyclerViewAdapter(itemClickListener = this) }
         recyclerView.adapter = recyclerViewAdapter
         getMovies()
-
-
     }
 
     override fun onDestroy() {
@@ -114,7 +110,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                         val movies = response.body()
                         if (movies != null) {
                             for (movie: Movie in movies.movieList) {
-                                likeStatusSaver(movie)
+                                saveLikeStatus(movie)
                                 processedMovies.add(movie)
                             }
                         }
@@ -128,6 +124,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                                     }
                                 }
                             }
+                            movieDao?.deleteAll()
                             movieDao?.insertAll(processedMovies)
                         }
                         return@withContext processedMovies
@@ -181,7 +178,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
         }
     }
 
-    private fun likeStatusSaver(movie: Movie) {
+    private fun saveLikeStatus(movie: Movie) {
         launch {
             try {
                 val response =
@@ -200,8 +197,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
             } catch (e: Exception) {
             }
         }
-
-
     }
 }
 

@@ -57,16 +57,6 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                 sharedPreferences.getString(getString(R.string.session_id), "null") as String
         }
 
-        bindViews(view)
-
-        recyclerViewAdapter =
-            this.context?.let { RecyclerViewAdapter(itemClickListener = this) }
-        recyclerView.adapter = recyclerViewAdapter
-
-        getMovies()
-    }
-
-    private fun bindViews(view: View) = with(view) {
         recyclerView = view.findViewById(R.id.favRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
@@ -75,6 +65,16 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
             recyclerViewAdapter?.clearAll()
             getMovies()
         }
+
+        recyclerViewAdapter =
+            this.context?.let { RecyclerViewAdapter(itemClickListener = this) }
+        recyclerView.adapter = recyclerViewAdapter
+        getMovies()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
     override fun itemClick(position: Int, item: Movie) {
@@ -84,23 +84,15 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
     }
 
     private fun getMovies() {
+
         launch {
+            swipeRefreshLayout.isRefreshing = true
+            withContext(Dispatchers.IO) {
+                updateFavourites()
+            }
             val favouriteMoviesList = withContext(Dispatchers.IO) {
                 try {
-
-                    val moviesToUpdate = movieStatusDao?.getMovieStatuses()
-                    if (!moviesToUpdate.isNullOrEmpty()) {
-                        for (movie in moviesToUpdate) {
-                            val selectedMovie = SelectedMovie(
-                                movieId = movie.movieId,
-                                selectedStatus = movie.selectedStatus
-                            )
-                            addRemoveFavourites(selectedMovie)
-
-                        }
-                    }
-                    movieStatusDao?.deleteAll()
-
+                    delay(500)
                     val response =
                         RetrofitService.getPostApi().getFavouriteMovies(ApiKey, sessionId)
                     if (response.isSuccessful) {
@@ -125,13 +117,25 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                 } catch (e: Exception) {
                     return@withContext movieDao?.getFavouriteMovies() ?: emptyList()
                 }
-
             }
             swipeRefreshLayout.isRefreshing = false
             recyclerViewAdapter?.movies = favouriteMoviesList
             recyclerViewAdapter?.notifyDataSetChanged()
-
         }
+    }
+
+    private fun updateFavourites() {
+        val moviesToUpdate = movieStatusDao?.getMovieStatuses()
+        if (!moviesToUpdate.isNullOrEmpty()) {
+            for (movie in moviesToUpdate) {
+                val selectedMovie = SelectedMovie(
+                    movieId = movie.movieId,
+                    selectedStatus = movie.selectedStatus
+                )
+                addRemoveFavourites(selectedMovie)
+            }
+        }
+        movieStatusDao?.deleteAll()
     }
 
     override fun addToFavourites(position: Int, item: Movie) {
@@ -155,21 +159,18 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                 val response = RetrofitService.getPostApi()
                     .addRemoveFavourites(ApiKey, sessionId, selectedMovie)
                 if (response.isSuccessful) {
-                    recyclerViewAdapter?.notifyDataSetChanged()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.IO) {
-                    val movieStatus =
-                        MovieStatus(selectedMovie.movieId, selectedMovie.selectedStatus)
-                    movieStatusDao?.insertMovieStatus(movieStatus)
                     movieDao?.updateMovieIsCLicked(
                         selectedMovie.selectedStatus,
                         selectedMovie.movieId
                     )
+                    val movieStatus =
+                        MovieStatus(selectedMovie.movieId, selectedMovie.selectedStatus)
+                    movieStatusDao?.insertMovieStatus(movieStatus)
                 }
-                recyclerViewAdapter?.notifyDataSetChanged()
             }
-            recyclerViewAdapter?.notifyDataSetChanged()
         }
     }
 }
