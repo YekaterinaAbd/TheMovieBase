@@ -30,6 +30,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var votesCount: TextView
     private lateinit var companies: TextView
 
+    private val intentName: String = "movie_id"
+    private val picassoUrl: String = "https://image.tmdb.org/t/p/w500"
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -40,7 +42,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
         movieDao = MovieDatabase.getDatabase(context = this).movieDao()
         bindViews()
 
-        val postId = intent.getIntExtra("movie_id", 1)
+        val postId = intent.getIntExtra(intentName, 1)
         getMovie(id = postId)
     }
 
@@ -61,7 +63,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
     private fun getMovie(id: Int) {
 
         launch {
-            val movie = withContext(Dispatchers.IO) {
+            val detailedMovie = withContext(Dispatchers.IO) {
                 try {
                     val response = RetrofitService.getPostApi().getMovieById(id, ApiKey)
                     if (response.isSuccessful) {
@@ -84,7 +86,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                 }
             }
             progressBar.visibility = View.GONE
-            val movieDetails: Movie = movie as Movie
+            val movieDetails: Movie = detailedMovie as Movie
             title.text = movieDetails.title
             year.text = movieDetails.releaseDate
 
@@ -105,16 +107,21 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                     movieDetails.genreNames.substring(0, movieDetails.genreNames.length - 2)
             }
 
-            if (movieDetails.runtime != null)
-                durationTime.text = movieDetails.runtime.toString() + " min"
-            if (movieDetails.tagline != null)
-                tagline.text = "«" + movieDetails.tagline + "»"
+            if (movieDetails.runtime != null) {
+                val runtime: String = movieDetails.runtime.toString()
+                durationTime.text = getString(R.string.duration_time, runtime)
+            }
+
+            if (movieDetails.tagline != null) {
+                val taglineText: String = movieDetails.tagline.toString()
+                tagline.text = getString(R.string.tagline, taglineText)
+            }
             description.text = movieDetails.overview
             rating.text = movieDetails.voteAverage.toString()
             votesCount.text = movieDetails.voteCount.toString()
 
             Picasso.get()
-                .load("https://image.tmdb.org/t/p/w500" + movieDetails.posterPath)
+                .load(picassoUrl + movieDetails.posterPath)
                 .into(poster)
         }
     }

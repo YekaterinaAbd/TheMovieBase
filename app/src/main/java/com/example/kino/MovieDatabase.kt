@@ -13,13 +13,13 @@ abstract class MovieDatabase : RoomDatabase() {
 
     companion object {
         var database: MovieDatabase? = null
-
+        private const val databaseName: String = "movie_database2.db"
         fun getDatabase(context: Context): MovieDatabase {
             if (database == null) {
                 database = Room.databaseBuilder(
                     context.applicationContext,
                     MovieDatabase::class.java,
-                    "movie_database2.db"
+                    databaseName
                 ).build()
             }
             return database!!

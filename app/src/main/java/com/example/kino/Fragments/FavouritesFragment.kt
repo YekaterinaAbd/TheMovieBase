@@ -29,9 +29,13 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
-    private var sessionId: String = ""
     private lateinit var sharedPreferences: SharedPreferences
-    private var movieDao: MovieDao? =null;
+    private var movieDao: MovieDao? = null;
+    private lateinit var genreName: String
+    private var sessionId: String = ""
+    private val stringTag: String = "null"
+    private val intentName: String = "movie_id"
+    private val mediaType: String = "movie"
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -50,7 +54,7 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
         if (sharedPreferences.contains(getString(R.string.session_id))) {
             sessionId =
-                sharedPreferences.getString(getString(R.string.session_id), "null") as String
+                sharedPreferences.getString(getString(R.string.session_id), stringTag) as String
         }
 
         bindViews(view)
@@ -76,7 +80,7 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
     override fun itemClick(position: Int, item: Movie) {
         val intent = Intent(context, MovieDetailActivity::class.java)
-        intent.putExtra("movie_id", item.id)
+        intent.putExtra(intentName, item.id)
         startActivity(intent)
     }
 
@@ -95,8 +99,12 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                                 movie.genreNames = ""
                                 if (movie.genreIds != null) {
                                     for (genreId in movie.genreIds!!) {
-                                        movie.genreNames += GenresList.genres?.get(genreId)
-                                            .toString().toLowerCase(Locale.ROOT) + ", "
+                                        genreName = GenresList.genres?.get(genreId)
+                                            .toString().toLowerCase(Locale.ROOT)
+                                        movie.genreNames += getString(
+                                            R.string.genre_name,
+                                            genreName
+                                        )
                                     }
                                 }
                                 movie.isClicked = true
@@ -104,16 +112,15 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                         }
                         recyclerViewAdapter?.notifyDataSetChanged()
                     }
-                }
-                else{
-                    withContext(Dispatchers.IO){
-                        recyclerViewAdapter?.movies=movieDao?.getFavouritesMovies()
+                } else {
+                    withContext(Dispatchers.IO) {
+                        recyclerViewAdapter?.movies = movieDao?.getFavouritesMovies()
                     }
                 }
                 swipeRefreshLayout.isRefreshing = false
             } catch (e: Exception) {
-                withContext(Dispatchers.IO){
-                    recyclerViewAdapter?.movies=movieDao?.getFavouritesMovies()
+                withContext(Dispatchers.IO) {
+                    recyclerViewAdapter?.movies = movieDao?.getFavouritesMovies()
                 }
                 recyclerViewAdapter?.notifyDataSetChanged()
                 swipeRefreshLayout.isRefreshing = false
@@ -126,11 +133,11 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
         if (!item.isClicked) {
             item.isClicked = true
-            selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
+            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
 
         } else {
             item.isClicked = false
-            selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
+            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
             selectedMovie.selectedStatus = item.isClicked
         }
         launch {
@@ -142,7 +149,11 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "No Internet connection", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    getString(R.string.no_internet_connection),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
         }

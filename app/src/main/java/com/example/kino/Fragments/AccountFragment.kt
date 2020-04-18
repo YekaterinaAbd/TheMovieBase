@@ -14,7 +14,7 @@ class AccountFragment : Fragment() {
 
     private lateinit var username: TextView
     private lateinit var sharedPreferences: SharedPreferences
-
+    private val stringTag: String = "null"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -34,7 +34,7 @@ class AccountFragment : Fragment() {
             getString(R.string.preference_file), Context.MODE_PRIVATE
         )!!
 
-        if (sharedPreferences.contains("username"))
-            username.text = sharedPreferences.getString("username", "null")
+        if (sharedPreferences.contains(getString(R.string.username)))
+            username.text = sharedPreferences.getString(getString(R.string.username), stringTag)
     }
 }

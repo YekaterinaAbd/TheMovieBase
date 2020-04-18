@@ -27,6 +27,9 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
     private val job = Job()
     private var movieDao: MovieDao? = null
 
+    private val stringTag: String = "null"
+    private val intentName: String = "movie_id"
+    private val mediaType: String = "movie"
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
@@ -52,7 +55,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
         )
 
         if (sharedPref.contains(getString(R.string.session_id))) {
-            sessionId = sharedPref.getString(getString(R.string.session_id), "null") as String
+            sessionId = sharedPref.getString(getString(R.string.session_id), stringTag) as String
         }
 
         GenresList.getGenres()
@@ -82,7 +85,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
 
     override fun itemClick(position: Int, item: Movie) {
         val intent = Intent(context, MovieDetailActivity::class.java)
-        intent.putExtra("movie_id", item.id)
+        intent.putExtra(intentName, item.id)
         startActivity(intent)
     }
 
@@ -134,11 +137,11 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
 
         if (!item.isClicked) {
             item.isClicked = true
-            selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
+            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
 
         } else {
             item.isClicked = false
-            selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
+            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
 
         }
         launch {
@@ -148,10 +151,14 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
                 if (response.isSuccessful) {
                 }
             } catch (e: Exception) {
-                withContext(Dispatchers.IO){
+                withContext(Dispatchers.IO) {
                     movieDao?.updateMovieIsCLicked(item.isClicked, item.id)
                 }
-                Toast.makeText(context, "Selected movie will be added after internet connection", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    getString(R.string.offline_adding_notification),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -159,18 +166,18 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick, Cor
     private fun likeStatusSaver(movie: Movie) {
         launch {
             try {
-                    val response =
-                        RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
-                    if (response.isSuccessful) {
-                        val movieStatus = response.body()
-                        if (movieStatus != null) {
-                            movie.isClicked = movieStatus.selectedStatus
-                            withContext(Dispatchers.IO) {
-                                movieDao?.updateMovieIsCLicked(movie.isClicked, movie.id)
-                            }
-                            recyclerViewAdapter?.notifyDataSetChanged()
+                val response =
+                    RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
+                if (response.isSuccessful) {
+                    val movieStatus = response.body()
+                    if (movieStatus != null) {
+                        movie.isClicked = movieStatus.selectedStatus
+                        withContext(Dispatchers.IO) {
+                            movieDao?.updateMovieIsCLicked(movie.isClicked, movie.id)
                         }
+                        recyclerViewAdapter?.notifyDataSetChanged()
                     }
+                }
 
             } catch (e: Exception) {
             }
