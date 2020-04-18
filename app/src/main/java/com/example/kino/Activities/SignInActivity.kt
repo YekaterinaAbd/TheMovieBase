@@ -21,7 +21,6 @@ import kotlin.coroutines.CoroutineContext
 
 class SignInActivity : AppCompatActivity(), CoroutineScope {
 
-    private val job = Job()
     private lateinit var receivedToken: String
     private lateinit var loginValidationData: LoginValidationData
     private lateinit var token: Token
@@ -35,7 +34,7 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
 
     private var sessionId: String = ""
 
-
+    private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -76,7 +75,6 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
-
     private fun createTokenRequest() {
         launch {
             try {
@@ -111,13 +109,13 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
                 val response =
                     RetrofitService.getPostApi().validateWithLogin(ApiKey, loginValidationData)
 
-                    if (response.isSuccessful) {
-                        token = Token(receivedToken)
-                        createSession()
-                    } else {
-                        wrongDataText.text = "Wrong data"
-                        progressBar.visibility = View.GONE
-                    }
+                if (response.isSuccessful) {
+                    token = Token(receivedToken)
+                    createSession()
+                } else {
+                    wrongDataText.text = "Wrong data"
+                    progressBar.visibility = View.GONE
+                }
             } catch (e: Exception) {
                 wrongDataText.text = "Wrong data"
                 progressBar.visibility = View.GONE
@@ -131,7 +129,6 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
                 val response = RetrofitService.getPostApi().createSession(ApiKey, token)
                 if (response.isSuccessful) {
                     sessionId = response.body()?.sessionId.toString()
-
                     saveToSharedPreferences()
 
                     val intent = Intent(this@SignInActivity, MainActivity::class.java)
@@ -155,5 +152,4 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
         editor.putString(getString(R.string.session_id), sessionId)
         editor.apply()
     }
-
 }

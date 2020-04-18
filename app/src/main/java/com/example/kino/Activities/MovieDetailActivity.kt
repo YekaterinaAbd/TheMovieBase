@@ -15,9 +15,6 @@ import kotlin.coroutines.CoroutineContext
 
 class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
 
-    private val job = Job()
-    private var movieDao: MovieDao? = null
-
     private lateinit var progressBar: ProgressBar
     private lateinit var poster: ImageView
     private lateinit var title: TextView
@@ -30,6 +27,9 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var votesCount: TextView
     private lateinit var companies: TextView
 
+    private var movieDao: MovieDao? = null
+
+    private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -76,18 +76,18 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                         }
                         return@withContext movieDetails
                     } else {
-                        return@withContext movieDao?.getMovieById(id)
+                        return@withContext movieDao?.getMovie(id)
                     }
 
                 } catch (e: Exception) {
-                    movieDao?.getMovieById(id)
+                    movieDao?.getMovie(id)
                 }
             }
             progressBar.visibility = View.GONE
+
             val movieDetails: Movie = movie as Movie
             title.text = movieDetails.title
             year.text = movieDetails.releaseDate
-
             genres.text = ""
 
             if (movieDetails.genres != null) {
@@ -107,8 +107,10 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
 
             if (movieDetails.runtime != null)
                 durationTime.text = movieDetails.runtime.toString() + " min"
+
             if (movieDetails.tagline != null)
                 tagline.text = "«" + movieDetails.tagline + "»"
+
             description.text = movieDetails.overview
             rating.text = movieDetails.voteAverage.toString()
             votesCount.text = movieDetails.voteCount.toString()
