@@ -21,7 +21,7 @@ import kotlin.coroutines.CoroutineContext
 
 class SignInActivity : AppCompatActivity(), CoroutineScope {
 
-    private lateinit var receivedToken: String
+
     private lateinit var loginValidationData: LoginValidationData
     private lateinit var token: Token
     private lateinit var sharedPreferences: SharedPreferences
@@ -34,7 +34,7 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
 
     private val signUpUrl: String = "https://www.themoviedb.org/account/signup"
     private var sessionId: String = ""
-    private val forNotNull: String = ""
+    private var receivedToken: String = ""
 
     private val job = Job()
     override val coroutineContext: CoroutineContext
@@ -77,6 +77,11 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
     private fun createTokenRequest() {
         launch {
             try {
@@ -99,7 +104,6 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
                         Toast.LENGTH_SHORT
                     ).show()
                     progressBar.visibility = View.GONE
-                    receivedToken = forNotNull
                 }
             } catch (e: Exception) {
                 Toast.makeText(
@@ -108,7 +112,6 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
                     Toast.LENGTH_SHORT
                 ).show()
                 progressBar.visibility = View.GONE
-                receivedToken = forNotNull
             }
         }
     }

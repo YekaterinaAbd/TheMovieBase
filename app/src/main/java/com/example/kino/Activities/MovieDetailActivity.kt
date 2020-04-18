@@ -15,7 +15,6 @@ import kotlin.coroutines.CoroutineContext
 
 class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
 
-    private val job = Job()
     private var movieDao: MovieDao? = null
 
     private lateinit var progressBar: ProgressBar
@@ -32,6 +31,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
 
     private val intentName: String = "movie_id"
     private val picassoUrl: String = "https://image.tmdb.org/t/p/w500"
+
+    private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -60,6 +61,11 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
         companies = findViewById(R.id.companies)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
     private fun getMovie(id: Int) {
 
         launch {
@@ -78,11 +84,11 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                         }
                         return@withContext movieDetails
                     } else {
-                        return@withContext movieDao?.getMovieById(id)
+                        return@withContext movieDao?.getMovie(id)
                     }
 
                 } catch (e: Exception) {
-                    movieDao?.getMovieById(id)
+                    movieDao?.getMovie(id)
                 }
             }
             progressBar.visibility = View.GONE
