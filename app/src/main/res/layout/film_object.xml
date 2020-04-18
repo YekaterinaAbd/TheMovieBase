@@ -93,9 +93,11 @@
 
     <ImageView
         android:id="@+id/tvAddToFav"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/tvGenres"
         app:layout_constraintTop_toBottomOf="@+id/tvGenres"
         app:srcCompat="@drawable/ic_turned_in_not_black_24dp" />

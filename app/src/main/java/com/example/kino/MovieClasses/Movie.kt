@@ -16,20 +16,19 @@ data class Movie(
     @SerializedName("release_date") var releaseDate: String = "",
     @SerializedName("popularity") var popularity: String = "",
     @SerializedName("overview") var overview: String = "",
-    @SerializedName("genre_ids")
     @Ignore
+    @SerializedName("genre_ids")
     var genreIds: ArrayList<Int>? = null,
 
+    var isClicked: Boolean = false,
     var runtime: Int? = null,
     var tagline: String? = null,
-
-    @Ignore
-    val genres: List<Genre>? = null,
-
     var genreNames: String = "",
+
     @Ignore
     var position: Int = 0,
-    var isClicked: Boolean = false
+    @Ignore
+    val genres: List<Genre>? = null
 )
 
 

@@ -21,7 +21,6 @@ import kotlin.coroutines.CoroutineContext
 
 class SignInActivity : AppCompatActivity(), CoroutineScope {
 
-    private val job = Job()
     private lateinit var receivedToken: String
     private lateinit var loginValidationData: LoginValidationData
     private lateinit var token: Token
@@ -37,7 +36,7 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
     private var sessionId: String = ""
     private val forNotNull: String = ""
 
-
+    private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -77,7 +76,6 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
             createTokenRequest()
         }
     }
-
 
     private fun createTokenRequest() {
         launch {
@@ -141,7 +139,6 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
                 val response = RetrofitService.getPostApi().createSession(ApiKey, token)
                 if (response.isSuccessful) {
                     sessionId = response.body()?.sessionId.toString()
-
                     saveToSharedPreferences()
 
                     val intent = Intent(this@SignInActivity, MainActivity::class.java)
@@ -173,5 +170,4 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
         editor.putString(getString(R.string.session_id), sessionId)
         editor.apply()
     }
-
 }

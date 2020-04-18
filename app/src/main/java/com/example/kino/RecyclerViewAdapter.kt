@@ -11,13 +11,11 @@ import com.squareup.picasso.Picasso
 import java.util.*
 
 class RecyclerViewAdapter(
-    //TESTING9
     var movies: List<Movie>? = null,
     val itemClickListener: RecyclerViewItemClick? = null
-
 ) : RecyclerView.Adapter<RecyclerViewAdapter.MovieViewHolder>() {
 
-    var moviePosition = 1
+    private var moviePosition = 1
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.film_object, p0, false)
@@ -70,16 +68,6 @@ class RecyclerViewAdapter(
             tvRating.text = movie.voteAverage.toString()
             number.text = movie.position.toString()
             tvGenres.text = movie.genreNames.substring(0, movie.genreNames.length - 2)
-
-
-            /*  if (movie.genreNames.isNotEmpty()) {
-                  for (i in 0 until movie.genreNames.size) {
-                      if (i <= 3) {
-                          if (i == 0) tvGenres.text = movie.genreNames[i].toLowerCase(Locale.ROOT)
-                          else tvGenres.append(", ${movie.genreNames[i].toLowerCase(Locale.ROOT)}")
-                      }
-                  }
-              }*/
 
             Picasso.get()
                 .load("https://image.tmdb.org/t/p/w500" + movie.posterPath)
