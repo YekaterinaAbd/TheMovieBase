@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.SignInActivity"
+        <activity
+            android:name="com.example.kino.view.activities.SignInActivity"
             android:noHistory="true" >
 
             <intent-filter>
@@ -19,8 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.MovieDetailActivity" />
-        <activity android:name=".Activities.MainActivity">
+        <activity android:name="com.example.kino.view.activities.MovieDetailActivity" />
+        <activity android:name="com.example.kino.view.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
