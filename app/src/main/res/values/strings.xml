@@ -1,8 +1,18 @@
 <resources>
-    <string name="app_name">Kino</string>
+    <string name="app_name">MovieBase</string>
     <string name="todo">TODO</string>
     <string name="preference_file">shared_preferences</string>
     <string name="username">username</string>
     <string name="password">password</string>
     <string name="session_id">session_id</string>
+    <string name="top_rated_movies">Top-rated movies</string>
+    <string name="favourite_movie">Favourite movies</string>
+    <string name="duration_time">%1$s min</string>
+    <string name="tagline">« %1$s »</string>
+    <string name="error_occurred">Error occurred</string>
+    <string name="internet_error">Internet error</string>
+    <string name="wrong_data">Wrong data></string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="offline_adding_notification">Selected movie will be added after internet connection</string>
+    <string name="genre_name">%1$s,\u0020</string>
 </resources>

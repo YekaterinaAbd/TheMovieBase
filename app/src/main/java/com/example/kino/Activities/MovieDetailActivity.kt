@@ -6,20 +6,16 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.kino.ApiKey
-import com.example.kino.R
-import com.example.kino.RetrofitService
+import com.example.kino.*
+import com.example.kino.MovieClasses.Movie
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
 
-    private val job = Job()
+    private var movieDao: MovieDao? = null
 
     private lateinit var progressBar: ProgressBar
     private lateinit var poster: ImageView
@@ -33,6 +29,10 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var votesCount: TextView
     private lateinit var companies: TextView
 
+    private val intentKey: String = "movie_id"
+    private val picassoUrl: String = "https://image.tmdb.org/t/p/w500"
+
+    private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -40,9 +40,10 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
 
+        movieDao = MovieDatabase.getDatabase(context = this).movieDao()
         bindViews()
 
-        val postId = intent.getIntExtra("movie_id", 1)
+        val postId = intent.getIntExtra(intentKey, 1)
         getMovie(id = postId)
     }
 
@@ -60,59 +61,72 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
         companies = findViewById(R.id.companies)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
     private fun getMovie(id: Int) {
 
         launch {
-            try {
-                val response = RetrofitService.getPostApi().getMovieById(id, ApiKey)
-                if (response.isSuccessful) {
-                    val movieDetails = response.body()
-                    if (movieDetails != null) {
-                        title.text = movieDetails.title
-                        year.text = movieDetails.releaseDate
-
-                        genres.text = ""
-
-                        for (i in movieDetails.genres.indices) {
-                            if (i == 0) genres.text =
-                                movieDetails.genres[i].genre.toLowerCase(Locale.ROOT)
-                            else genres.append(
-                                ", " + movieDetails.genres[i].genre.toLowerCase(
-                                    Locale.ROOT
-                                )
-                            )
+            val detailedMovie = withContext(Dispatchers.IO) {
+                try {
+                    val response = RetrofitService.getPostApi().getMovieById(id, ApiKey)
+                    if (response.isSuccessful) {
+                        val movieDetails = response.body()
+                        if (movieDetails != null) {
+                            movieDetails.runtime?.let { movieDao?.updateMovieRuntime(it, id) }
+                            movieDetails.tagline?.let { movieDao?.updateMovieTagline(it, id) }
                         }
-
-                        durationTime.text = movieDetails.runtime.toString() + " min"
-                        tagline.text = "«" + movieDetails.tagline + "»"
-                        description.text = movieDetails.overview
-                        rating.text = movieDetails.voteAverage.toString()
-                        votesCount.text = movieDetails.voteCount.toString()
-
-                        var companiesString = ""
-
-                        for (company in movieDetails.productionCompanies) {
-                            companiesString += (company.name + ", ")
-                        }
-                        companies.text = companiesString.substring(0, companiesString.length - 2)
-
-                        Picasso.get()
-                            .load("https://image.tmdb.org/t/p/w500" + movieDetails.posterPath)
-                            .into(poster)
+                        return@withContext movieDetails
+                    } else {
+                        return@withContext movieDao?.getMovie(id)
                     }
-                }
-                progressBar.visibility = View.GONE
-            } catch (e: Exception) {
-                progressBar.visibility = View.GONE
 
-                // get data from database
+                } catch (e: Exception) {
+                    movieDao?.getMovie(id)
+                }
             }
+            progressBar.visibility = View.GONE
+            val movieDetails: Movie = detailedMovie as Movie
+            title.text = movieDetails.title
+            year.text = movieDetails.releaseDate
+
+            genres.text = ""
+
+            if (movieDetails.genres != null) {
+                for (i in movieDetails.genres.indices) {
+                    if (i == 0) genres.text =
+                        movieDetails.genres[i].genre.toLowerCase(Locale.ROOT)
+                    else genres.append(
+                        ", " + movieDetails.genres[i].genre.toLowerCase(
+                            Locale.ROOT
+                        )
+                    )
+                }
+            } else {
+                genres.text =
+                    movieDetails.genreNames.substring(0, movieDetails.genreNames.length - 2)
+            }
+
+            if (movieDetails.runtime != null) {
+                val runtime: String = movieDetails.runtime.toString()
+                durationTime.text = getString(R.string.duration_time, runtime)
+            }
+
+            if (movieDetails.tagline != null) {
+                val taglineText: String = movieDetails.tagline.toString()
+                tagline.text = getString(R.string.tagline, taglineText)
+            }
+            description.text = movieDetails.overview
+            rating.text = movieDetails.voteAverage.toString()
+            votesCount.text = movieDetails.voteCount.toString()
+
+            Picasso.get()
+                .load(picassoUrl + movieDetails.posterPath)
+                .into(poster)
         }
     }
-
 }
-
-
-
 
 

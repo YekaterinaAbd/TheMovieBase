@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var toolbar: TextView
+    private val tag: String = "1"
 
     private val fragmentManager: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.setOnNavigationItemSelectedListener(navListener)
 
-        fragmentManager.beginTransaction().add(R.id.frame, FilmsFragment(), "1").commit()
+        fragmentManager.beginTransaction().add(R.id.frame, FilmsFragment(), tag).commit()
     }
 
     private val navListener =
@@ -44,14 +45,14 @@ class MainActivity : AppCompatActivity() {
                 R.id.films -> {
                     activeFragment = FilmsFragment()
                     fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
-                    toolbar.text = "Top-rated movies"
+                    toolbar.text = getString(R.string.top_rated_movies)
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.favourites -> {
 
                     activeFragment = FavouritesFragment()
                     fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
-                    toolbar.text = "Favourite movies"
+                    toolbar.text = getString(R.string.favourite_movie)
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.account -> {

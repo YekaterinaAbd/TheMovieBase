@@ -1,17 +1,36 @@
 package com.example.kino.MovieClasses
 
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "movies")
 data class Movie(
-    @SerializedName("id") val id: Int,
-    @SerializedName("vote_count") val voteCount: Int,
-    @SerializedName("title") val title: String,
-    @SerializedName("vote_average") val voteAverage: Float,
-    @SerializedName("poster_path") val posterPath: String,
-    @SerializedName("genre_ids") val genres: List<Int>,
-    @SerializedName("release_date") val releaseDate: String,
-    @SerializedName("popularity") val popularity: String,
-    var genreNames: MutableList<String>,
+    @PrimaryKey
+    @SerializedName("id") var id: Int = 0,
+    @SerializedName("vote_count") var voteCount: Int = 0,
+    @SerializedName("title") var title: String = "",
+    @SerializedName("vote_average") var voteAverage: Double = 0.0,
+    @SerializedName("poster_path") var posterPath: String = "",
+    @SerializedName("release_date") var releaseDate: String = "",
+    @SerializedName("popularity") var popularity: String = "",
+    @SerializedName("overview") var overview: String = "",
+    @Ignore
+    @SerializedName("genre_ids")
+    var genreIds: ArrayList<Int>? = null,
+
+    var isClicked: Boolean = false,
+    var runtime: Int? = null,
+    var tagline: String? = null,
+    var genreNames: String = "",
+
+    @Ignore
     var position: Int = 0,
-    var isClicked: Boolean = false
+    @Ignore
+    val genres: List<Genre>? = null
 )
+
+
+
+

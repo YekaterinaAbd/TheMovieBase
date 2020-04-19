@@ -54,7 +54,7 @@ interface PostApi {
     suspend fun getMovieById(
         @Path("id") id: Int,
         @Query("api_key") apiKey: String
-    ): Response<MovieDetails>
+    ): Response<Movie>
 
     @GET("genre/movie/list")
     suspend fun getGenres(@Query("api_key") apiKey: String): Response<Genres>
@@ -93,4 +93,5 @@ interface PostApi {
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String
     ): Response<MovieStatus>
+
 }

@@ -21,8 +21,7 @@ import kotlin.coroutines.CoroutineContext
 
 class SignInActivity : AppCompatActivity(), CoroutineScope {
 
-    private val job = Job()
-    private lateinit var receivedToken: String
+
     private lateinit var loginValidationData: LoginValidationData
     private lateinit var token: Token
     private lateinit var sharedPreferences: SharedPreferences
@@ -33,9 +32,11 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var registrationLink: TextView
     private lateinit var progressBar: ProgressBar
 
+    private val signUpUrl: String = "https://www.themoviedb.org/account/signup"
     private var sessionId: String = ""
+    private var receivedToken: String = ""
 
-
+    private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -66,7 +67,7 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
 
         registrationLink.setOnClickListener {
             val browserIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse("https://www.themoviedb.org/account/signup"))
+                Intent(Intent.ACTION_VIEW, Uri.parse(signUpUrl))
             startActivity(browserIntent)
         }
 
@@ -76,6 +77,10 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
 
     private fun createTokenRequest() {
         launch {
@@ -93,14 +98,20 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
                     }
 
                 } else {
-                    Toast.makeText(this@SignInActivity, "Error occured", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@SignInActivity,
+                        getString(R.string.error_occurred),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     progressBar.visibility = View.GONE
-                    receivedToken = ""
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@SignInActivity, "Internet error", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@SignInActivity,
+                    getString(R.string.error_occurred),
+                    Toast.LENGTH_SHORT
+                ).show()
                 progressBar.visibility = View.GONE
-                receivedToken = ""
             }
         }
     }
@@ -111,15 +122,15 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
                 val response =
                     RetrofitService.getPostApi().validateWithLogin(ApiKey, loginValidationData)
 
-                    if (response.isSuccessful) {
-                        token = Token(receivedToken)
-                        createSession()
-                    } else {
-                        wrongDataText.text = "Wrong data"
-                        progressBar.visibility = View.GONE
-                    }
+                if (response.isSuccessful) {
+                    token = Token(receivedToken)
+                    createSession()
+                } else {
+                    wrongDataText.text = getString(R.string.wrong_data)
+                    progressBar.visibility = View.GONE
+                }
             } catch (e: Exception) {
-                wrongDataText.text = "Wrong data"
+                wrongDataText.text = getString(R.string.wrong_data)
                 progressBar.visibility = View.GONE
             }
         }
@@ -131,7 +142,6 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
                 val response = RetrofitService.getPostApi().createSession(ApiKey, token)
                 if (response.isSuccessful) {
                     sessionId = response.body()?.sessionId.toString()
-
                     saveToSharedPreferences()
 
                     val intent = Intent(this@SignInActivity, MainActivity::class.java)
@@ -139,11 +149,19 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
 
                 } else {
                     progressBar.visibility = View.GONE
-                    Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@SignInActivity,
+                        getString(R.string.error_occurred),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
                 progressBar.visibility = View.GONE
-                Toast.makeText(this@SignInActivity, "Error occurred", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@SignInActivity,
+                    getString(R.string.error_occurred),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -155,5 +173,4 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
         editor.putString(getString(R.string.session_id), sessionId)
         editor.apply()
     }
-
 }
