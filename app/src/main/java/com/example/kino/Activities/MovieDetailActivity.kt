@@ -29,7 +29,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var votesCount: TextView
     private lateinit var companies: TextView
 
-    private val intentName: String = "movie_id"
+    private val intentKey: String = "movie_id"
     private val picassoUrl: String = "https://image.tmdb.org/t/p/w500"
 
     private val job = Job()
@@ -43,7 +43,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
         movieDao = MovieDatabase.getDatabase(context = this).movieDao()
         bindViews()
 
-        val postId = intent.getIntExtra(intentName, 1)
+        val postId = intent.getIntExtra(intentKey, 1)
         getMovie(id = postId)
     }
 
@@ -75,12 +75,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                     if (response.isSuccessful) {
                         val movieDetails = response.body()
                         if (movieDetails != null) {
-                            if (movieDetails.runtime != null) {
-                                movieDao?.updateMovieRuntime(movieDetails.runtime!!, id)
-                            }
-                            if (movieDetails.tagline != null) {
-                                movieDao?.updateMovieTagline(movieDetails.tagline!!, id)
-                            }
+                            movieDetails.runtime?.let { movieDao?.updateMovieRuntime(it, id) }
+                            movieDetails.tagline?.let { movieDao?.updateMovieTagline(it, id) }
                         }
                         return@withContext movieDetails
                     } else {

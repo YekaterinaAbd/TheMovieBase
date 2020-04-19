@@ -26,7 +26,6 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
     private var movieDao: MovieDao? = null
     private var movieStatusDao: MovieStatusDao? = null
 
-
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
@@ -34,8 +33,8 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
     private lateinit var genreName: String
     private var sessionId: String = ""
-    private val stringTag: String = "null"
-    private val intentName: String = "movie_id"
+    private val defaultValue: String = "default"
+    private val intentKey: String = "movie_id"
     private val mediaType: String = "movie"
 
     private val job = Job()
@@ -54,23 +53,10 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         movieDao = MovieDatabase.getDatabase(context = requireActivity()).movieDao()
         movieStatusDao = MovieDatabase.getDatabase(context = requireActivity()).movieStatusDao()
 
-        sharedPreferences = requireActivity().getSharedPreferences(
-            getString(R.string.preference_file), Context.MODE_PRIVATE
-        )
-
-        if (sharedPreferences.contains(getString(R.string.session_id))) {
-            sessionId =
-                sharedPreferences.getString(getString(R.string.session_id), stringTag) as String
-        }
-
+        getSharedPreferences()
         bindViews(view)
-
-        recyclerViewAdapter =
-            this.context?.let { RecyclerViewAdapter(itemClickListener = this) }
-        recyclerView.adapter = recyclerViewAdapter
-
+        setAdapter()
         getMovies()
-
     }
 
     override fun onDestroy() {
@@ -89,9 +75,26 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         }
     }
 
+    private fun getSharedPreferences() {
+        sharedPreferences = requireActivity().getSharedPreferences(
+            getString(R.string.preference_file), Context.MODE_PRIVATE
+        )
+
+        if (sharedPreferences.contains(getString(R.string.session_id))) {
+            sessionId =
+                sharedPreferences.getString(getString(R.string.session_id), defaultValue) as String
+        }
+
+    }
+
+    private fun setAdapter() {
+        recyclerViewAdapter = RecyclerViewAdapter(itemClickListener = this)
+        recyclerView.adapter = recyclerViewAdapter
+    }
+
     override fun itemClick(position: Int, item: Movie) {
         val intent = Intent(context, MovieDetailActivity::class.java)
-        intent.putExtra(intentName, item.id)
+        intent.putExtra(intentKey, item.id)
         startActivity(intent)
     }
 
@@ -112,17 +115,7 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                         if (!movies.isNullOrEmpty()) {
 
                             for (movie in movies) {
-                                movie.genreNames = ""
-                                if (movie.genreIds != null) {
-                                    for (genreId in movie.genreIds!!) {
-                                        genreName = GenresList.genres?.get(genreId)
-                                            .toString().toLowerCase(Locale.ROOT)
-                                        movie.genreNames += getString(
-                                            R.string.genre_name,
-                                            genreName
-                                        )
-                                    }
-                                }
+                                setMovieGenres(movie)
                                 movie.isClicked = true
                             }
                         }
@@ -135,8 +128,23 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                 }
             }
             swipeRefreshLayout.isRefreshing = false
-            recyclerViewAdapter?.movies = favouriteMoviesList
-            recyclerViewAdapter?.notifyDataSetChanged()
+            if (favouriteMoviesList != null) {
+                recyclerViewAdapter?.replaceItems(favouriteMoviesList)
+            }
+        }
+    }
+
+    private fun setMovieGenres(movie: Movie) {
+        movie.genreNames = ""
+        if (movie.genreIds != null) {
+            movie.genreIds?.forEach { genreId ->
+                genreName = GenresList.genres?.get(genreId)
+                    .toString().toLowerCase(Locale.ROOT)
+                movie.genreNames += getString(
+                    R.string.genre_name,
+                    genreName
+                )
+            }
         }
     }
 
@@ -159,11 +167,11 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
         if (!item.isClicked) {
             item.isClicked = true
-            selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
+            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
 
         } else {
             item.isClicked = false
-            selectedMovie = SelectedMovie("movie", item.id, item.isClicked)
+            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
 
         }
         addRemoveFavourites(selectedMovie)
