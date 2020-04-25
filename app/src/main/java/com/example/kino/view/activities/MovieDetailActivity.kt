@@ -32,7 +32,6 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
 
     private val intentKey: String = "movie_id"
-    private val picassoUrl: String = "https://image.tmdb.org/t/p/w500"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +109,7 @@ class MovieDetailActivity : AppCompatActivity() {
         }
 
         Picasso.get()
-            .load(picassoUrl + movie.posterPath)
+            .load(movieDetailsViewModel.imageUrl + movie.posterPath)
             .into(poster)
     }
 }

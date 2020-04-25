@@ -17,7 +17,7 @@ class MovieDetailsViewModel(
 
     private var movieDao: MovieDao = MovieDatabase.getDatabase(context = context).movieDao()
     val liveData = MutableLiveData<State>()
-
+    val imageUrl: String = "https://image.tmdb.org/t/p/w500"
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
