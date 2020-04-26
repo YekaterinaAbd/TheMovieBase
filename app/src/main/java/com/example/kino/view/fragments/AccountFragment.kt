@@ -19,6 +19,7 @@ class AccountFragment : Fragment() {
     private lateinit var username: TextView
     private lateinit var viewModelProviderFactory: ViewModelProviderFactory
     private lateinit var accountViewModel: AccountViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {

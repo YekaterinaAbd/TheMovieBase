@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kino.R
-import com.example.kino.model.ApiKey
-import com.example.kino.model.FragmentEnum
-import com.example.kino.model.RetrofitService
+import com.example.kino.utils.Constants
+import com.example.kino.utils.FragmentEnum
+import com.example.kino.utils.RetrofitService
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.database.MovieStatusDao
@@ -27,8 +27,7 @@ class MoviesListViewModel(
     private var movieStatusDao: MovieStatusDao =
         MovieDatabase.getDatabase(context = context).movieStatusDao()
 
-    private val mediaType: String = "movie"
-    private val nullableValue: String = "null"
+    private val constants: Constants = Constants()
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sessionId: String
 
@@ -51,7 +50,7 @@ class MoviesListViewModel(
         if (sharedPref.contains(context.getString(R.string.session_id))) {
             sessionId = sharedPref.getString(
                 context.getString(R.string.session_id),
-                nullableValue
+                constants.nullableValue
             ) as String
         }
     }
@@ -100,7 +99,7 @@ class MoviesListViewModel(
     }
 
     private suspend fun getTop(): List<Movie>? {
-        val response = RetrofitService.getPostApi().getMovieList(ApiKey)
+        val response = RetrofitService.getPostApi().getMovieList(constants.apiKey)
         return if (response.isSuccessful) {
             val movies = response.body()?.movieList
 
@@ -119,7 +118,7 @@ class MoviesListViewModel(
     }
 
     private suspend fun getFavourites(): List<Movie>? {
-        val response = RetrofitService.getPostApi().getFavouriteMovies(ApiKey, sessionId)
+        val response = RetrofitService.getPostApi().getFavouriteMovies(constants.apiKey, sessionId)
         return if (response.isSuccessful) {
             val movies = response.body()?.movieList
 
@@ -149,10 +148,10 @@ class MoviesListViewModel(
 
         if (!item.isClicked) {
             item.isClicked = true
-            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
+            selectedMovie = SelectedMovie(constants.mediaType, item.id, item.isClicked)
         } else {
             item.isClicked = false
-            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
+            selectedMovie = SelectedMovie(constants.mediaType, item.id, item.isClicked)
         }
         addRemoveFavourites(selectedMovie)
     }
@@ -161,7 +160,7 @@ class MoviesListViewModel(
         launch {
             try {
                 val response = RetrofitService.getPostApi()
-                    .addRemoveFavourites(ApiKey, sessionId, selectedMovie)
+                    .addRemoveFavourites(constants.apiKey, sessionId, selectedMovie)
                 if (response.isSuccessful) {
                 }
             } catch (e: Exception) {
@@ -182,7 +181,8 @@ class MoviesListViewModel(
         launch {
             try {
                 val response =
-                    RetrofitService.getPostApi().getMovieStates(movie.id, ApiKey, sessionId)
+                    RetrofitService.getPostApi()
+                        .getMovieStates(movie.id, constants.apiKey, sessionId)
                 if (response.isSuccessful) {
                     val movieStatus = response.body()
                     if (movieStatus != null) {

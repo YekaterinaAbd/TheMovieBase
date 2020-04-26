@@ -3,21 +3,20 @@ package com.example.kino.view_model
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.kino.model.ApiKey
-import com.example.kino.model.RetrofitService
+import com.example.kino.utils.RetrofitService
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.movie.Movie
+import com.example.kino.utils.Constants
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class MovieDetailsViewModel(
-    context: Context
-) : ViewModel(), CoroutineScope {
+class MovieDetailsViewModel(context: Context) : ViewModel(), CoroutineScope {
 
     private var movieDao: MovieDao = MovieDatabase.getDatabase(context = context).movieDao()
+    private val constants: Constants = Constants()
     val liveData = MutableLiveData<State>()
-    val imageUrl: String = "https://image.tmdb.org/t/p/w500"
+
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -32,10 +31,7 @@ class MovieDetailsViewModel(
         launch {
             val movie = withContext(Dispatchers.IO) {
                 try {
-                    val response = RetrofitService.getPostApi().getMovieById(
-                        id,
-                        ApiKey
-                    )
+                    val response = RetrofitService.getPostApi().getMovieById(id, constants.apiKey)
                     if (response.isSuccessful) {
                         val movieDetails = response.body()
                         if (movieDetails != null) {

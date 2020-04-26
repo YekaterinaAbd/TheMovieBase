@@ -5,10 +5,10 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kino.R
-import com.example.kino.model.ApiKey
-import com.example.kino.model.RetrofitService
+import com.example.kino.utils.RetrofitService
 import com.example.kino.model.account.LoginValidationData
 import com.example.kino.model.account.Token
+import com.example.kino.utils.Constants
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -20,9 +20,9 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
     private var username: String = ""
     private var password: String = ""
 
-    val liveData = MutableLiveData<State>()
-    val signUpUrl: String = "https://www.themoviedb.org/account/signup"
+    private val constants: Constants = Constants()
 
+    val liveData = MutableLiveData<State>()
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
         context.getString(R.string.preference_file),
         Context.MODE_PRIVATE
@@ -30,6 +30,8 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
 
     private val job = Job()
 
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     init {
         if (sharedPreferences.contains(context.getString(R.string.session_id))) {
@@ -37,8 +39,6 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
         }
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
 
     override fun onCleared() {
         super.onCleared()
@@ -49,7 +49,7 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
         launch {
             liveData.value = State.ShowLoading
             try {
-                val response = RetrofitService.getPostApi().createRequestToken(ApiKey)
+                val response = RetrofitService.getPostApi().createRequestToken(constants.apiKey)
                 if (response.isSuccessful) {
                     username = receivedUsername
                     password = receivedPassword
@@ -58,34 +58,39 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
                         receivedToken = requestedToken.token
                         loginValidationData = LoginValidationData(
                             username,
-                            password, receivedToken
+                            password,
+                            receivedToken
                         )
                         validateWithLogin()
                     }
 
                 } else {
                     liveData.value = State.FailedLoading
+                    liveData.value = State.HideLoading
                 }
             } catch (e: Exception) {
                 liveData.value = State.FailedLoading
+                liveData.value = State.HideLoading
             }
         }
     }
 
     private fun validateWithLogin() {
         launch {
-            liveData.value = State.ShowLoading
             try {
                 val response =
-                    RetrofitService.getPostApi().validateWithLogin(ApiKey, loginValidationData)
+                    RetrofitService.getPostApi()
+                        .validateWithLogin(constants.apiKey, loginValidationData)
                 if (response.isSuccessful) {
                     token = Token(receivedToken)
                     createSession()
                 } else {
-                    liveData.value = State.FailedLoading
+                    liveData.value = State.WrongDataProvided
+                    liveData.value = State.HideLoading
                 }
             } catch (e: Exception) {
-                liveData.value = State.FailedLoading
+                liveData.value = State.WrongDataProvided
+                liveData.value = State.HideLoading
             }
         }
     }
@@ -94,7 +99,7 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
         launch {
             liveData.value = State.ShowLoading
             try {
-                val response = RetrofitService.getPostApi().createSession(ApiKey, token)
+                val response = RetrofitService.getPostApi().createSession(constants.apiKey, token)
                 if (response.isSuccessful) {
                     sessionId = response.body()?.sessionId.toString()
                     saveToSharedPreferences()
@@ -103,15 +108,9 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
                 }
             } catch (e: Exception) {
                 liveData.value = State.FailedLoading
+                liveData.value = State.HideLoading
             }
         }
-    }
-
-    sealed class State {
-        object ShowLoading : State()
-        object HideLoading : State()
-        object FailedLoading : State()
-        object Result : State()
     }
 
     private fun saveToSharedPreferences() {
@@ -120,5 +119,13 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
         editor.putString(context.getString(R.string.session_id), sessionId)
         editor.putString(context.getString(R.string.password), password)
         editor.apply()
+    }
+
+    sealed class State {
+        object ShowLoading : State()
+        object HideLoading : State()
+        object FailedLoading : State()
+        object WrongDataProvided : State()
+        object Result : State()
     }
 }

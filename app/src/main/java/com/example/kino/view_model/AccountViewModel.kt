@@ -5,12 +5,11 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kino.R
+import com.example.kino.utils.Constants
 
 class AccountViewModel(private val context: Context) : ViewModel() {
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
-        context.getString(R.string.preference_file), Context.MODE_PRIVATE
-    )
-    private val defaultValue: String = "default"
+
+    private val constants: Constants = Constants()
     val liveData = MutableLiveData<String>()
 
     init {
@@ -18,8 +17,14 @@ class AccountViewModel(private val context: Context) : ViewModel() {
     }
 
     private fun getUsername() {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences(
+            context.getString(R.string.preference_file), Context.MODE_PRIVATE
+        )
         if (sharedPreferences.contains(context.getString(R.string.username)))
             liveData.value =
-                sharedPreferences.getString(context.getString(R.string.username), defaultValue)
+                sharedPreferences.getString(
+                    context.getString(R.string.username),
+                    constants.defaultValue
+                )
     }
 }
