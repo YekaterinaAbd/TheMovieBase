@@ -1,7 +1,7 @@
 package com.example.kino.model.movie
 
 import com.example.kino.model.ApiKey
-import com.example.kino.model.RetrofitService
+import com.example.kino.utils.RetrofitService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

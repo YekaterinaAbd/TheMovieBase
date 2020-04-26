@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
+import com.example.kino.utils.Constants
 import com.example.kino.view_model.SignInViewModel
 import com.example.kino.view_model.ViewModelProviderFactory
 
@@ -26,11 +27,14 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var signInViewModel: SignInViewModel
     private lateinit var viewModelProviderFactory: ViewModelProviderFactory
 
+    private val constants: Constants =
+        Constants()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
         setViewModel()
-        signInInteraction()
+        signInProcessing()
         bindViews()
     }
 
@@ -52,28 +56,31 @@ class SignInActivity : AppCompatActivity() {
 
         registrationLink.setOnClickListener {
             val browserIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse(signInViewModel.signUpUrl))
+                Intent(Intent.ACTION_VIEW, Uri.parse(constants.signUpUrl))
             startActivity(browserIntent)
         }
 
         signInButton.setOnClickListener {
-            signInInteraction()
+            signInProcessing()
             signInViewModel.createTokenRequest(username.text.toString(), password.text.toString())
         }
     }
 
-    private fun signInInteraction() {
+    private fun signInProcessing() {
         signInViewModel.liveData.observe(this, Observer { result ->
             when (result) {
                 is SignInViewModel.State.ShowLoading -> {
-
+                    progressBar.visibility = View.VISIBLE
                 }
                 is SignInViewModel.State.HideLoading -> {
-
+                    progressBar.visibility = View.GONE
                 }
                 is SignInViewModel.State.FailedLoading -> {
                     Toast.makeText(this, getString(R.string.error_occurred), Toast.LENGTH_SHORT)
                         .show()
+                }
+                is SignInViewModel.State.WrongDataProvided -> {
+                    wrongDataText.text = getString(R.string.wrong_data)
                 }
                 is SignInViewModel.State.Result -> {
                     val intent = Intent(this, MainActivity::class.java)

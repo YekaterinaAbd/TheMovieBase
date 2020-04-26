@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
+import com.example.kino.utils.Constants
 import com.example.kino.model.movie.Movie
 import com.example.kino.view_model.MovieDetailsViewModel
 import com.example.kino.view_model.ViewModelProviderFactory
@@ -30,8 +31,8 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var companies: TextView
 
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
-
-    private val intentKey: String = "movie_id"
+    private val constants: Constants =
+        Constants()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,7 @@ class MovieDetailActivity : AppCompatActivity() {
         setViewModel()
         bindViews()
 
-        val postId = intent.getIntExtra(intentKey, 1)
+        val postId = intent.getIntExtra(constants.intentKey, 1)
         getMovie(id = postId)
     }
 
@@ -73,14 +74,14 @@ class MovieDetailActivity : AppCompatActivity() {
                 }
                 is MovieDetailsViewModel.State.Result -> {
                     if (result.movie != null) {
-                        viewsWriteData(result.movie)
+                        dataBinding(result.movie)
                     }
                 }
             }
         })
     }
 
-    private fun viewsWriteData(movie: Movie) {
+    private fun dataBinding(movie: Movie) {
         title.text = movie.title
         year.text = movie.releaseDate
         description.text = movie.overview
@@ -109,7 +110,7 @@ class MovieDetailActivity : AppCompatActivity() {
         }
 
         Picasso.get()
-            .load(movieDetailsViewModel.imageUrl + movie.posterPath)
+            .load(constants.imageUrl + movie.posterPath)
             .into(poster)
     }
 }

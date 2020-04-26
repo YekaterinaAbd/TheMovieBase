@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
-import com.example.kino.model.FragmentEnum
+import com.example.kino.utils.Constants
+import com.example.kino.utils.FragmentEnum
 import com.example.kino.model.movie.Movie
 import com.example.kino.view.RecyclerViewAdapter
 import com.example.kino.view.activities.MovieDetailActivity
@@ -26,7 +27,8 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     private lateinit var moviesListViewModel: MoviesListViewModel
-    private val intentKey: String = "movie_id"
+    private val constants: Constants =
+        Constants()
 
 
     override fun onCreateView(
@@ -70,7 +72,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
     override fun itemClick(position: Int, item: Movie) {
         val intent = Intent(context, MovieDetailActivity::class.java)
-        intent.putExtra(intentKey, item.id)
+        intent.putExtra(constants.intentKey, item.id)
         startActivity(intent)
     }
 

@@ -1,4 +1,4 @@
-package com.example.kino.model
+package com.example.kino.utils
 
 import android.util.Log
 import com.example.kino.model.account.LoginValidationData
