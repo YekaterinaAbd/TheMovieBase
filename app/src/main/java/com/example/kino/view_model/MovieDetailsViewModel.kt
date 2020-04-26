@@ -2,36 +2,26 @@ package com.example.kino.view_model
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.kino.utils.RetrofitService
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.movie.Movie
-import com.example.kino.utils.Constants
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
+import com.example.kino.utils.RetrofitService
+import com.example.kino.utils.apiKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class MovieDetailsViewModel(context: Context) : ViewModel(), CoroutineScope {
+class MovieDetailsViewModel(context: Context) : BaseViewModel() {
 
     private var movieDao: MovieDao = MovieDatabase.getDatabase(context = context).movieDao()
-    private val constants: Constants = Constants()
     val liveData = MutableLiveData<State>()
-
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
-    }
 
     fun getMovie(id: Int) {
 
         launch {
             val movie = withContext(Dispatchers.IO) {
                 try {
-                    val response = RetrofitService.getPostApi().getMovieById(id, constants.apiKey)
+                    val response = RetrofitService.getPostApi().getMovieById(id, apiKey)
                     if (response.isSuccessful) {
                         val movieDetails = response.body()
                         if (movieDetails != null) {

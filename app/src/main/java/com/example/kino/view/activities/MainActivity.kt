@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.kino.R
-import com.example.kino.utils.Constants
+import com.example.kino.utils.tag
 import com.example.kino.view.fragments.AccountFragment
 import com.example.kino.view.fragments.FavouritesFragment
 import com.example.kino.view.fragments.FilmsFragment
@@ -20,8 +20,6 @@ class MainActivity : AppCompatActivity() {
     private val fragmentManager: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
 
-    private val constants: Constants = Constants()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -31,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.setOnNavigationItemSelectedListener(navListener)
 
-        fragmentManager.beginTransaction().add(R.id.frame, FilmsFragment(), constants.tag).commit()
+        fragmentManager.beginTransaction().add(R.id.frame, FilmsFragment(), tag).commit()
     }
 
     private val navListener =

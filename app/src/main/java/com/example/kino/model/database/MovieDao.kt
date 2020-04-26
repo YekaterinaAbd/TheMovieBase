@@ -8,12 +8,6 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(movies: List<Movie>)
 
-    @Update
-    fun updateMovie(movie: Movie)
-
-    @Update
-    fun updateAll(movies: List<Movie>)
-
     @Query("SELECT * FROM movies ORDER BY voteAverage DESC, voteCount DESC")
     fun getMovies(): List<Movie>
 
