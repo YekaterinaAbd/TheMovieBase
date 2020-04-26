@@ -9,8 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
-import com.example.kino.utils.Constants
 import com.example.kino.model.movie.Movie
+import com.example.kino.utils.imageUrl
+import com.example.kino.utils.intentKey
 import com.example.kino.view_model.MovieDetailsViewModel
 import com.example.kino.view_model.ViewModelProviderFactory
 import com.squareup.picasso.Picasso
@@ -31,7 +32,6 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var companies: TextView
 
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
-    private val constants: Constants = Constants()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class MovieDetailActivity : AppCompatActivity() {
         setViewModel()
         bindViews()
 
-        val postId = intent.getIntExtra(constants.intentKey, 1)
+        val postId = intent.getIntExtra(intentKey, 1)
         getMovie(id = postId)
     }
 
@@ -109,7 +109,7 @@ class MovieDetailActivity : AppCompatActivity() {
         }
 
         Picasso.get()
-            .load(constants.imageUrl + movie.posterPath)
+            .load(imageUrl + movie.posterPath)
             .into(poster)
     }
 }

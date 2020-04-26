@@ -12,6 +12,7 @@ import com.example.kino.model.movie.MovieStatus
 abstract class MovieDatabase : RoomDatabase() {
     abstract fun movieDao(): MovieDao
     abstract fun movieStatusDao(): MovieStatusDao
+
     companion object {
         var database: MovieDatabase? = null
         private const val databaseName: String = "movie_database.db"

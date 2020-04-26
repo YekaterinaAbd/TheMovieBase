@@ -3,16 +3,14 @@ package com.example.kino.view_model
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.kino.R
-import com.example.kino.utils.RetrofitService
 import com.example.kino.model.account.LoginValidationData
 import com.example.kino.model.account.Token
-import com.example.kino.utils.Constants
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
+import com.example.kino.utils.RetrofitService
+import com.example.kino.utils.apiKey
+import kotlinx.coroutines.launch
 
-class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScope {
+class SignInViewModel(private val context: Context) : BaseViewModel() {
     private lateinit var loginValidationData: LoginValidationData
     private lateinit var token: Token
     private var sessionId: String = ""
@@ -20,18 +18,11 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
     private var username: String = ""
     private var password: String = ""
 
-    private val constants: Constants = Constants()
-
     val liveData = MutableLiveData<State>()
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
         context.getString(R.string.preference_file),
         Context.MODE_PRIVATE
     )
-
-    private val job = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
 
     init {
         if (sharedPreferences.contains(context.getString(R.string.session_id))) {
@@ -39,17 +30,11 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
         }
     }
 
-
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
-    }
-
     fun createTokenRequest(receivedUsername: String, receivedPassword: String) {
         launch {
             liveData.value = State.ShowLoading
             try {
-                val response = RetrofitService.getPostApi().createRequestToken(constants.apiKey)
+                val response = RetrofitService.getPostApi().createRequestToken(apiKey)
                 if (response.isSuccessful) {
                     username = receivedUsername
                     password = receivedPassword
@@ -80,7 +65,7 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
             try {
                 val response =
                     RetrofitService.getPostApi()
-                        .validateWithLogin(constants.apiKey, loginValidationData)
+                        .validateWithLogin(apiKey, loginValidationData)
                 if (response.isSuccessful) {
                     token = Token(receivedToken)
                     createSession()
@@ -99,7 +84,7 @@ class SignInViewModel(private val context: Context) : ViewModel(), CoroutineScop
         launch {
             liveData.value = State.ShowLoading
             try {
-                val response = RetrofitService.getPostApi().createSession(constants.apiKey, token)
+                val response = RetrofitService.getPostApi().createSession(apiKey, token)
                 if (response.isSuccessful) {
                     sessionId = response.body()?.sessionId.toString()
                     saveToSharedPreferences()

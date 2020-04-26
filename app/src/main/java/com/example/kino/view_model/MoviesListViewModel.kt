@@ -3,11 +3,7 @@ package com.example.kino.view_model
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.kino.R
-import com.example.kino.utils.Constants
-import com.example.kino.utils.FragmentEnum
-import com.example.kino.utils.RetrofitService
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.database.MovieStatusDao
@@ -15,26 +11,22 @@ import com.example.kino.model.movie.GenresList
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.movie.MovieStatus
 import com.example.kino.model.movie.SelectedMovie
-import kotlinx.coroutines.*
+import com.example.kino.utils.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
-class MoviesListViewModel(
-    private val context: Context
-) : ViewModel(), CoroutineScope {
+class MoviesListViewModel(private val context: Context) : BaseViewModel() {
 
     private var movieDao: MovieDao = MovieDatabase.getDatabase(context = context).movieDao()
     private var movieStatusDao: MovieStatusDao =
         MovieDatabase.getDatabase(context = context).movieStatusDao()
 
-    private val constants: Constants = Constants()
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sessionId: String
 
     val liveData = MutableLiveData<State>()
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
 
     init {
         GenresList.getGenres()
@@ -50,14 +42,9 @@ class MoviesListViewModel(
         if (sharedPref.contains(context.getString(R.string.session_id))) {
             sessionId = sharedPref.getString(
                 context.getString(R.string.session_id),
-                constants.nullableValue
+                nullableValue
             ) as String
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
     }
 
     fun getMovies(type: FragmentEnum) {
@@ -99,7 +86,7 @@ class MoviesListViewModel(
     }
 
     private suspend fun getTop(): List<Movie>? {
-        val response = RetrofitService.getPostApi().getMovieList(constants.apiKey)
+        val response = RetrofitService.getPostApi().getMovieList(apiKey)
         return if (response.isSuccessful) {
             val movies = response.body()?.movieList
 
@@ -118,7 +105,7 @@ class MoviesListViewModel(
     }
 
     private suspend fun getFavourites(): List<Movie>? {
-        val response = RetrofitService.getPostApi().getFavouriteMovies(constants.apiKey, sessionId)
+        val response = RetrofitService.getPostApi().getFavouriteMovies(apiKey, sessionId)
         return if (response.isSuccessful) {
             val movies = response.body()?.movieList
 
@@ -148,10 +135,10 @@ class MoviesListViewModel(
 
         if (!item.isClicked) {
             item.isClicked = true
-            selectedMovie = SelectedMovie(constants.mediaType, item.id, item.isClicked)
+            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
         } else {
             item.isClicked = false
-            selectedMovie = SelectedMovie(constants.mediaType, item.id, item.isClicked)
+            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
         }
         addRemoveFavourites(selectedMovie)
     }
@@ -160,7 +147,7 @@ class MoviesListViewModel(
         launch {
             try {
                 val response = RetrofitService.getPostApi()
-                    .addRemoveFavourites(constants.apiKey, sessionId, selectedMovie)
+                    .addRemoveFavourites(apiKey, sessionId, selectedMovie)
                 if (response.isSuccessful) {
                 }
             } catch (e: Exception) {
@@ -182,7 +169,7 @@ class MoviesListViewModel(
             try {
                 val response =
                     RetrofitService.getPostApi()
-                        .getMovieStates(movie.id, constants.apiKey, sessionId)
+                        .getMovieStates(movie.id, apiKey, sessionId)
                 if (response.isSuccessful) {
                     val movieStatus = response.body()
                     if (movieStatus != null) {
