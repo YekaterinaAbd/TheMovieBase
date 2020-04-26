@@ -27,8 +27,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var signInViewModel: SignInViewModel
     private lateinit var viewModelProviderFactory: ViewModelProviderFactory
 
-    private val constants: Constants =
-        Constants()
+    private val constants: Constants = Constants()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -31,8 +31,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var companies: TextView
 
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
-    private val constants: Constants =
-        Constants()
+    private val constants: Constants = Constants()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

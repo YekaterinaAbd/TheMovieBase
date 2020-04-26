@@ -28,8 +28,7 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
     private lateinit var moviesListViewModel: MoviesListViewModel
 
-    private val constants: Constants =
-        Constants()
+    private val constants: Constants = Constants()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

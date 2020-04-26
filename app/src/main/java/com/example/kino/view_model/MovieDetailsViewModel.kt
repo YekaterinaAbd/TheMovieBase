@@ -14,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
 class MovieDetailsViewModel(context: Context) : ViewModel(), CoroutineScope {
 
     private var movieDao: MovieDao = MovieDatabase.getDatabase(context = context).movieDao()
-    private val constans: Constants = Constants()
+    private val constants: Constants = Constants()
     val liveData = MutableLiveData<State>()
 
     private val job = Job()
@@ -31,7 +31,7 @@ class MovieDetailsViewModel(context: Context) : ViewModel(), CoroutineScope {
         launch {
             val movie = withContext(Dispatchers.IO) {
                 try {
-                    val response = RetrofitService.getPostApi().getMovieById(id, constans.apiKey)
+                    val response = RetrofitService.getPostApi().getMovieById(id, constants.apiKey)
                     if (response.isSuccessful) {
                         val movieDetails = response.body()
                         if (movieDetails != null) {

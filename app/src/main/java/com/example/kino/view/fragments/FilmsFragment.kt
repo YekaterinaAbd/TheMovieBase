@@ -27,8 +27,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     private lateinit var moviesListViewModel: MoviesListViewModel
-    private val constants: Constants =
-        Constants()
+    private val constants: Constants = Constants()
 
 
     override fun onCreateView(

@@ -27,8 +27,7 @@ class MoviesListViewModel(
     private var movieStatusDao: MovieStatusDao =
         MovieDatabase.getDatabase(context = context).movieStatusDao()
 
-    private val constants: Constants =
-        Constants()
+    private val constants: Constants = Constants()
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sessionId: String
 

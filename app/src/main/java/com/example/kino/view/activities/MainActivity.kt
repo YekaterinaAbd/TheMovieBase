@@ -20,8 +20,7 @@ class MainActivity : AppCompatActivity() {
     private val fragmentManager: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
 
-    private val constants: Constants =
-        Constants()
+    private val constants: Constants = Constants()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
