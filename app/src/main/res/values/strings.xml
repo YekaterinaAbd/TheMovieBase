@@ -11,7 +11,7 @@
     <string name="tagline">« %1$s »</string>
     <string name="error_occurred">Error occurred</string>
     <string name="internet_error">Internet error</string>
-    <string name="wrong_data">Wrong data></string>
+    <string name="wrong_data">Wrong data</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="offline_adding_notification">Selected movie will be added after internet connection</string>
     <string name="genre_name">%1$s,\u0020</string>
