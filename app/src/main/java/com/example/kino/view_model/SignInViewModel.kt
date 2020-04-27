@@ -7,7 +7,7 @@ import com.example.kino.R
 import com.example.kino.model.account.LoginValidationData
 import com.example.kino.model.account.Token
 import com.example.kino.utils.RetrofitService
-import com.example.kino.utils.apiKey
+import com.example.kino.utils.API_KEY
 import kotlinx.coroutines.launch
 
 class SignInViewModel(private val context: Context) : BaseViewModel() {
@@ -34,7 +34,7 @@ class SignInViewModel(private val context: Context) : BaseViewModel() {
         launch {
             liveData.value = State.ShowLoading
             try {
-                val response = RetrofitService.getPostApi().createRequestToken(apiKey)
+                val response = RetrofitService.getPostApi().createRequestToken(API_KEY)
                 if (response.isSuccessful) {
                     username = receivedUsername
                     password = receivedPassword
@@ -65,7 +65,7 @@ class SignInViewModel(private val context: Context) : BaseViewModel() {
             try {
                 val response =
                     RetrofitService.getPostApi()
-                        .validateWithLogin(apiKey, loginValidationData)
+                        .validateWithLogin(API_KEY, loginValidationData)
                 if (response.isSuccessful) {
                     token = Token(receivedToken)
                     createSession()
@@ -84,7 +84,7 @@ class SignInViewModel(private val context: Context) : BaseViewModel() {
         launch {
             liveData.value = State.ShowLoading
             try {
-                val response = RetrofitService.getPostApi().createSession(apiKey, token)
+                val response = RetrofitService.getPostApi().createSession(API_KEY, token)
                 if (response.isSuccessful) {
                     sessionId = response.body()?.sessionId.toString()
                     saveToSharedPreferences()

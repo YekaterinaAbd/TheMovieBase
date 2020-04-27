@@ -6,7 +6,7 @@ import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.movie.Movie
 import com.example.kino.utils.RetrofitService
-import com.example.kino.utils.apiKey
+import com.example.kino.utils.API_KEY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,7 +21,7 @@ class MovieDetailsViewModel(context: Context) : BaseViewModel() {
         launch {
             val movie = withContext(Dispatchers.IO) {
                 try {
-                    val response = RetrofitService.getPostApi().getMovieById(id, apiKey)
+                    val response = RetrofitService.getPostApi().getMovieById(id, API_KEY)
                     if (response.isSuccessful) {
                         val movieDetails = response.body()
                         if (movieDetails != null) {

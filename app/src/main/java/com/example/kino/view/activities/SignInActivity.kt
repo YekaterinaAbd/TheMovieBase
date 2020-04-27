@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
-import com.example.kino.utils.signUpUrl
+import com.example.kino.utils.SIGN_UP_URL
 import com.example.kino.view_model.SignInViewModel
 import com.example.kino.view_model.ViewModelProviderFactory
 
@@ -54,7 +54,7 @@ class SignInActivity : AppCompatActivity() {
 
         registrationLink.setOnClickListener {
             val browserIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse(signUpUrl))
+                Intent(Intent.ACTION_VIEW, Uri.parse(SIGN_UP_URL))
             startActivity(browserIntent)
         }
 

@@ -1,17 +1,19 @@
 package com.example.kino.view.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.kino.R
-import com.example.kino.utils.tag
+import com.example.kino.utils.TAG
 import com.example.kino.view.fragments.AccountFragment
 import com.example.kino.view.fragments.FavouritesFragment
 import com.example.kino.view.fragments.FilmsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.setOnNavigationItemSelectedListener(navListener)
 
-        fragmentManager.beginTransaction().add(R.id.frame, FilmsFragment(), tag).commit()
+        fragmentManager.beginTransaction().add(R.id.frame, FilmsFragment(), TAG).commit()
     }
 
     private val navListener =

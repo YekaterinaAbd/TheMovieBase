@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
-import com.example.kino.utils.imageUrl
-import com.example.kino.utils.intentKey
+import com.example.kino.utils.IMAGE_URL
+import com.example.kino.utils.INTENT_KEY
 import com.example.kino.view_model.MovieDetailsViewModel
 import com.example.kino.view_model.ViewModelProviderFactory
 import com.squareup.picasso.Picasso
@@ -39,7 +39,7 @@ class MovieDetailActivity : AppCompatActivity() {
         setViewModel()
         bindViews()
 
-        val postId = intent.getIntExtra(intentKey, 1)
+        val postId = intent.getIntExtra(INTENT_KEY, 1)
         getMovie(id = postId)
     }
 
@@ -109,7 +109,7 @@ class MovieDetailActivity : AppCompatActivity() {
         }
 
         Picasso.get()
-            .load(imageUrl + movie.posterPath)
+            .load(IMAGE_URL + movie.posterPath)
             .into(poster)
     }
 }
