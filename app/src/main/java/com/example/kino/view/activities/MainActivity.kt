@@ -22,16 +22,28 @@ class MainActivity : AppCompatActivity() {
     private val fragmentManager: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         toolbar = findViewById(R.id.toolbar)
 
+        onNewIntent(intent)
+
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.setOnNavigationItemSelectedListener(navListener)
 
-        fragmentManager.beginTransaction().add(R.id.frame, FilmsFragment(), TAG).commit()
+        FirebaseMessaging.getInstance().subscribeToTopic("movies")
+            .addOnCompleteListener { task ->
+                var msg = "Subscribed"
+                if (!task.isSuccessful) {
+                    msg = "Not subscribed"
+                }
+                Log.d("TAGGG", msg)
+            }
+
+        fragmentManager.beginTransaction().replace(R.id.frame, FilmsFragment(), TAG).commit()
     }
 
     private val navListener =
@@ -41,6 +53,7 @@ class MainActivity : AppCompatActivity() {
                     activeFragment = FilmsFragment()
                     fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
                     toolbar.text = getString(R.string.top_rated_movies)
+                    Log.d("TAGGG", "fm3")
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.favourites -> {
