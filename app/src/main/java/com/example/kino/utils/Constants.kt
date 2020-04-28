@@ -8,3 +8,8 @@ const val IMAGE_URL: String = "https://image.tmdb.org/t/p/w500"
 const val INTENT_KEY: String = "movie_id"
 const val TAG: String = "1"
 const val DEFAULT_VALUE: String = "default"
+
+const val TITLE = "title"
+const val CONTENT = "content"
+const val CHANNEL = "main"
+const val MOVIES_URL = "https://www.themoviedb.org/movie"
