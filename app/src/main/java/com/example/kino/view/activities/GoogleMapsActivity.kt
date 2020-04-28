@@ -16,7 +16,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class GoogleMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private lateinit var mMap: GoogleMap
+    private lateinit var map: GoogleMap
     private lateinit var markersViewModel: MarkersViewModel
     private lateinit var viewModelProviderFactory: ViewModelProviderFactory
     private lateinit var markers: List<Marker>
@@ -40,19 +40,19 @@ class GoogleMapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+        map = googleMap
 
         if (!markers.isNullOrEmpty()) {
             for (marker in markers) {
                 val mapMarker = LatLng(marker.lat, marker.lng)
-                mMap.addMarker(MarkerOptions().position(mapMarker).title(marker.title))
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(marker.lat, marker.lng)))
+                map.addMarker(MarkerOptions().position(mapMarker).title(marker.title))
+                map.moveCamera(CameraUpdateFactory.newLatLng(LatLng(marker.lat, marker.lng)))
             }
 
             val zoomLevel = 11.0f
             val marker = markers[markers.size - 1]
             val latLng = LatLng(marker.lat, marker.lng)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
         }
     }
 }
