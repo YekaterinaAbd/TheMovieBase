@@ -12,6 +12,7 @@ import com.example.kino.R
 import com.example.kino.utils.SIGN_UP_URL
 import com.example.kino.view_model.SignInViewModel
 import com.example.kino.view_model.ViewModelProviderFactory
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 class SignInActivity : AppCompatActivity() {
@@ -27,13 +28,20 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var signInViewModel: SignInViewModel
     private lateinit var viewModelProviderFactory: ViewModelProviderFactory
 
+    private val topic = "movies"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
+        subscribeToTopic()
         setViewModel()
         signInProcessing()
         bindViews()
+    }
+
+    private fun subscribeToTopic() {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
     }
 
     private fun setViewModel() {

@@ -1,7 +1,6 @@
 package com.example.kino.view.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +12,6 @@ import com.example.kino.view.fragments.AccountFragment
 import com.example.kino.view.fragments.FavouritesFragment
 import com.example.kino.view.fragments.FilmsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,19 +27,8 @@ class MainActivity : AppCompatActivity() {
 
         toolbar = findViewById(R.id.toolbar)
 
-        onNewIntent(intent)
-
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.setOnNavigationItemSelectedListener(navListener)
-
-        FirebaseMessaging.getInstance().subscribeToTopic("movies")
-            .addOnCompleteListener { task ->
-                var msg = "Subscribed"
-                if (!task.isSuccessful) {
-                    msg = "Not subscribed"
-                }
-                Log.d("TAGGG", msg)
-            }
 
         fragmentManager.beginTransaction().replace(R.id.frame, FilmsFragment(), TAG).commit()
     }
@@ -53,7 +40,6 @@ class MainActivity : AppCompatActivity() {
                     activeFragment = FilmsFragment()
                     fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
                     toolbar.text = getString(R.string.top_rated_movies)
-                    Log.d("TAGGG", "fm3")
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.favourites -> {
