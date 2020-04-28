@@ -10,13 +10,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
 import com.example.kino.utils.SIGN_UP_URL
+import com.example.kino.view_model.MarkersViewModel
 import com.example.kino.view_model.SignInViewModel
 import com.example.kino.view_model.ViewModelProviderFactory
 import com.google.firebase.messaging.FirebaseMessaging
 
 
 class SignInActivity : AppCompatActivity() {
-
 
     private lateinit var wrongDataText: TextView
     private lateinit var signInButton: Button
@@ -26,16 +26,17 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
 
     private lateinit var signInViewModel: SignInViewModel
+    private lateinit var markersViewModel: MarkersViewModel
     private lateinit var viewModelProviderFactory: ViewModelProviderFactory
 
     private val topic = "movies"
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
         subscribeToTopic()
         setViewModel()
+        markersViewModel.fillDatabase()
         signInProcessing()
         bindViews()
     }
@@ -48,6 +49,8 @@ class SignInActivity : AppCompatActivity() {
         viewModelProviderFactory = ViewModelProviderFactory(context = this)
         signInViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(SignInViewModel::class.java)
+        markersViewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(MarkersViewModel::class.java)
     }
 
     private fun bindViews() {

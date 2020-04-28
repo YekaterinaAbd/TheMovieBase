@@ -15,4 +15,5 @@
     <string name="no_internet_connection">No internet connection</string>
     <string name="offline_adding_notification">Selected movie will be added after internet connection</string>
     <string name="genre_name">%1$s,\u0020</string>
+    <string name="title_activity_google_maps">Map</string>
 </resources>
