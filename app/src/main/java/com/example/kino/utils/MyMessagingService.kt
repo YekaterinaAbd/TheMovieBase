@@ -30,19 +30,9 @@ class MyMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendNotification(remoteMessage: RemoteMessage) {
-        val data: Map<String, String> = remoteMessage.data
-        val title = data[TITLE]
-        val content = data[CONTENT]
-        val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-        val pendingIntent: PendingIntent =
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
@@ -50,28 +40,40 @@ class MyMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
-        val builder =
-            NotificationCompat.Builder(applicationContext, CHANNEL)
-                .setSmallIcon(R.drawable.ic_play_circle_filled_black_24dp)
-                .setSound(uri)
-                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-                .setContentTitle(title)
-                .setContentText(content)
-                .setCustomContentView(getCollapsedDesign(title, content))
-                .setCustomBigContentView(getExpandedDesign())
-                .setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .setAutoCancel(true)
-                .setOnlyAlertOnce(true)
+        val builder = setNotificationBuilder(remoteMessage)
 
         val notification: Notification = builder.build()
         notification.flags = Notification.FLAG_AUTO_CANCEL
-
         notificationManager.notify(notificationId, notification)
     }
 
-    private fun getCollapsedDesign(title: String?, message: String?): RemoteViews {
+    private fun setNotificationBuilder(remoteMessage: RemoteMessage): NotificationCompat.Builder {
+        val data: Map<String, String> = remoteMessage.data
+        val title = data[TITLE]
+        val content = data[CONTENT]
+        val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+        val pendingIntent: PendingIntent =
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+
+        return NotificationCompat.Builder(applicationContext, CHANNEL)
+            .setSmallIcon(R.drawable.ic_play_circle_filled_black_24dp)
+            .setSound(uri)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setContentTitle(title)
+            .setContentText(content)
+            .setCustomContentView(getCollapsedDesign(title, content))
+            .setCustomBigContentView(getExpandedDesign())
+            .setContentIntent(pendingIntent)
+            .setOngoing(true)
+            .setAutoCancel(true)
+            .setOnlyAlertOnce(true)
+    }
+
+    private fun getCollapsedDesign(title: String?, message: String?): RemoteViews {
         val remoteViews = RemoteViews(applicationContext.packageName, R.layout.notification)
         remoteViews.setTextViewText(R.id.title, title)
         remoteViews.setTextViewText(R.id.message, message)
@@ -82,11 +84,11 @@ class MyMessagingService : FirebaseMessagingService() {
         val remoteViews =
             RemoteViews(applicationContext.packageName, R.layout.notification_expanded)
 
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(MOVIES_URL))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(MOVIES_URL))
+        browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         val pendingIntent: PendingIntent =
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            PendingIntent.getActivity(this, 0, browserIntent, PendingIntent.FLAG_CANCEL_CURRENT)
 
         remoteViews.setOnClickPendingIntent(R.id.checkout_button, pendingIntent)
 
