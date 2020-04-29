@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kino.R
-import com.example.kino.utils.defaultValue
+import com.example.kino.utils.DEFAULT_VALUE
 
 class AccountViewModel(private val context: Context) : ViewModel() {
 
@@ -23,7 +23,7 @@ class AccountViewModel(private val context: Context) : ViewModel() {
             liveData.value =
                 sharedPreferences.getString(
                     context.getString(R.string.username),
-                    defaultValue
+                    DEFAULT_VALUE
                 )
     }
 }

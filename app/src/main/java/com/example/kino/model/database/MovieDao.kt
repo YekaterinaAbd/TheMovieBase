@@ -1,6 +1,9 @@
 package com.example.kino.model.database
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.example.kino.model.movie.Movie
 
 @Dao
@@ -28,4 +31,7 @@ interface MovieDao {
 
     @Query("DELETE FROM movies")
     fun deleteAll()
+
+    @Query("SELECT * FROM movies ORDER BY RANDOM() LIMIT 1")
+    fun getRandomMovie(): Movie
 }

@@ -42,7 +42,7 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
         if (sharedPref.contains(context.getString(R.string.session_id))) {
             sessionId = sharedPref.getString(
                 context.getString(R.string.session_id),
-                nullableValue
+                NULLABLE_VALUE
             ) as String
         }
     }
@@ -86,7 +86,7 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
     }
 
     private suspend fun getTop(): List<Movie>? {
-        val response = RetrofitService.getPostApi().getMovieList(apiKey)
+        val response = RetrofitService.getPostApi().getMovieList(API_KEY)
         return if (response.isSuccessful) {
             val movies = response.body()?.movieList
 
@@ -105,7 +105,7 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
     }
 
     private suspend fun getFavourites(): List<Movie>? {
-        val response = RetrofitService.getPostApi().getFavouriteMovies(apiKey, sessionId)
+        val response = RetrofitService.getPostApi().getFavouriteMovies(API_KEY, sessionId)
         return if (response.isSuccessful) {
             val movies = response.body()?.movieList
 
@@ -135,10 +135,10 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
 
         if (!item.isClicked) {
             item.isClicked = true
-            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
+            selectedMovie = SelectedMovie(MEDIA_TYPE, item.id, item.isClicked)
         } else {
             item.isClicked = false
-            selectedMovie = SelectedMovie(mediaType, item.id, item.isClicked)
+            selectedMovie = SelectedMovie(MEDIA_TYPE, item.id, item.isClicked)
         }
         addRemoveFavourites(selectedMovie)
     }
@@ -147,7 +147,7 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
         launch {
             try {
                 val response = RetrofitService.getPostApi()
-                    .addRemoveFavourites(apiKey, sessionId, selectedMovie)
+                    .addRemoveFavourites(API_KEY, sessionId, selectedMovie)
                 if (response.isSuccessful) {
                 }
             } catch (e: Exception) {
@@ -169,7 +169,7 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
             try {
                 val response =
                     RetrofitService.getPostApi()
-                        .getMovieStates(movie.id, apiKey, sessionId)
+                        .getMovieStates(movie.id, API_KEY, sessionId)
                 if (response.isSuccessful) {
                     val movieStatus = response.body()
                     if (movieStatus != null) {

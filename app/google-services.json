@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "333019078301",
+    "firebase_url": "https://movies-app-d1489.firebaseio.com",
+    "project_id": "movies-app-d1489",
+    "storage_bucket": "movies-app-d1489.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333019078301:android:33d70bad27228208583e74",
+        "android_client_info": {
+          "package_name": "team.codebuster.retrofitexample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "333019078301-4ct3fq1gs1qllteon0c6cdreg6lld31r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRXsrvusFKA1CtIqmmj7aA8MYvIOFvMYo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "333019078301-4ct3fq1gs1qllteon0c6cdreg6lld31r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

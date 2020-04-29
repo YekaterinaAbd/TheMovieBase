@@ -1,7 +1,7 @@
 package com.example.kino.model.movie
 
 import com.example.kino.utils.RetrofitService
-import com.example.kino.utils.apiKey
+import com.example.kino.utils.API_KEY
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,7 +20,7 @@ object GenresList : CoroutineScope {
     fun getGenres() {
         launch {
             try {
-                val response = RetrofitService.getPostApi().getGenres(apiKey)
+                val response = RetrofitService.getPostApi().getGenres(API_KEY)
                 if (response.isSuccessful) {
                     val receivedGenres = response.body()
                     if (receivedGenres != null) {
