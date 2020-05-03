@@ -9,10 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
+import com.example.kino.utils.SIGNED_IN
 import com.example.kino.utils.SIGN_UP_URL
 import com.example.kino.view_model.MarkersViewModel
 import com.example.kino.view_model.SignInViewModel
 import com.example.kino.view_model.ViewModelProviderFactory
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
 
 
@@ -28,6 +30,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var signInViewModel: SignInViewModel
     private lateinit var markersViewModel: MarkersViewModel
     private lateinit var viewModelProviderFactory: ViewModelProviderFactory
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private val topic = "movies"
 
@@ -35,6 +38,7 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
         subscribeToTopic()
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         setViewModel()
         markersViewModel.fillDatabase()
         signInProcessing()
@@ -72,6 +76,9 @@ class SignInActivity : AppCompatActivity() {
         signInButton.setOnClickListener {
             signInProcessing()
             signInViewModel.createTokenRequest(username.text.toString(), password.text.toString())
+
+            val bundle = Bundle()
+            firebaseAnalytics.logEvent(SIGNED_IN, bundle)
         }
     }
 
