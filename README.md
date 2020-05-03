@@ -10,3 +10,5 @@
 
 <li>Firebase push notifications(customized design)</li>
 <li>Google maps: providing markers of 10 cinemas in Almaty</li>
+<li>Firebase analytics</li>
+<li>Firebase crashlytics</li>
