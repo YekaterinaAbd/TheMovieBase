@@ -13,14 +13,17 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
-import com.example.kino.utils.FragmentEnum
-import com.example.kino.utils.INTENT_KEY
+import com.example.kino.utils.*
 import com.example.kino.view.RecyclerViewAdapter
 import com.example.kino.view.activities.MovieDetailActivity
 import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.ViewModelProviderFactory
+import com.google.firebase.analytics.FirebaseAnalytics
+
 
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private lateinit var recyclerView: RecyclerView
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
@@ -35,6 +38,8 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity())
         setViewModel()
         bindViews(view)
         setAdapter()
@@ -66,13 +71,24 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         recyclerView.adapter = recyclerViewAdapter
     }
 
+    private fun logEvent(logMessage: String, item: Movie) {
+        val bundle = Bundle()
+        bundle.putString(MOVIE_ID, item.id.toString())
+        bundle.putString(MOVIE_TITLE, item.title)
+        firebaseAnalytics.logEvent(logMessage, bundle)
+    }
+
     override fun itemClick(position: Int, item: Movie) {
+
+        logEvent(MOVIE_CLICKED, item)
+
         val intent = Intent(context, MovieDetailActivity::class.java)
         intent.putExtra(INTENT_KEY, item.id)
         startActivity(intent)
     }
 
     override fun addToFavourites(position: Int, item: Movie) {
+        if (!item.isClicked) logEvent(MOVIE_LIKED, item)
         moviesListViewModel.addToFavourites(item)
     }
 
