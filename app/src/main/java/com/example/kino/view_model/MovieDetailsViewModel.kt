@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.movie.Movie
-import com.example.kino.utils.RetrofitService
+import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.API_KEY
+import com.example.kino.utils.RetrofitService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -14,6 +15,7 @@ import kotlinx.coroutines.withContext
 class MovieDetailsViewModel(context: Context) : BaseViewModel() {
 
     private var movieDao: MovieDao = MovieDatabase.getDatabase(context = context).movieDao()
+    private var movieRepository = MovieRepositoryImpl(movieDao, RetrofitService.getPostApi())
     val liveData = MutableLiveData<State>()
 
     fun getMovie(id: Int) {
@@ -21,20 +23,21 @@ class MovieDetailsViewModel(context: Context) : BaseViewModel() {
         launch {
             val movie = withContext(Dispatchers.IO) {
                 try {
-                    val response = RetrofitService.getPostApi().getMovieById(id, API_KEY)
-                    if (response.isSuccessful) {
-                        val movieDetails = response.body()
-                        if (movieDetails != null) {
-                            movieDetails.runtime?.let { movieDao.updateMovieRuntime(it, id) }
-                            movieDetails.tagline?.let { movieDao.updateMovieTagline(it, id) }
+                    val movieDetails = movieRepository.getRemoteMovie(id, API_KEY)
+                    if (movieDetails != null) {
+                        movieDetails.tagline?.let {
+                            movieDetails.runtime?.let { it1 ->
+                                movieRepository.updateLocalMovieProperties(
+                                    it,
+                                    it1, movieDetails.id
+                                )
+                            }
                         }
-                        return@withContext movieDetails
-                    } else {
-                        return@withContext movieDao.getMovie(id)
                     }
+                    return@withContext movieDetails
 
                 } catch (e: Exception) {
-                    movieDao.getMovie(id)
+                    movieRepository.getLocalMovie(id)
                 }
             }
             liveData.value = State.HideLoading
