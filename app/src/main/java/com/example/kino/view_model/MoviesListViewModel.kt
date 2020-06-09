@@ -170,7 +170,7 @@ class MoviesListViewModel(
             try {
                 val movieStatus = movieRepository.getRemoteMovieStates(movie.id, API_KEY, sessionId)
                 if (movieStatus != null) {
-                    movie.isClicked = movieStatus.selectedStatus
+                    movie.isClicked = movieStatus
                     withContext(Dispatchers.IO) {
                         movieRepository.updateLocalMovieIsCLicked(movie.isClicked, movie.id)
                     }

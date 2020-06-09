@@ -6,17 +6,19 @@ import androidx.lifecycle.MutableLiveData
 import com.example.kino.R
 import com.example.kino.model.account.LoginValidationData
 import com.example.kino.model.account.Token
-import com.example.kino.utils.RetrofitService
+import com.example.kino.model.repository.AccountRepositoryImpl
 import com.example.kino.utils.API_KEY
+import com.example.kino.utils.RetrofitService
 import kotlinx.coroutines.launch
 
 class SignInViewModel(private val context: Context) : BaseViewModel() {
     private lateinit var loginValidationData: LoginValidationData
-    private lateinit var token: Token
+    private var token: Token? = null
     private var sessionId: String = ""
-    private var receivedToken: String = ""
     private var username: String = ""
     private var password: String = ""
+
+    private var accountRepository = AccountRepositoryImpl(RetrofitService.getPostApi())
 
     val liveData = MutableLiveData<State>()
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
@@ -34,25 +36,22 @@ class SignInViewModel(private val context: Context) : BaseViewModel() {
         launch {
             liveData.value = State.ShowLoading
             try {
-                val response = RetrofitService.getPostApi().createRequestToken(API_KEY)
-                if (response.isSuccessful) {
-                    username = receivedUsername
-                    password = receivedPassword
-                    val requestedToken = response.body()
-                    if (requestedToken != null) {
-                        receivedToken = requestedToken.token
-                        loginValidationData = LoginValidationData(
-                            username,
-                            password,
-                            receivedToken
-                        )
-                        validateWithLogin()
-                    }
+                token = accountRepository.createToken(API_KEY)
+                username = receivedUsername
+                password = receivedPassword
 
+                if (token != null) {
+                    loginValidationData = LoginValidationData(
+                        username,
+                        password,
+                        token!!.token
+                    )
+                    validateWithLogin()
                 } else {
                     liveData.value = State.FailedLoading
                     liveData.value = State.HideLoading
                 }
+
             } catch (e: Exception) {
                 liveData.value = State.FailedLoading
                 liveData.value = State.HideLoading
@@ -63,11 +62,8 @@ class SignInViewModel(private val context: Context) : BaseViewModel() {
     private fun validateWithLogin() {
         launch {
             try {
-                val response =
-                    RetrofitService.getPostApi()
-                        .validateWithLogin(API_KEY, loginValidationData)
-                if (response.isSuccessful) {
-                    token = Token(receivedToken)
+                val response = accountRepository.validateWithLogin(API_KEY, loginValidationData)
+                if (response) {
                     createSession()
                 } else {
                     liveData.value = State.WrongDataProvided
@@ -84,13 +80,12 @@ class SignInViewModel(private val context: Context) : BaseViewModel() {
         launch {
             liveData.value = State.ShowLoading
             try {
-                val response = RetrofitService.getPostApi().createSession(API_KEY, token)
-                if (response.isSuccessful) {
-                    sessionId = response.body()?.sessionId.toString()
-                    saveToSharedPreferences()
-                    liveData.value = State.HideLoading
-                    liveData.value = State.Result
-                }
+                sessionId =
+                    token?.let { accountRepository.getSessionId(API_KEY, it).toString() }.toString()
+                saveToSharedPreferences()
+                liveData.value = State.HideLoading
+                liveData.value = State.Result
+
             } catch (e: Exception) {
                 liveData.value = State.FailedLoading
                 liveData.value = State.HideLoading

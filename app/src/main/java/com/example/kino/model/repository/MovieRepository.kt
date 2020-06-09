@@ -9,22 +9,22 @@ import com.example.kino.utils.PostApi
 
 interface MovieRepository {
     fun getLocalMovies(): List<Movie>?
+    fun getLocalMovie(id: Int): Movie?
     fun getLocalFavouriteMovies(): List<Movie>?
     fun insertLocalMovies(movies: List<Movie>)
-    fun deleteLocalMovies()
     fun updateLocalMovieIsCLicked(isClicked: Boolean, id: Int)
     fun updateLocalMovieProperties(tagline: String, runtime: Int, id: Int)
-    fun getLocalMovie(id: Int): Movie?
+    fun deleteLocalMovies()
 
-    fun insertLocalMovieStatus(movieState:MovieStatus)
     fun getLocalMovieStatuses(): List<MovieStatus>?
+    fun insertLocalMovieStatus(movieState:MovieStatus)
     fun deleteLocalMovieStatuses()
 
     suspend fun getRemoteMovie(id: Int, apiKey: String): Movie?
     suspend fun getRemoteMovieList(apiKey: String): List<Movie>?
     suspend fun getRemoteFavouriteMovies(apiKey: String, sessionId: String): List<Movie>?
+    suspend fun getRemoteMovieStates(movieId: Int, apiKey: String, sessionId: String): Boolean?
     suspend fun addRemoveRemoteFavourites(apiKey: String, sessionId: String, fav: SelectedMovie)
-    suspend fun getRemoteMovieStates(movieId: Int, apiKey: String, sessionId: String): MovieStatus?
 }
 
 class MovieRepositoryImpl constructor(
@@ -94,8 +94,8 @@ class MovieRepositoryImpl constructor(
         movieId: Int,
         apiKey: String,
         sessionId: String
-    ): MovieStatus? {
-        return service?.getMovieStates(movieId, apiKey, sessionId)?.body()
+    ): Boolean? {
+        return service?.getMovieStates(movieId, apiKey, sessionId)?.body()?.selectedStatus
     }
 }
 
