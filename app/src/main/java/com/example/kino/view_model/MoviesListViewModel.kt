@@ -79,7 +79,7 @@ class MoviesListViewModel(
     }
 
     private fun updateFavourites() {
-        val moviesToUpdate = movieStatusDao.getMovieStatuses()
+        val moviesToUpdate = movieRepository.getLocalMovieStatuses()
         if (!moviesToUpdate.isNullOrEmpty()) {
             for (movie in moviesToUpdate) {
                 val selectedMovie = SelectedMovie(
@@ -157,10 +157,9 @@ class MoviesListViewModel(
                         selectedMovie.selectedStatus,
                         selectedMovie.movieId
                     )
-                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     val movieStatus =
                         MovieStatus(selectedMovie.movieId, selectedMovie.selectedStatus)
-                    movieStatusDao.insertMovieStatus(movieStatus)
+                    movieRepository.insertLocalMovieStatus(movieStatus)
                 }
             }
         }

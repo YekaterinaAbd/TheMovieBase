@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
                     activeFragment = FilmsFragment()
                     fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
                     toolbar.text = getString(R.string.top_rated_movies)
+                    toolbar.visibility = View.VISIBLE
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.favourites -> {
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity() {
                     fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
 
                     toolbar.text = getString(R.string.favourite_movie)
+                    toolbar.visibility = View.VISIBLE
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.account -> {
