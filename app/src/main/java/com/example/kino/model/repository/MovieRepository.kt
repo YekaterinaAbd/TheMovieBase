@@ -27,7 +27,7 @@ interface MovieRepository {
     suspend fun addRemoveRemoteFavourites(apiKey: String, sessionId: String, fav: SelectedMovie)
 }
 
-class MovieRepositoryImpl constructor(
+class MovieRepositoryImpl(
     private var movieDao: MovieDao? = null,
     private var service: PostApi? = null,
     private var movieStatusDao: MovieStatusDao? = null

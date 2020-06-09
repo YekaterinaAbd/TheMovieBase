@@ -5,6 +5,7 @@ import com.example.kino.model.Marker
 import com.example.kino.model.database.MarkerDao
 import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.generateMarkers
+import com.example.kino.model.repository.MarkerRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -12,12 +13,13 @@ import kotlinx.coroutines.withContext
 
 class MarkersViewModel(context: Context) : BaseViewModel() {
     private var markerDao: MarkerDao = MovieDatabase.getDatabase(context = context).markerDao()
+    private var markerRepository = MarkerRepositoryImpl(markerDao)
 
     fun fillDatabase() {
         launch {
             withContext(Dispatchers.IO) {
-                markerDao.deleteAll()
-                markerDao.insertAll(generateMarkers())
+                markerRepository.deleteMarkers()
+                markerRepository.insertMarkers(generateMarkers())
             }
         }
     }
@@ -28,7 +30,7 @@ class MarkersViewModel(context: Context) : BaseViewModel() {
 
     private suspend fun getMarkersFromDatabase(): List<Marker> {
         return withContext(Dispatchers.IO) {
-            return@withContext markerDao.getMarkers() as MutableList
+            return@withContext markerRepository.getMarkers() as MutableList
         }
     }
 }
