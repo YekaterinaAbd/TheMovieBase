@@ -11,7 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
 import com.example.kino.model.database.MarkerDao
 import com.example.kino.model.database.MovieDatabase
+import com.example.kino.model.repository.AccountRepository
+import com.example.kino.model.repository.AccountRepositoryImpl
 import com.example.kino.model.repository.MarkerRepositoryImpl
+import com.example.kino.utils.RetrofitService
 import com.example.kino.utils.SIGNED_IN
 import com.example.kino.utils.SIGN_UP_URL
 import com.example.kino.view_model.MarkersViewModel
@@ -30,6 +33,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var registrationLink: TextView
     private lateinit var progressBar: ProgressBar
 
+    private lateinit var signInRepository: AccountRepository
     private lateinit var signInViewModel: SignInViewModel
     private lateinit var markersViewModel: MarkersViewModel
     private lateinit var viewModelProviderFactory: ViewModelProviderFactory
@@ -54,8 +58,9 @@ class SignInActivity : AppCompatActivity() {
 
     private fun setViewModel() {
         viewModelProviderFactory = ViewModelProviderFactory(context = this)
+        signInRepository = AccountRepositoryImpl(RetrofitService.getPostApi())
         signInViewModel =
-            ViewModelProvider(this, viewModelProviderFactory).get(SignInViewModel::class.java)
+            SignInViewModel(this, signInRepository)
         val markerDao: MarkerDao = MovieDatabase.getDatabase(this).markerDao()
         markersViewModel = MarkersViewModel(MarkerRepositoryImpl(markerDao))
     }

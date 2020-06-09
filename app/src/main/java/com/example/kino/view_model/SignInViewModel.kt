@@ -6,19 +6,18 @@ import androidx.lifecycle.MutableLiveData
 import com.example.kino.R
 import com.example.kino.model.account.LoginValidationData
 import com.example.kino.model.account.Token
+import com.example.kino.model.repository.AccountRepository
 import com.example.kino.model.repository.AccountRepositoryImpl
 import com.example.kino.utils.API_KEY
 import com.example.kino.utils.RetrofitService
 import kotlinx.coroutines.launch
 
-class SignInViewModel(private val context: Context) : BaseViewModel() {
+class SignInViewModel(private val context: Context, private var accountRepository: AccountRepository?=null) : BaseViewModel() {
     private lateinit var loginValidationData: LoginValidationData
     private var token: Token? = null
     private var sessionId: String = ""
     private var username: String = ""
     private var password: String = ""
-
-    private var accountRepository = AccountRepositoryImpl(RetrofitService.getPostApi())
 
     val liveData = MutableLiveData<State>()
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
@@ -36,7 +35,7 @@ class SignInViewModel(private val context: Context) : BaseViewModel() {
         launch {
             liveData.value = State.ShowLoading
             try {
-                token = accountRepository.createToken(API_KEY)
+                token = accountRepository?.createToken(API_KEY)
                 username = receivedUsername
                 password = receivedPassword
 
@@ -62,8 +61,8 @@ class SignInViewModel(private val context: Context) : BaseViewModel() {
     private fun validateWithLogin() {
         launch {
             try {
-                val response = accountRepository.validateWithLogin(API_KEY, loginValidationData)
-                if (response) {
+                val response = accountRepository?.validateWithLogin(API_KEY, loginValidationData)
+                if (response==true) {
                     createSession()
                 } else {
                     liveData.value = State.WrongDataProvided
@@ -81,7 +80,7 @@ class SignInViewModel(private val context: Context) : BaseViewModel() {
             liveData.value = State.ShowLoading
             try {
                 sessionId =
-                    token?.let { accountRepository.getSessionId(API_KEY, it).toString() }.toString()
+                    token?.let { accountRepository?.getSessionId(API_KEY, it).toString() }.toString()
                 saveToSharedPreferences()
                 liveData.value = State.HideLoading
                 liveData.value = State.Result
