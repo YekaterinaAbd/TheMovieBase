@@ -7,13 +7,15 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
+import com.example.kino.model.database.MovieDao
+import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.movie.Movie
+import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.IMAGE_URL
 import com.example.kino.utils.INTENT_KEY
+import com.example.kino.utils.RetrofitService
 import com.example.kino.view_model.MovieDetailsViewModel
-import com.example.kino.view_model.ViewModelProviderFactory
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -44,9 +46,9 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun setViewModel() {
-        val viewModelProviderFactory = ViewModelProviderFactory(context = this)
+        val movieDao: MovieDao = MovieDatabase.getDatabase(this).movieDao()
         movieDetailsViewModel =
-            ViewModelProvider(this, viewModelProviderFactory).get(MovieDetailsViewModel::class.java)
+            MovieDetailsViewModel(MovieRepositoryImpl(movieDao, RetrofitService.getPostApi()))
     }
 
     private fun bindViews() {
