@@ -11,15 +11,21 @@ import com.example.kino.model.movie.GenresList
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.movie.MovieStatus
 import com.example.kino.model.movie.SelectedMovie
+import com.example.kino.model.repository.MovieRepository
+import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class MoviesListViewModel(private val context: Context) : BaseViewModel() {
-
+class MoviesListViewModel(
+    private val context: Context
+) : BaseViewModel() {
     private var movieDao: MovieDao = MovieDatabase.getDatabase(context = context).movieDao()
+    private val movieRepository: MovieRepository =
+        MovieRepositoryImpl(movieDao, RetrofitService.getPostApi())
+
     private var movieStatusDao: MovieStatusDao =
         MovieDatabase.getDatabase(context = context).movieStatusDao()
 
@@ -61,8 +67,8 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
 
                 } catch (e: Exception) {
                     when (type) {
-                        FragmentEnum.TOP -> return@withContext movieDao.getMovies()
-                        FragmentEnum.FAVOURITES -> return@withContext movieDao.getFavouriteMovies()
+                        FragmentEnum.TOP -> return@withContext movieRepository.getLocalMovies()
+                        FragmentEnum.FAVOURITES -> return@withContext movieRepository.getLocalFavouriteMovies()
                     }
                 }
             }
@@ -71,6 +77,7 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
         }
     }
 
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private fun updateFavourites() {
         val moviesToUpdate = movieStatusDao.getMovieStatuses()
         if (!moviesToUpdate.isNullOrEmpty()) {
@@ -86,28 +93,25 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
     }
 
     private suspend fun getTop(): List<Movie>? {
-        val response = RetrofitService.getPostApi().getMovieList(API_KEY)
-        return if (response.isSuccessful) {
-            val movies = response.body()?.movieList
-
+        return try {
+            val movies = movieRepository.getRemoteMovieList(API_KEY)
             if (!movies.isNullOrEmpty()) {
                 for (movie in movies) {
                     setMovieGenres(movie)
                     saveLikeStatus(movie)
                 }
-                movieDao.deleteAll()
-                movieDao.insertAll(movies)
+                movieRepository.deleteLocalMovies()
+                movieRepository.insertLocalMovies(movies)
             }
             movies
-        } else {
-            movieDao.getMovies()
+        } catch (e: Exception) {
+            movieRepository.getLocalMovies()
         }
     }
 
     private suspend fun getFavourites(): List<Movie>? {
-        val response = RetrofitService.getPostApi().getFavouriteMovies(API_KEY, sessionId)
-        return if (response.isSuccessful) {
-            val movies = response.body()?.movieList
+        return try {
+            val movies = movieRepository.getRemoteFavouriteMovies(API_KEY, sessionId)
 
             if (!movies.isNullOrEmpty()) {
                 for (movie in movies) {
@@ -116,8 +120,8 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
                 }
             }
             movies
-        } else {
-            movieDao.getFavouriteMovies()
+        } catch (e: Exception) {
+            movieRepository.getLocalFavouriteMovies()
         }
     }
 
@@ -146,16 +150,14 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
     private fun addRemoveFavourites(selectedMovie: SelectedMovie) {
         launch {
             try {
-                val response = RetrofitService.getPostApi()
-                    .addRemoveFavourites(API_KEY, sessionId, selectedMovie)
-                if (response.isSuccessful) {
-                }
+                movieRepository.addRemoveRemoteFavourites(API_KEY, sessionId, selectedMovie)
             } catch (e: Exception) {
                 withContext(Dispatchers.IO) {
-                    movieDao.updateMovieIsCLicked(
+                    movieRepository.updateLocalMovieIsCLicked(
                         selectedMovie.selectedStatus,
                         selectedMovie.movieId
                     )
+                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     val movieStatus =
                         MovieStatus(selectedMovie.movieId, selectedMovie.selectedStatus)
                     movieStatusDao.insertMovieStatus(movieStatus)
@@ -167,18 +169,13 @@ class MoviesListViewModel(private val context: Context) : BaseViewModel() {
     private fun saveLikeStatus(movie: Movie) {
         launch {
             try {
-                val response =
-                    RetrofitService.getPostApi()
-                        .getMovieStates(movie.id, API_KEY, sessionId)
-                if (response.isSuccessful) {
-                    val movieStatus = response.body()
-                    if (movieStatus != null) {
-                        movie.isClicked = movieStatus.selectedStatus
-                        withContext(Dispatchers.IO) {
-                            movieDao.updateMovieIsCLicked(movie.isClicked, movie.id)
-                        }
-                        liveData.value = State.Update
+                val movieStatus = movieRepository.getMovieStates(movie.id, API_KEY, sessionId)
+                if (movieStatus != null) {
+                    movie.isClicked = movieStatus.selectedStatus
+                    withContext(Dispatchers.IO) {
+                        movieRepository.updateLocalMovieIsCLicked(movie.isClicked, movie.id)
                     }
+                    liveData.value = State.Update
                 }
             } catch (e: Exception) {
             }
