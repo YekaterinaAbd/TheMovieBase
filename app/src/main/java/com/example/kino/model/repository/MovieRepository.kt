@@ -2,6 +2,7 @@ package com.example.kino.model.repository
 
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieStatusDao
+import com.example.kino.model.movie.Genres
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.movie.MovieStatus
 import com.example.kino.model.movie.SelectedMovie
@@ -19,6 +20,7 @@ interface MovieRepository {
     fun getLocalMovieStatuses(): List<MovieStatus>?
     fun deleteLocalAll()
 
+    suspend fun getRemoteGenres(apiKey: String): Genres?
     suspend fun getRemoteMovie(id: Int, apiKey: String): Movie?
     suspend fun getRemoteMovieList(apiKey: String): List<Movie>?
     suspend fun getRemoteFavouriteMovies(apiKey: String, sessionId: String): List<Movie>?
@@ -70,6 +72,10 @@ class MovieRepositoryImpl constructor(
 
     override fun deleteLocalAll() {
         movieStatusDao?.deleteAll()
+    }
+
+    override suspend fun getRemoteGenres(apiKey: String): Genres? {
+        return service?.getGenres(apiKey)?.body()
     }
 
     override suspend fun getRemoteMovie(id: Int, apiKey: String): Movie? =
