@@ -23,11 +23,12 @@ class MoviesListViewModel(
     private val context: Context
 ) : BaseViewModel() {
     private var movieDao: MovieDao = MovieDatabase.getDatabase(context = context).movieDao()
-    private val movieRepository: MovieRepository =
-        MovieRepositoryImpl(movieDao, RetrofitService.getPostApi())
 
     private var movieStatusDao: MovieStatusDao =
         MovieDatabase.getDatabase(context = context).movieStatusDao()
+
+    private val movieRepository: MovieRepository =
+        MovieRepositoryImpl(movieDao, RetrofitService.getPostApi(), movieStatusDao)
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sessionId: String
@@ -77,7 +78,6 @@ class MoviesListViewModel(
         }
     }
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private fun updateFavourites() {
         val moviesToUpdate = movieStatusDao.getMovieStatuses()
         if (!moviesToUpdate.isNullOrEmpty()) {
