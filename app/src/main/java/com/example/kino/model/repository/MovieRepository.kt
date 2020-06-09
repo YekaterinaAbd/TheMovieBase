@@ -15,15 +15,16 @@ interface MovieRepository {
     fun updateLocalMovieIsCLicked(isClicked: Boolean, id: Int)
     fun updateLocalMovieProperties(tagline: String, runtime: Int, id: Int)
     fun getLocalMovie(id: Int): Movie?
+
     fun insertLocalMovieStatus(movieState:MovieStatus)
     fun getLocalMovieStatuses(): List<MovieStatus>?
-    fun deleteLocalAll()
+    fun deleteLocalMovieStatuses()
 
     suspend fun getRemoteMovie(id: Int, apiKey: String): Movie?
     suspend fun getRemoteMovieList(apiKey: String): List<Movie>?
     suspend fun getRemoteFavouriteMovies(apiKey: String, sessionId: String): List<Movie>?
     suspend fun addRemoveRemoteFavourites(apiKey: String, sessionId: String, fav: SelectedMovie)
-    suspend fun getMovieStates(movieId: Int, apiKey: String, sessionId: String): MovieStatus?
+    suspend fun getRemoteMovieStates(movieId: Int, apiKey: String, sessionId: String): MovieStatus?
 }
 
 class MovieRepositoryImpl constructor(
@@ -68,7 +69,7 @@ class MovieRepositoryImpl constructor(
         return movieStatusDao?.getMovieStatuses()
     }
 
-    override fun deleteLocalAll() {
+    override fun deleteLocalMovieStatuses() {
         movieStatusDao?.deleteAll()
     }
 
@@ -89,7 +90,7 @@ class MovieRepositoryImpl constructor(
         service?.addRemoveFavourites(apiKey, sessionId, fav)
     }
 
-    override suspend fun getMovieStates(
+    override suspend fun getRemoteMovieStates(
         movieId: Int,
         apiKey: String,
         sessionId: String

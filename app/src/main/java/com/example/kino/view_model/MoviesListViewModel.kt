@@ -169,7 +169,7 @@ class MoviesListViewModel(
     private fun saveLikeStatus(movie: Movie) {
         launch {
             try {
-                val movieStatus = movieRepository.getMovieStates(movie.id, API_KEY, sessionId)
+                val movieStatus = movieRepository.getRemoteMovieStates(movie.id, API_KEY, sessionId)
                 if (movieStatus != null) {
                     movie.isClicked = movieStatus.selectedStatus
                     withContext(Dispatchers.IO) {

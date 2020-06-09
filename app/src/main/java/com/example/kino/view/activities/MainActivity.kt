@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                     logEvent(FAVOURITES_PAGE_CLICKED)
                     activeFragment = FavouritesFragment()
                     fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
+
                     toolbar.text = getString(R.string.favourite_movie)
                     return@OnNavigationItemSelectedListener true
                 }
