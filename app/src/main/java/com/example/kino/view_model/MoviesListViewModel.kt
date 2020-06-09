@@ -4,31 +4,24 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import com.example.kino.R
-import com.example.kino.model.database.MovieDao
-import com.example.kino.model.database.MovieDatabase
-import com.example.kino.model.database.MovieStatusDao
 import com.example.kino.model.movie.GenresList
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.movie.MovieStatus
 import com.example.kino.model.movie.SelectedMovie
 import com.example.kino.model.repository.MovieRepository
-import com.example.kino.model.repository.MovieRepositoryImpl
-import com.example.kino.utils.*
+import com.example.kino.utils.API_KEY
+import com.example.kino.utils.FragmentEnum
+import com.example.kino.utils.MEDIA_TYPE
+import com.example.kino.utils.NULLABLE_VALUE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
 class MoviesListViewModel(
-    private val context: Context
+    private val context: Context,
+    private var movieRepository: MovieRepository
 ) : BaseViewModel() {
-    private var movieDao: MovieDao = MovieDatabase.getDatabase(context = context).movieDao()
-
-    private var movieStatusDao: MovieStatusDao =
-        MovieDatabase.getDatabase(context = context).movieStatusDao()
-
-    private val movieRepository: MovieRepository =
-        MovieRepositoryImpl(movieDao, RetrofitService.getPostApi(), movieStatusDao)
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sessionId: String
@@ -89,7 +82,7 @@ class MoviesListViewModel(
                 addRemoveFavourites(selectedMovie)
             }
         }
-        movieStatusDao.deleteAll()
+        movieRepository.deleteLocalMovieStatuses()
     }
 
     private suspend fun getTop(): List<Movie>? {

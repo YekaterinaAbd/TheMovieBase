@@ -7,17 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
+import com.example.kino.model.database.MovieDao
+import com.example.kino.model.database.MovieDatabase
+import com.example.kino.model.database.MovieStatusDao
 import com.example.kino.model.movie.Movie
+import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.*
 import com.example.kino.view.RecyclerViewAdapter
 import com.example.kino.view.activities.MovieDetailActivity
 import com.example.kino.view_model.MoviesListViewModel
-import com.example.kino.view_model.ViewModelProviderFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 
 
@@ -30,6 +32,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     private lateinit var moviesListViewModel: MoviesListViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -45,12 +48,13 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         setAdapter()
         getMovies()
     }
-
     private fun setViewModel() {
-        val viewModelProviderFactory = ViewModelProviderFactory(context = requireActivity())
-        moviesListViewModel =
-            ViewModelProvider(this, viewModelProviderFactory).get(MoviesListViewModel::class.java)
-
+        val movieDao: MovieDao = MovieDatabase.getDatabase(requireContext()).movieDao()
+        val movieStatusDao: MovieStatusDao =
+            MovieDatabase.getDatabase(requireContext()).movieStatusDao()
+        val movieRepository =
+            MovieRepositoryImpl(movieDao, RetrofitService.getPostApi(), movieStatusDao)
+        moviesListViewModel = MoviesListViewModel(requireContext(), movieRepository)
     }
 
     private fun bindViews(view: View) {

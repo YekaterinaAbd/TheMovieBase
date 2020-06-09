@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
+import com.example.kino.model.database.MarkerDao
+import com.example.kino.model.database.MovieDatabase
+import com.example.kino.model.repository.MarkerRepositoryImpl
 import com.example.kino.utils.SIGNED_IN
 import com.example.kino.utils.SIGN_UP_URL
 import com.example.kino.view_model.MarkersViewModel
@@ -53,8 +56,8 @@ class SignInActivity : AppCompatActivity() {
         viewModelProviderFactory = ViewModelProviderFactory(context = this)
         signInViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(SignInViewModel::class.java)
-        markersViewModel =
-            ViewModelProvider(this, viewModelProviderFactory).get(MarkersViewModel::class.java)
+        val markerDao: MarkerDao = MovieDatabase.getDatabase(this).markerDao()
+        markersViewModel = MarkersViewModel(MarkerRepositoryImpl(markerDao))
     }
 
     private fun bindViews() {
