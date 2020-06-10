@@ -9,45 +9,81 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
+import com.example.kino.utils.VIEW_TYPE_LOADING
+import com.example.kino.utils.VIEW_TYPE_NORMAL
 import com.squareup.picasso.Picasso
 import java.util.*
 
 class RecyclerViewAdapter(
-    var movies: List<Movie>? = null,
     val itemClickListener: RecyclerViewItemClick? = null
-) : RecyclerView.Adapter<RecyclerViewAdapter.MovieViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var moviePosition = 1
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.film_object, parent, false)
-        return MovieViewHolder(view)
+    private var movies= mutableListOf<Movie>()
+    private var isLoaderVisible = false
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return when (viewType) {
+            VIEW_TYPE_NORMAL -> MovieViewHolder(inflater.inflate(R.layout.film_object, parent, false))
+            VIEW_TYPE_LOADING -> LoaderViewHolder(
+                inflater.inflate(R.layout.loader_layout, parent, false)
+            )
+            else -> throw Throwable("invalid view")
+        }
     }
 
-    override fun getItemCount(): Int = movies?.size ?: 0
+    override fun getItemCount(): Int = movies.size
 
     override fun getItemViewType(position: Int): Int {
-        return position
+        return if (isLoaderVisible) {
+            if (position == movies.size-1) {
+                VIEW_TYPE_LOADING
+            } else {
+                VIEW_TYPE_NORMAL
+            }
+        } else {
+            VIEW_TYPE_NORMAL
+        }
     }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.bind(movies?.get(position))
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is MovieViewHolder)
+            holder.bind(movies.get(position))
     }
 
     fun clearAll() {
         moviePosition = 1
-        (movies as? ArrayList<Movie>)?.clear()
+        movies.clear()
         notifyDataSetChanged()
     }
 
-    fun replaceItems(moviesList: List<Movie>) {
-        if (movies.isNullOrEmpty()) movies = moviesList
-        else {
-            if (movies!![movies!!.size - 1] != moviesList[moviesList.size - 1])
-                (movies as MutableList).addAll(moviesList)
+    fun addLoading(){
+        isLoaderVisible = true
+        movies.add(Movie(id=-1))
+        notifyItemInserted(movies.size.minus(1))
+    }
+
+    fun removeLoading(){
+        isLoaderVisible = false
+        val position = movies.size.minus(1)
+        if(movies.isNotEmpty()){
+            val item = getItem(position)
+            if(item != null){
+                movies.removeAt(position)
+                notifyItemRemoved(position)
+            }
         }
-        Log.d("listtt", "added list " + moviesList.size.toString() + " " + moviesList[0].title)
-        Log.d("listtt", ("observed list " + (movies as MutableList<Movie>).size.toString()))
+
+    }
+    private fun getItem(position: Int): Movie? {
+        return movies.get(position)
+    }
+    fun replaceItems(moviesList: List<Movie>) {
+        if (movies.isNullOrEmpty()) movies = moviesList.toMutableList()
+        else {
+            if (movies[movies.size - 1] != moviesList[moviesList.size - 1])
+                movies.addAll(moviesList)
+        }
         notifyDataSetChanged()
     }
 
@@ -102,6 +138,10 @@ class RecyclerViewAdapter(
                 }
             }
         }
+    }
+
+    inner class LoaderViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+
     }
 
     interface RecyclerViewItemClick {
