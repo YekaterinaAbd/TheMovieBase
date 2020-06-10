@@ -47,7 +47,7 @@ class MoviesListViewModel(
         }
     }
 
-    fun getMovies(type: FragmentEnum, page: Int=0) {
+    fun getMovies(type: FragmentEnum, page: Int) {
         launch {
             liveData.value = State.ShowLoading
 

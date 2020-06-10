@@ -7,12 +7,13 @@ import com.example.kino.R
 import com.example.kino.model.account.LoginValidationData
 import com.example.kino.model.account.Token
 import com.example.kino.model.repository.AccountRepository
-import com.example.kino.model.repository.AccountRepositoryImpl
 import com.example.kino.utils.API_KEY
-import com.example.kino.utils.RetrofitService
 import kotlinx.coroutines.launch
 
-class SignInViewModel(private val context: Context, private var accountRepository: AccountRepository?=null) : BaseViewModel() {
+class SignInViewModel(
+    private val context: Context,
+    private var accountRepository: AccountRepository? = null
+) : BaseViewModel() {
     private lateinit var loginValidationData: LoginValidationData
     private var token: Token? = null
     private var sessionId: String = ""
@@ -62,7 +63,7 @@ class SignInViewModel(private val context: Context, private var accountRepositor
         launch {
             try {
                 val response = accountRepository?.validateWithLogin(API_KEY, loginValidationData)
-                if (response==true) {
+                if (response == true) {
                     createSession()
                 } else {
                     liveData.value = State.WrongDataProvided
@@ -80,7 +81,8 @@ class SignInViewModel(private val context: Context, private var accountRepositor
             liveData.value = State.ShowLoading
             try {
                 sessionId =
-                    token?.let { accountRepository?.getSessionId(API_KEY, it).toString() }.toString()
+                    token?.let { accountRepository?.getSessionId(API_KEY, it).toString() }
+                        .toString()
                 saveToSharedPreferences()
                 liveData.value = State.HideLoading
                 liveData.value = State.Result

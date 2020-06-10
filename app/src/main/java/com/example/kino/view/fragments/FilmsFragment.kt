@@ -2,6 +2,7 @@ package com.example.kino.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,19 +33,8 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var moviesListViewModel: MoviesListViewModel
-    private var page: Int = 2
-//    private val onScrolled = object:RecyclerView.OnScrollListener(){
-//        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//            super.onScrolled(recyclerView, dx, dy)
-//            val visibleItemCount = layoutManager.childCount
-//            val totalItemCount = layoutManager.itemCount
-//            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-//            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-//                && firstVisibleItemPosition >= 0
-//                && totalItemCount >= page) {
-//            }
-//        }
-//    }
+    private var page: Int = 1
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -58,7 +48,8 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         setViewModel()
         bindViews(view)
         setAdapter()
-//        recyclerView.addOnScrollListener(onScrolled)
+        Log.d("listtt", "ok")
+        getMovies(page)
     }
 
     private fun setViewModel() {
@@ -87,6 +78,20 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         recyclerViewAdapter =
             RecyclerViewAdapter(itemClickListener = this)
         recyclerView.adapter = recyclerViewAdapter
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
+                    page++
+                    Log.d("listtt", page.toString())
+                    getMovies(page)
+                }
+            }
+
+        })
     }
 
     private fun logEvent(logMessage: String, item: Movie) {
@@ -110,7 +115,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         moviesListViewModel.addToFavourites(item)
     }
 
-    private fun getMovies(page:Int) {
+    private fun getMovies(page: Int) {
         moviesListViewModel.getMovies(FragmentEnum.TOP, page)
         moviesListViewModel.liveData.observe(this, Observer { result ->
             when (result) {
