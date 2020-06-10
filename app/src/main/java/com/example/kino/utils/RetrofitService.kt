@@ -47,7 +47,7 @@ interface PostApi {
 
     //+
     @GET("movie/top_rated")
-    suspend fun getMovieList(@Query("api_key") apiKey: String): Response<Movies>
+    suspend fun getMovieList(@Query("api_key") apiKey: String, @Query("page") page:Int): Response<Movies>
 
     //+
     @GET("movie/{id}")

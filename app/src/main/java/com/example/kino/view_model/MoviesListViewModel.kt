@@ -47,7 +47,7 @@ class MoviesListViewModel(
         }
     }
 
-    fun getMovies(type: FragmentEnum) {
+    fun getMovies(type: FragmentEnum, page: Int=0) {
         launch {
             liveData.value = State.ShowLoading
 
@@ -55,10 +55,9 @@ class MoviesListViewModel(
                 try {
                     updateFavourites()
                     when (type) {
-                        FragmentEnum.TOP -> return@withContext getTop()
+                        FragmentEnum.TOP -> return@withContext getTop(page)
                         FragmentEnum.FAVOURITES -> return@withContext getFavourites()
                     }
-
                 } catch (e: Exception) {
                     when (type) {
                         FragmentEnum.TOP -> return@withContext movieRepository.getLocalMovies()
@@ -85,9 +84,9 @@ class MoviesListViewModel(
         movieRepository.deleteLocalMovieStatuses()
     }
 
-    private suspend fun getTop(): List<Movie>? {
+    private suspend fun getTop(page:Int): List<Movie>? {
         return try {
-            val movies = movieRepository.getRemoteMovieList(API_KEY)
+            val movies = movieRepository.getRemoteMovieList(API_KEY, page)
             if (!movies.isNullOrEmpty()) {
                 for (movie in movies) {
                     setMovieGenres(movie)
