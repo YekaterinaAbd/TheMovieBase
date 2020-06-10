@@ -1,5 +1,6 @@
 package com.example.kino.view
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +41,13 @@ class RecyclerViewAdapter(
     }
 
     fun replaceItems(moviesList: List<Movie>) {
-        movies = moviesList
+        if (movies.isNullOrEmpty()) movies = moviesList
+        else {
+            if (movies!![movies!!.size - 1] != moviesList[moviesList.size - 1])
+                (movies as MutableList).addAll(moviesList)
+        }
+        Log.d("listtt", "added list " + moviesList.size.toString() + " " + moviesList[0].title)
+        Log.d("listtt", ("observed list " + (movies as MutableList<Movie>).size.toString()))
         notifyDataSetChanged()
     }
 

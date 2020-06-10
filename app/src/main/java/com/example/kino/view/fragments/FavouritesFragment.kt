@@ -81,7 +81,7 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
     }
 
     private fun getMovies() {
-        moviesListViewModel.getMovies(FragmentEnum.FAVOURITES)
+        moviesListViewModel.getMovies(FragmentEnum.FAVOURITES, 1)
         moviesListViewModel.liveData.observe(this, Observer { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
