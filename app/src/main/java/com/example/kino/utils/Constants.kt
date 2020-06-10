@@ -18,3 +18,6 @@ const val TITLE = "title"
 const val CONTENT = "content"
 const val CHANNEL = "main"
 
+const val VIEW_TYPE_LOADING = 0
+const val VIEW_TYPE_NORMAL = 1
+
