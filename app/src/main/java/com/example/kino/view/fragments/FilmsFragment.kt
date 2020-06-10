@@ -2,7 +2,6 @@ package com.example.kino.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +17,7 @@ import com.example.kino.model.database.MovieStatusDao
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.*
+import com.example.kino.utils.pagination.PaginationListener
 import com.example.kino.view.RecyclerViewAdapter
 import com.example.kino.view.activities.MovieDetailActivity
 import com.example.kino.view_model.MoviesListViewModel
@@ -33,7 +33,11 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var moviesListViewModel: MoviesListViewModel
-    private var page: Int = 1
+
+    private var currentPage = PaginationListener.PAGE_START
+    private var isLastPage = false
+    private var isLoading = false
+    private var itemCount = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -48,8 +52,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         setViewModel()
         bindViews(view)
         setAdapter()
-        Log.d("listtt", "ok")
-        getMovies(page)
+        getMovies(currentPage)
     }
 
     private fun setViewModel() {
@@ -70,27 +73,28 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
         swipeRefreshLayout.setOnRefreshListener {
             recyclerViewAdapter?.clearAll()
-            getMovies(page)
+            itemCount = 0
+            currentPage = PaginationListener.PAGE_START
+            isLastPage = false
+            getMovies(currentPage)
         }
     }
 
     private fun setAdapter() {
         recyclerViewAdapter =
-            RecyclerViewAdapter(itemClickListener = this)
+            RecyclerViewAdapter(this)
         recyclerView.adapter = recyclerViewAdapter
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(object : PaginationListener(layoutManager) {
 
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
-                    page++
-                    Log.d("listtt", page.toString())
-                    getMovies(page)
-                }
+            override fun loadMoreItems() {
+                isLoading = true
+                currentPage++
+                getMovies(currentPage)
             }
 
+            override fun isLastPage(): Boolean = isLastPage
+            override fun isLoading(): Boolean = isLoading
         })
     }
 
@@ -120,13 +124,26 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         moviesListViewModel.liveData.observe(this, Observer { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
-                    swipeRefreshLayout.isRefreshing = true
+                    swipeRefreshLayout.isRefreshing = currentPage == 1
                 }
+
                 is MoviesListViewModel.State.HideLoading -> {
                     swipeRefreshLayout.isRefreshing = false
                 }
                 is MoviesListViewModel.State.Result -> {
+                    itemCount = result.moviesList?.size ?: 0
+
+                    if (currentPage != PaginationListener.PAGE_START) {
+                        recyclerViewAdapter?.removeLoading()
+                    }
                     result.moviesList?.let { recyclerViewAdapter?.replaceItems(it) }
+                    //if (currentPage < result.totalPage) {
+                    recyclerViewAdapter?.addLoading()
+                    //} else {
+                    // isLastPage = true
+                    //}
+                    isLoading = false
+
                 }
                 is MoviesListViewModel.State.Update -> {
                     recyclerViewAdapter?.notifyDataSetChanged()

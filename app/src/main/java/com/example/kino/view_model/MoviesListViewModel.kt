@@ -92,8 +92,10 @@ class MoviesListViewModel(
                     setMovieGenres(movie)
                     saveLikeStatus(movie)
                 }
-                movieRepository.deleteLocalMovies()
-                movieRepository.insertLocalMovies(movies)
+                if (page == 1) {
+                    movieRepository.deleteLocalMovies()
+                    movieRepository.insertLocalMovies(movies)
+                }
             }
             movies
         } catch (e: Exception) {

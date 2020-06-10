@@ -1,6 +1,5 @@
 package com.example.kino.view
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,44 +9,94 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
 import com.squareup.picasso.Picasso
-import java.util.*
 
 class RecyclerViewAdapter(
-    var movies: List<Movie>? = null,
+    //var movies: List<Movie>? = null,
     val itemClickListener: RecyclerViewItemClick? = null
-) : RecyclerView.Adapter<RecyclerViewAdapter.MovieViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var moviePosition = 1
+    private val VIEW_TYPE_LOADING = 0
+    private val VIEW_TYPE_NORMAL = 1
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.film_object, parent, false)
-        return MovieViewHolder(view)
+    private var isLoaderVisible = false
+    private var movies = mutableListOf<Movie>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+
+        val inflater = LayoutInflater.from(parent.context)
+        return when (viewType) {
+            VIEW_TYPE_NORMAL -> MovieViewHolder(
+                inflater.inflate(R.layout.film_object, parent, false)
+            )
+            VIEW_TYPE_LOADING -> ProgressViewHolder(
+                inflater.inflate(R.layout.layout_progress, parent, false)
+            )
+            else -> throw Throwable("invalid view")
+        }
     }
 
-    override fun getItemCount(): Int = movies?.size ?: 0
+    override fun getItemCount(): Int = movies.size
 
     override fun getItemViewType(position: Int): Int {
-        return position
+        return if (isLoaderVisible) {
+            if (position == movies.size - 1) {
+                VIEW_TYPE_LOADING
+            } else {
+                VIEW_TYPE_NORMAL
+            }
+        } else {
+            VIEW_TYPE_NORMAL
+        }
     }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.bind(movies?.get(position))
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is MovieViewHolder) {
+            holder.bind(movies[position])
+        }
     }
+
+//    fun replaceItems(list: List<Movie>) {
+//        movies.addAll(list)
+//        notifyDataSetChanged()
+//    }
 
     fun clearAll() {
         moviePosition = 1
-        (movies as? ArrayList<Movie>)?.clear()
+        movies.clear()
         notifyDataSetChanged()
     }
 
-    fun replaceItems(moviesList: List<Movie>) {
-        if (movies.isNullOrEmpty()) movies = moviesList
-        else {
-            if (movies!![movies!!.size - 1] != moviesList[moviesList.size - 1])
-                (movies as MutableList).addAll(moviesList)
+    fun addLoading() {
+        isLoaderVisible = true
+        movies.add(Movie(id = -1))
+        notifyItemInserted(movies.size - 1)
+    }
+
+    fun removeLoading() {
+        isLoaderVisible = false
+        val position = movies.size - 1
+        if (movies.isNotEmpty()) {
+            val item = getItem(position)
+            if (item != null) {
+                movies.removeAt(position)
+                notifyItemRemoved(position)
+            }
         }
-        Log.d("listtt", "added list " + moviesList.size.toString() + " " + moviesList[0].title)
-        Log.d("listtt", ("observed list " + (movies as MutableList<Movie>).size.toString()))
+    }
+
+    private fun getItem(position: Int): Movie? {
+        return movies[position]
+    }
+
+    fun replaceItems(moviesList: List<Movie>) {
+        if (movies.isNullOrEmpty()) movies = moviesList as MutableList<Movie>
+        else {
+            if (movies[movies.size - 1] != moviesList[moviesList.size - 1])
+                movies.addAll(moviesList)
+        }
+        //     Log.d("listtt", "added list " + moviesList.size.toString() + " " + moviesList[0].title)
+        //    Log.d("listtt", ("observed list " + (movies as MutableList<Movie>).size.toString()))
         notifyDataSetChanged()
     }
 
@@ -78,6 +127,7 @@ class RecyclerViewAdapter(
                 }
 
                 tvTitle.text = movie.title
+
                 tvReleaseDate.text = movie.releaseDate.substring(0, 4)
                 tvVotesCount.text = movie.voteCount.toString()
                 tvRating.text = movie.voteAverage.toString()
@@ -103,6 +153,10 @@ class RecyclerViewAdapter(
             }
         }
     }
+
+    inner class ProgressViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    }
+
 
     interface RecyclerViewItemClick {
         fun itemClick(position: Int, item: Movie)
