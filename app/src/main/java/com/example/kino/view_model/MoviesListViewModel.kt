@@ -87,7 +87,7 @@ class MoviesListViewModel(
 
     private suspend fun getTop(): List<Movie>? {
         return try {
-            val movies = movieRepository.getRemoteMovieList(API_KEY)
+            val movies = movieRepository.getRemoteMovieList(API_KEY, 1)
             if (!movies.isNullOrEmpty()) {
                 for (movie in movies) {
                     setMovieGenres(movie)

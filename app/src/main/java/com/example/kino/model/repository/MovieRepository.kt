@@ -23,7 +23,7 @@ interface MovieRepository {
 
     suspend fun getRemoteGenres(apiKey: String): Genres?
     suspend fun getRemoteMovie(id: Int, apiKey: String): Movie?
-    suspend fun getRemoteMovieList(apiKey: String): List<Movie>?
+    suspend fun getRemoteMovieList(apiKey: String, page: Int): List<Movie>?
     suspend fun getRemoteFavouriteMovies(apiKey: String, sessionId: String): List<Movie>?
     suspend fun getRemoteMovieStates(movieId: Int, apiKey: String, sessionId: String): Boolean?
     suspend fun addRemoveRemoteFavourites(apiKey: String, sessionId: String, fav: SelectedMovie)
@@ -82,8 +82,8 @@ class MovieRepositoryImpl(
     override suspend fun getRemoteMovie(id: Int, apiKey: String): Movie? =
         service?.getMovieById(id, apiKey)?.body()
 
-    override suspend fun getRemoteMovieList(apiKey: String): List<Movie>? =
-        service?.getMovieList(apiKey)?.body()?.movieList
+    override suspend fun getRemoteMovieList(apiKey: String, page: Int): List<Movie>? =
+        service?.getMovieList(apiKey, page)?.body()?.movieList
 
     override suspend fun getRemoteFavouriteMovies(apiKey: String, sessionId: String): List<Movie>? =
         service?.getFavouriteMovies(apiKey, sessionId)?.body()?.movieList

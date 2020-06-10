@@ -45,25 +45,24 @@ object RetrofitService {
 
 interface PostApi {
 
-    //+
     @GET("movie/top_rated")
-    suspend fun getMovieList(@Query("api_key") apiKey: String): Response<Movies>
+    suspend fun getMovieList(
+        @Query("api_key") apiKey: String,
+        @Query("page") page: Int
+    ): Response<Movies>
 
-    //+
     @GET("movie/{id}")
     suspend fun getMovieById(
         @Path("id") id: Int,
         @Query("api_key") apiKey: String
     ): Response<Movie>
 
-    //+
     @GET("account/{account_id}/favorite/movies")
     suspend fun getFavouriteMovies(
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String
     ): Response<Movies>
 
-    //+
     @POST("account/{account_id}/favorite")
     suspend fun addRemoveFavourites(
         @Query("api_key") apiKey: String,
@@ -71,7 +70,6 @@ interface PostApi {
         @Body fav: SelectedMovie
     ): Response<StatusResponse>
 
-    //+
     @GET("movie/{movie_id}/account_states")
     suspend fun getMovieStates(
         @Path("movie_id") movieId: Int,

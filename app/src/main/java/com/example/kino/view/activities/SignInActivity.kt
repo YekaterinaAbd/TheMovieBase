@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
 import com.example.kino.model.database.MarkerDao
 import com.example.kino.model.database.MovieDatabase
@@ -59,8 +58,7 @@ class SignInActivity : AppCompatActivity() {
     private fun setViewModel() {
         viewModelProviderFactory = ViewModelProviderFactory(context = this)
         signInRepository = AccountRepositoryImpl(RetrofitService.getPostApi())
-        signInViewModel =
-            SignInViewModel(this, signInRepository)
+        signInViewModel = SignInViewModel(this, signInRepository)
         val markerDao: MarkerDao = MovieDatabase.getDatabase(this).markerDao()
         markersViewModel = MarkersViewModel(MarkerRepositoryImpl(markerDao))
     }
