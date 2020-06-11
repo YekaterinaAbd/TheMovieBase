@@ -2,11 +2,9 @@ package com.example.kino.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,6 +38,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     private var isLastPage = false
     private var isLoading = false
     private var itemCount = 0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -95,14 +94,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
             override fun isLastPage(): Boolean = isLastPage
             override fun isLoading(): Boolean = isLoading
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
-//                    page++
-//                    Log.d("listtt", page.toString())
-//                    getMovies(page)
-//                }
-//            }
         })
     }
 
@@ -132,17 +123,14 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         moviesListViewModel.liveData.observe(this, Observer { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
-                    swipeRefreshLayout.isRefreshing = currentPage == 1
+                    swipeRefreshLayout.isRefreshing = true
                 }
                 is MoviesListViewModel.State.HideLoading -> {
                     swipeRefreshLayout.isRefreshing = false
                 }
                 is MoviesListViewModel.State.Result -> {
-                    itemCount = result.moviesList?.size ?: 0
-                    if (currentPage != PaginationScrollListener.PAGE_START) {
-                        recyclerViewAdapter?.removeLoading()
-                    }
-                    result.moviesList?.let { recyclerViewAdapter?.replaceItems(it) }
+                    recyclerViewAdapter?.removeLoading()
+                    recyclerViewAdapter?.addItems(result.moviesList ?: emptyList())
                     recyclerViewAdapter?.addLoading()
                     isLoading = false
                 }

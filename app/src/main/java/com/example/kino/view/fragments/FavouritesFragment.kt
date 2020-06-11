@@ -91,7 +91,7 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
                     swipeRefreshLayout.isRefreshing = false
                 }
                 is MoviesListViewModel.State.Result -> {
-                    result.moviesList?.let { recyclerViewAdapter?.replaceItems(it) }
+                    result.moviesList?.let { recyclerViewAdapter?.addItems(it) }
                 }
                 is MoviesListViewModel.State.Update -> {
                     recyclerViewAdapter?.notifyDataSetChanged()
