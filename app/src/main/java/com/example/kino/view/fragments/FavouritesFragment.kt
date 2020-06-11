@@ -2,12 +2,14 @@ package com.example.kino.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -33,16 +35,6 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
     private lateinit var moviesListViewModel: MoviesListViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
-
-            if (item.isClicked) recyclerViewAdapter?.addItem(item)
-            else recyclerViewAdapter?.removeItem(item)
-        })
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -53,9 +45,16 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         super.onViewCreated(view, savedInstanceState)
         setViewModel()
         bindViews(view)
-        swipeRefreshLayout.isRefreshing = true
         setAdapter()
         getMovies()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
+            if (item.isClicked) recyclerViewAdapter?.addItem(item)
+            else recyclerViewAdapter?.removeItem(item)
+        })
     }
 
     private fun setViewModel() {
@@ -114,5 +113,3 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         })
     }
 }
-
-

@@ -10,6 +10,7 @@ import com.example.kino.R
 import com.example.kino.utils.FAVOURITES_PAGE_CLICKED
 import com.example.kino.utils.MAIN_PAGE_CLICKED
 import com.example.kino.utils.PROFILE_PAGE_CLICKED
+import com.example.kino.utils.TAG
 import com.example.kino.view.fragments.AccountFragment
 import com.example.kino.view.fragments.FavouritesFragment
 import com.example.kino.view.fragments.FilmsFragment
@@ -19,13 +20,11 @@ import com.google.firebase.analytics.FirebaseAnalytics
 class MainActivity : AppCompatActivity() {
 
     private lateinit var toolbar: TextView
-
-    private val filmsFragment = FilmsFragment()
-    private val favouritesFragment = FavouritesFragment()
-    private val accountFragment = AccountFragment()
     private val fragmentManager: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
-
+    private var filmsFragment: Fragment = FilmsFragment()
+    private var favouritesFragment: Fragment = FavouritesFragment()
+    private var accountFragment: Fragment = AccountFragment()
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,17 +36,21 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.setOnNavigationItemSelectedListener(navListener)
+        hidingFragments()
 
-        fragmentManager.beginTransaction().add(R.id.frame, filmsFragment, "1").commit()
-        fragmentManager.beginTransaction().add(R.id.frame, favouritesFragment, "2")
-            .hide(favouritesFragment).commit()
-        fragmentManager.beginTransaction().add(R.id.frame, accountFragment, "3")
-            .hide(accountFragment).commit()
     }
 
     private fun logEvent(logMessage: String) {
         val bundle = Bundle()
         firebaseAnalytics.logEvent(logMessage, bundle)
+    }
+
+    private fun hidingFragments() {
+        fragmentManager.beginTransaction().add(R.id.frame, filmsFragment).commit()
+        fragmentManager.beginTransaction().add(R.id.frame, favouritesFragment)
+            .hide(favouritesFragment).commit()
+        fragmentManager.beginTransaction().add(R.id.frame, accountFragment).hide(accountFragment)
+            .commit()
     }
 
     private val navListener =
@@ -82,4 +85,5 @@ class MainActivity : AppCompatActivity() {
             }
             return@OnNavigationItemSelectedListener false
         }
+
 }

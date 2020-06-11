@@ -2,12 +2,14 @@ package com.example.kino.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -58,13 +60,20 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         super.onViewCreated(view, savedInstanceState)
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity())
-        setViewModel()
+        setViewModels()
         bindViews(view)
         setAdapter()
         getMovies(currentPage)
     }
 
-    private fun setViewModel() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
+            if (!item.isClicked) recyclerViewAdapter?.updateItem(item)
+        })
+    }
+
+    private fun setViewModels() {
         val movieDao: MovieDao = MovieDatabase.getDatabase(requireContext()).movieDao()
         val movieStatusDao: MovieStatusDao =
             MovieDatabase.getDatabase(requireContext()).movieStatusDao()
@@ -114,7 +123,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     }
 
     override fun itemClick(position: Int, item: Movie) {
-
         logEvent(MOVIE_CLICKED, item)
 
         val intent = Intent(context, MovieDetailActivity::class.java)
