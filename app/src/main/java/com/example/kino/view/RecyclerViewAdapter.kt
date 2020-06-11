@@ -166,9 +166,7 @@ class RecyclerViewAdapter(
         }
     }
 
-    inner class LoaderViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-
-    }
+    inner class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view) 
 
     interface RecyclerViewItemClick {
         fun itemClick(position: Int, item: Movie)

@@ -32,6 +32,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var rating: TextView
     private lateinit var votesCount: TextView
     private lateinit var companies: TextView
+    private lateinit var like: ImageView
 
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
 
@@ -48,7 +49,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun setViewModel() {
         val movieDao: MovieDao = MovieDatabase.getDatabase(this).movieDao()
         movieDetailsViewModel =
-            MovieDetailsViewModel(MovieRepositoryImpl(movieDao, RetrofitService.getPostApi()))
+            MovieDetailsViewModel(this, MovieRepositoryImpl(movieDao, RetrofitService.getPostApi()))
     }
 
     private fun bindViews() {
@@ -63,6 +64,7 @@ class MovieDetailActivity : AppCompatActivity() {
         rating = findViewById(R.id.rating)
         votesCount = findViewById(R.id.votesCount)
         companies = findViewById(R.id.companies)
+        like = findViewById(R.id.btnLike)
     }
 
     private fun getMovie(id: Int) {
@@ -75,14 +77,14 @@ class MovieDetailActivity : AppCompatActivity() {
                 }
                 is MovieDetailsViewModel.State.Result -> {
                     if (result.movie != null) {
-                        dataBinding(result.movie)
+                        bindData(result.movie)
                     }
                 }
             }
         })
     }
 
-    private fun dataBinding(movie: Movie) {
+    private fun bindData(movie: Movie) {
         title.text = movie.title
         year.text = movie.releaseDate
         description.text = movie.overview
@@ -108,6 +110,12 @@ class MovieDetailActivity : AppCompatActivity() {
         if (movie.tagline != null) {
             val taglineText: String = movie.tagline.toString()
             tagline.text = getString(R.string.tagline, taglineText)
+        }
+
+        if (movie.isClicked) {
+            like.setImageResource(R.drawable.ic_turned_in_black_24dp)
+        } else {
+            like.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
         }
 
         Picasso.get()
