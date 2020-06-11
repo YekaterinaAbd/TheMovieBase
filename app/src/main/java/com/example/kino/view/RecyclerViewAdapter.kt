@@ -1,6 +1,5 @@
 package com.example.kino.view
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,8 +56,6 @@ class RecyclerViewAdapter(
 
     fun clearAll() {
         movies.clear()
-        Log.d("listtt", "cleared")
-        Log.d("listtt", movies.size.toString())
         moviePosition = 1
         notifyDataSetChanged()
     }
@@ -79,11 +76,28 @@ class RecyclerViewAdapter(
                 notifyItemRemoved(position)
             }
         }
-
     }
 
     private fun getItem(position: Int): Movie? {
         return movies[position]
+    }
+
+    fun addItem(movie: Movie) {
+        movies.add(movie)
+        notifyItemInserted(movies.size - 1)
+    }
+
+    fun updateItem(movie: Movie) {
+        val id = movie.id
+        val isClicked = movie.isClicked
+        val m: Movie? = movies.find { it.id == id }
+        m?.isClicked = isClicked
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(movie: Movie) {
+        movies.remove(movie)
+        notifyDataSetChanged()
     }
 
     fun addItems(moviesList: List<Movie>) {
@@ -94,7 +108,7 @@ class RecyclerViewAdapter(
         }
         notifyDataSetChanged()
     }
-    
+
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(movie: Movie?) {
@@ -148,9 +162,7 @@ class RecyclerViewAdapter(
         }
     }
 
-    inner class LoaderViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-
-    }
+    inner class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     interface RecyclerViewItemClick {
         fun itemClick(position: Int, item: Movie)

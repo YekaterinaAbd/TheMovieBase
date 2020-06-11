@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,13 +22,14 @@ import com.example.kino.utils.pagination.PaginationScrollListener
 import com.example.kino.view.RecyclerViewAdapter
 import com.example.kino.view.activities.MovieDetailActivity
 import com.example.kino.view_model.MoviesListViewModel
+import com.example.kino.view_model.SharedViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 
 
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var recyclerView: RecyclerView
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -38,6 +40,13 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     private var isLastPage = false
     private var isLoading = false
     private var itemCount = 0
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
+            if (!item.isClicked) recyclerViewAdapter?.updateItem(item)
+        })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -116,11 +125,12 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     override fun addToFavourites(position: Int, item: Movie) {
         if (!item.isClicked) logEvent(MOVIE_LIKED, item)
         moviesListViewModel.addToFavourites(item)
+        sharedViewModel.setMovie(item)
     }
 
     private fun getMovies(page: Int) {
         moviesListViewModel.getMovies(FragmentEnum.TOP, page)
-        moviesListViewModel.liveData.observe(this, Observer { result ->
+        moviesListViewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
                     swipeRefreshLayout.isRefreshing = true

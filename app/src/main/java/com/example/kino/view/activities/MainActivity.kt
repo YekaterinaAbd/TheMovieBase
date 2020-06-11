@@ -10,7 +10,6 @@ import com.example.kino.R
 import com.example.kino.utils.FAVOURITES_PAGE_CLICKED
 import com.example.kino.utils.MAIN_PAGE_CLICKED
 import com.example.kino.utils.PROFILE_PAGE_CLICKED
-import com.example.kino.utils.TAG
 import com.example.kino.view.fragments.AccountFragment
 import com.example.kino.view.fragments.FavouritesFragment
 import com.example.kino.view.fragments.FilmsFragment
@@ -21,6 +20,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var toolbar: TextView
 
+    private val filmsFragment = FilmsFragment()
+    private val favouritesFragment = FavouritesFragment()
+    private val accountFragment = AccountFragment()
     private val fragmentManager: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
 
@@ -36,7 +38,11 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.setOnNavigationItemSelectedListener(navListener)
 
-        fragmentManager.beginTransaction().replace(R.id.frame, FilmsFragment(), TAG).commit()
+        fragmentManager.beginTransaction().add(R.id.frame, filmsFragment, "1").commit()
+        fragmentManager.beginTransaction().add(R.id.frame, favouritesFragment, "2")
+            .hide(favouritesFragment).commit()
+        fragmentManager.beginTransaction().add(R.id.frame, accountFragment, "3")
+            .hide(accountFragment).commit()
     }
 
     private fun logEvent(logMessage: String) {
@@ -49,30 +55,31 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.films -> {
                     logEvent(MAIN_PAGE_CLICKED)
-                    activeFragment = FilmsFragment()
-                    fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
+                    fragmentManager.beginTransaction().hide(activeFragment).show(filmsFragment)
+                        .commit()
+                    activeFragment = filmsFragment
                     toolbar.text = getString(R.string.top_rated_movies)
                     toolbar.visibility = View.VISIBLE
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.favourites -> {
                     logEvent(FAVOURITES_PAGE_CLICKED)
-                    activeFragment = FavouritesFragment()
-                    fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
-
+                    fragmentManager.beginTransaction().hide(activeFragment).show(favouritesFragment)
+                        .commit()
+                    activeFragment = favouritesFragment
                     toolbar.text = getString(R.string.favourite_movie)
                     toolbar.visibility = View.VISIBLE
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.account -> {
                     logEvent(PROFILE_PAGE_CLICKED)
-                    activeFragment = AccountFragment()
-                    fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
+                    fragmentManager.beginTransaction().hide(activeFragment).show(accountFragment)
+                        .commit()
+                    activeFragment = accountFragment
                     toolbar.visibility = View.GONE
                     return@OnNavigationItemSelectedListener true
                 }
             }
             return@OnNavigationItemSelectedListener false
         }
-
 }

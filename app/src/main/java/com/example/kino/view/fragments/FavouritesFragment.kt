@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ import com.example.kino.utils.RetrofitService
 import com.example.kino.view.RecyclerViewAdapter
 import com.example.kino.view.activities.MovieDetailActivity
 import com.example.kino.view_model.MoviesListViewModel
+import com.example.kino.view_model.SharedViewModel
 
 class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
@@ -30,6 +32,16 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
 
     private lateinit var moviesListViewModel: MoviesListViewModel
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
+
+            if (item.isClicked) recyclerViewAdapter?.addItem(item)
+            else recyclerViewAdapter?.removeItem(item)
+        })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -41,6 +53,7 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         super.onViewCreated(view, savedInstanceState)
         setViewModel()
         bindViews(view)
+        swipeRefreshLayout.isRefreshing = true
         setAdapter()
         getMovies()
     }
@@ -78,11 +91,12 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
 
     override fun addToFavourites(position: Int, item: Movie) {
         moviesListViewModel.addToFavourites(item)
+        sharedViewModel.setMovie(item)
     }
 
     private fun getMovies() {
         moviesListViewModel.getMovies(FragmentEnum.FAVOURITES, 1)
-        moviesListViewModel.liveData.observe(this, Observer { result ->
+        moviesListViewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
                     swipeRefreshLayout.isRefreshing = true
@@ -100,3 +114,5 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         })
     }
 }
+
+
