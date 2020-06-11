@@ -23,7 +23,9 @@ class MainActivity : AppCompatActivity() {
 
     private val fragmentManager: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
-
+    private var filmsFragment: Fragment = FilmsFragment()
+    private var favouritesFragment: Fragment = FavouritesFragment()
+    private var accountFragment: Fragment = AccountFragment()
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,8 +37,8 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.setOnNavigationItemSelectedListener(navListener)
+        hidingFragments()
 
-        fragmentManager.beginTransaction().replace(R.id.frame, FilmsFragment(), TAG).commit()
     }
 
     private fun logEvent(logMessage: String) {
@@ -44,29 +46,40 @@ class MainActivity : AppCompatActivity() {
         firebaseAnalytics.logEvent(logMessage, bundle)
     }
 
+    private fun hidingFragments() {
+        fragmentManager.beginTransaction().add(R.id.frame, filmsFragment).commit()
+        fragmentManager.beginTransaction().add(R.id.frame, favouritesFragment)
+            .hide(favouritesFragment).commit()
+        fragmentManager.beginTransaction().add(R.id.frame, accountFragment).hide(accountFragment)
+            .commit()
+    }
+
     private val navListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.films -> {
                     logEvent(MAIN_PAGE_CLICKED)
-                    activeFragment = FilmsFragment()
-                    fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
+                    fragmentManager.beginTransaction().hide(activeFragment).show(filmsFragment)
+                        .commit()
+                    activeFragment = filmsFragment
                     toolbar.text = getString(R.string.top_rated_movies)
                     toolbar.visibility = View.VISIBLE
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.favourites -> {
                     logEvent(FAVOURITES_PAGE_CLICKED)
-                    activeFragment = FavouritesFragment()
-                    fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
-
+                    fragmentManager.beginTransaction().hide(activeFragment).show(favouritesFragment)
+                        .commit()
+                    activeFragment = favouritesFragment
                     toolbar.text = getString(R.string.favourite_movie)
                     toolbar.visibility = View.VISIBLE
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.account -> {
                     logEvent(PROFILE_PAGE_CLICKED)
-                    activeFragment = AccountFragment()
+                    fragmentManager.beginTransaction().hide(activeFragment).show(accountFragment)
+                        .commit()
+                    activeFragment = accountFragment
                     fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
                     toolbar.visibility = View.GONE
                     return@OnNavigationItemSelectedListener true
