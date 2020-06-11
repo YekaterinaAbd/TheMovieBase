@@ -20,7 +20,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 class MainActivity : AppCompatActivity() {
 
     private lateinit var toolbar: TextView
-
     private val fragmentManager: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
     private var filmsFragment: Fragment = FilmsFragment()
@@ -80,7 +79,6 @@ class MainActivity : AppCompatActivity() {
                     fragmentManager.beginTransaction().hide(activeFragment).show(accountFragment)
                         .commit()
                     activeFragment = accountFragment
-                    fragmentManager.beginTransaction().replace(R.id.frame, activeFragment).commit()
                     toolbar.visibility = View.GONE
                     return@OnNavigationItemSelectedListener true
                 }

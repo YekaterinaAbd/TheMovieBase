@@ -25,6 +25,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 
     compileOptions {
         targetCompatibility = "8"
@@ -95,4 +103,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics:17.0.1'
     implementation 'com.google.firebase:firebase-analytics:17.4.3'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+}
+dependencies {
+    implementation "androidx.fragment:fragment-ktx:1.2.5"
 }

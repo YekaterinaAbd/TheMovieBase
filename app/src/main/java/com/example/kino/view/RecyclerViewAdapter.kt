@@ -94,7 +94,25 @@ class RecyclerViewAdapter(
         }
         notifyDataSetChanged()
     }
-    
+
+    fun addItem(movie: Movie) {
+        movies.add(movie)
+        notifyItemInserted(movies.size - 1)
+    }
+
+    fun updateItem(movie: Movie) {
+        val id = movie.id
+        val isClicked = movie.isClicked
+        val foundMovie = movies.find { it.id == id }
+        foundMovie?.isClicked = isClicked
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(movie: Movie) {
+        movies.remove(movie)
+        notifyDataSetChanged()
+    }
+
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(movie: Movie?) {

@@ -2,11 +2,14 @@ package com.example.kino.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -21,13 +24,14 @@ import com.example.kino.utils.pagination.PaginationScrollListener
 import com.example.kino.view.RecyclerViewAdapter
 import com.example.kino.view.activities.MovieDetailActivity
 import com.example.kino.view_model.MoviesListViewModel
+import com.example.kino.view_model.SharedViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 
 
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var recyclerView: RecyclerView
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -49,13 +53,20 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         super.onViewCreated(view, savedInstanceState)
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity())
-        setViewModel()
+        setViewModels()
         bindViews(view)
         setAdapter()
         getMovies(currentPage)
     }
 
-    private fun setViewModel() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
+            if (!item.isClicked) recyclerViewAdapter?.updateItem(item)
+        })
+    }
+
+    private fun setViewModels() {
         val movieDao: MovieDao = MovieDatabase.getDatabase(requireContext()).movieDao()
         val movieStatusDao: MovieStatusDao =
             MovieDatabase.getDatabase(requireContext()).movieStatusDao()
@@ -105,7 +116,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     }
 
     override fun itemClick(position: Int, item: Movie) {
-
         logEvent(MOVIE_CLICKED, item)
 
         val intent = Intent(context, MovieDetailActivity::class.java)
@@ -116,11 +126,12 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     override fun addToFavourites(position: Int, item: Movie) {
         if (!item.isClicked) logEvent(MOVIE_LIKED, item)
         moviesListViewModel.addToFavourites(item)
+        sharedViewModel.setMovie(item)
     }
 
     private fun getMovies(page: Int) {
         moviesListViewModel.getMovies(FragmentEnum.TOP, page)
-        moviesListViewModel.liveData.observe(this, Observer { result ->
+        moviesListViewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
                     swipeRefreshLayout.isRefreshing = true
