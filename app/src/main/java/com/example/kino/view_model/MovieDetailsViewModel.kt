@@ -2,6 +2,7 @@ package com.example.kino.view_model
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
@@ -84,6 +85,7 @@ class MovieDetailsViewModel(
                 withContext(Dispatchers.IO) {
                     movieRepository.updateLocalMovieIsCLicked(movie.isClicked, movie.id)
                     movieRepository.insertLocalMovieStatus(MovieStatus(movie.id, movie.isClicked))
+                    Log.d("listtt", movieRepository.getLocalMovieStatuses().toString())
                 }
             }
         }

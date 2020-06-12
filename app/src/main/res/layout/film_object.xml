@@ -62,7 +62,6 @@
         android:background="#F7F7F7"
         android:gravity="center"
         android:paddingStart="16dp"
-        android:text="1"
         android:textAlignment="viewStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

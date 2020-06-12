@@ -16,4 +16,6 @@
     <string name="offline_adding_notification">Selected movie will be added after internet connection</string>
     <string name="genre_name">%1$s,\u0020</string>
     <string name="title_activity_google_maps">Map</string>
+    
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

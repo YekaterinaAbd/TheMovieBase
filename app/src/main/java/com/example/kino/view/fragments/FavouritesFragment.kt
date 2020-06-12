@@ -1,15 +1,12 @@
 package com.example.kino.view.fragments
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,19 +19,28 @@ import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.FragmentEnum
 import com.example.kino.utils.INTENT_KEY
 import com.example.kino.utils.RetrofitService
-import com.example.kino.view.RecyclerViewAdapter
-import com.example.kino.view.activities.MovieDetailActivity
+import com.example.kino.view.MovieAdapter
 import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.SharedViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 
-class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
+class FavouritesFragment : Fragment(), MovieAdapter.RecyclerViewItemClick {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private var recyclerViewAdapter: RecyclerViewAdapter? = null
+    private var recyclerViewAdapter: MovieAdapter? = null
 
     private lateinit var moviesListViewModel: MoviesListViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
+            if (item.isClicked) recyclerViewAdapter?.addItem(item)
+            if (!item.isClicked) recyclerViewAdapter?.removeItem(item)
+        })
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -47,14 +53,6 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
         bindViews(view)
         setAdapter()
         getMovies()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
-            if (item.isClicked) recyclerViewAdapter?.addItem(item)
-            else recyclerViewAdapter?.removeItem(item)
-        })
     }
 
     private fun setViewModel() {
@@ -78,14 +76,23 @@ class FavouritesFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick
     }
 
     private fun setAdapter() {
-        recyclerViewAdapter = RecyclerViewAdapter(itemClickListener = this)
+        // recyclerViewAdapter = RecyclerViewAdapter(itemClickListener = this)
+        recyclerViewAdapter = MovieAdapter(itemClickListener = this)
+
         recyclerView.adapter = recyclerViewAdapter
     }
 
     override fun itemClick(position: Int, item: Movie) {
-        val intent = Intent(context, MovieDetailActivity::class.java)
-        intent.putExtra(INTENT_KEY, item.id)
-        startActivity(intent)
+        val bundle = Bundle()
+        bundle.putInt(INTENT_KEY, item.id)
+
+        val movieDetailedFragment = MovieDetailsFragment()
+        movieDetailedFragment.arguments = bundle
+        parentFragmentManager.beginTransaction().add(R.id.frame, movieDetailedFragment)
+            .addToBackStack(null)
+            .commit()
+        requireActivity().toolbar.visibility = View.GONE
+        requireActivity().bottomNavigation.visibility = View.GONE
     }
 
     override fun addToFavourites(position: Int, item: Movie) {

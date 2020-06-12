@@ -10,18 +10,18 @@ import com.example.kino.R
 import com.example.kino.utils.FAVOURITES_PAGE_CLICKED
 import com.example.kino.utils.MAIN_PAGE_CLICKED
 import com.example.kino.utils.PROFILE_PAGE_CLICKED
-import com.example.kino.utils.TAG
 import com.example.kino.view.fragments.AccountFragment
 import com.example.kino.view.fragments.FavouritesFragment
 import com.example.kino.view.fragments.FilmsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var toolbar: TextView
     private val fragmentManager: FragmentManager = supportFragmentManager
-    private var activeFragment: Fragment = FilmsFragment()
+    var activeFragment: Fragment = FilmsFragment()
     private var filmsFragment: Fragment = FilmsFragment()
     private var favouritesFragment: Fragment = FavouritesFragment()
     private var accountFragment: Fragment = AccountFragment()
@@ -38,6 +38,12 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnNavigationItemSelectedListener(navListener)
         hidingFragments()
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        toolbar.visibility = View.VISIBLE
+        bottomNavigation.visibility = View.VISIBLE
     }
 
     private fun logEvent(logMessage: String) {
@@ -85,5 +91,4 @@ class MainActivity : AppCompatActivity() {
             }
             return@OnNavigationItemSelectedListener false
         }
-
 }

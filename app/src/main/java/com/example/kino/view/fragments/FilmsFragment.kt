@@ -1,6 +1,5 @@
 package com.example.kino.view.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,11 +19,10 @@ import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.*
 import com.example.kino.utils.pagination.PaginationScrollListener
 import com.example.kino.view.RecyclerViewAdapter
-import com.example.kino.view.activities.MovieDetailActivity
 import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
-
+import kotlinx.android.synthetic.main.activity_main.*
 
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
@@ -44,6 +42,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
+            //sharedViewModel.setMovie(item)
             recyclerViewAdapter?.updateItem(item)
         })
     }
@@ -116,9 +115,16 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     override fun itemClick(position: Int, item: Movie) {
         logEvent(MOVIE_CLICKED, item)
 
-        val intent = Intent(context, MovieDetailActivity::class.java)
-        intent.putExtra(INTENT_KEY, item.id)
-        startActivity(intent)
+        val bundle = Bundle()
+        bundle.putInt(INTENT_KEY, item.id)
+
+        val movieDetailedFragment = MovieDetailsFragment()
+        movieDetailedFragment.arguments = bundle
+        parentFragmentManager.beginTransaction().add(R.id.frame, movieDetailedFragment)
+            .addToBackStack(null)
+            .commit()
+        requireActivity().toolbar.visibility = View.GONE
+        requireActivity().bottomNavigation.visibility = View.GONE
     }
 
     override fun addToFavourites(position: Int, item: Movie) {
