@@ -1,6 +1,6 @@
+
 package com.example.kino.view
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,74 +11,30 @@ import com.example.kino.R
 import com.example.kino.model.movie.Movie
 import com.squareup.picasso.Picasso
 
-class RecyclerViewAdapter(
+class FavouritesAdapter(
     private val itemClickListener: RecyclerViewItemClick? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val VIEW_TYPE_LOADING = 0
-    private val VIEW_TYPE_NORMAL = 1
-    private var isLoaderVisible = false
-
-    private var moviePosition = 1
     private var movies = mutableListOf<Movie>()
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        return when (viewType) {
-            VIEW_TYPE_NORMAL -> MovieViewHolder(
-                inflater.inflate(R.layout.film_object, parent, false)
-            )
-            VIEW_TYPE_LOADING -> LoaderViewHolder(
-                inflater.inflate(R.layout.loader_layout, parent, false)
-            )
-            else -> throw Throwable("invalid view")
-        }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return if (isLoaderVisible) {
-            if (position == movies.size - 1) {
-                VIEW_TYPE_LOADING
-            } else {
-                VIEW_TYPE_NORMAL
-            }
-        } else {
-            VIEW_TYPE_NORMAL
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.film_object, parent, false)
+        return MovieViewHolder(view)
     }
 
     override fun getItemCount(): Int = movies.size
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is MovieViewHolder){
+        if (holder is FavouritesAdapter.MovieViewHolder)
             holder.bind(movies[position])
-        }
     }
 
     fun clearAll() {
         movies.clear()
-        moviePosition = 1
         notifyDataSetChanged()
-    }
-
-    fun addLoading() {
-        isLoaderVisible = true
-        movies.add(Movie(id = -1))
-        notifyItemInserted(movies.size.minus(1))
-    }
-
-    fun removeLoading() {
-        isLoaderVisible = false
-        val position = movies.size.minus(1)
-        if (movies.isNotEmpty()) {
-            val item = getItem(position)
-            if (item != null) {
-                movies.removeAt(position)
-                notifyItemRemoved(position)
-            }
-        }
-
     }
 
     private fun getItem(position: Int): Movie? {
@@ -86,17 +42,13 @@ class RecyclerViewAdapter(
     }
 
     fun addItems(moviesList: List<Movie>) {
-        if (movies.size == 0) movies = moviesList as MutableList<Movie>
-        else {
-            if (movies[movies.size - 1] != moviesList[moviesList.size - 1])
-                movies.addAll(moviesList)
-        }
+        movies = moviesList as MutableList<Movie>
         notifyDataSetChanged()
     }
 
     fun addItem(movie: Movie) {
-        movies.add(movie)
-        notifyDataSetChanged()
+            movies.add(movie)
+        notifyItemInserted(movies.size - 1)
     }
 
     fun updateItem(movie: Movie) {
@@ -104,8 +56,10 @@ class RecyclerViewAdapter(
         val isClicked = movie.isClicked
         val foundMovie = movies.find { it.id == id }
         foundMovie?.isClicked = isClicked
+        if(foundMovie?.isClicked==false){
+            removeItem(foundMovie)
+        }
         notifyDataSetChanged()
-        Log.d("listtt", "item updated")
     }
 
     fun removeItem(movie: Movie) {
@@ -133,17 +87,11 @@ class RecyclerViewAdapter(
                     addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
                 }
 
-
-                if (movie.position == 0) {
-                    movie.position = moviePosition
-                    moviePosition++
-                }
-
                 tvTitle.text = movie.title
                 tvReleaseDate.text = movie.releaseDate.substring(0, 4)
                 tvVotesCount.text = movie.voteCount.toString()
                 tvRating.text = movie.voteAverage.toString()
-                number.text = movie.position.toString()
+                if(movie.genreNames.isNotEmpty())
                 tvGenres.text = movie.genreNames.substring(0, movie.genreNames.length - 2)
 
                 Picasso.get()
@@ -165,11 +113,9 @@ class RecyclerViewAdapter(
             }
         }
     }
-
-    inner class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
-
     interface RecyclerViewItemClick {
         fun itemClick(position: Int, item: Movie)
         fun addToFavourites(position: Int, item: Movie)
     }
+
 }

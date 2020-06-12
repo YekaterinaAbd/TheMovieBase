@@ -14,8 +14,10 @@ import com.example.kino.utils.TAG
 import com.example.kino.view.fragments.AccountFragment
 import com.example.kino.view.fragments.FavouritesFragment
 import com.example.kino.view.fragments.FilmsFragment
+import com.example.kino.view.fragments.MovieDetailsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private var filmsFragment: Fragment = FilmsFragment()
     private var favouritesFragment: Fragment = FavouritesFragment()
     private var accountFragment: Fragment = AccountFragment()
+    private var movieDetailsFragment: Fragment = MovieDetailsFragment()
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +43,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        toolbar.visibility = View.VISIBLE
+        bottomNavigation.visibility = View.VISIBLE
+    }
     private fun logEvent(logMessage: String) {
         val bundle = Bundle()
         firebaseAnalytics.logEvent(logMessage, bundle)
@@ -51,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             .hide(favouritesFragment).commit()
         fragmentManager.beginTransaction().add(R.id.frame, accountFragment).hide(accountFragment)
             .commit()
+        fragmentManager.beginTransaction().add(R.id.frame, movieDetailsFragment).hide(movieDetailsFragment)
     }
 
     private val navListener =

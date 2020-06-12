@@ -1,13 +1,18 @@
 package com.example.kino.view.fragments
 
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -24,12 +29,13 @@ import com.example.kino.view.activities.MovieDetailActivity
 import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-    private val sharedViewModel: SharedViewModel by activityViewModels()
+    private lateinit var sharedViewModel: SharedViewModel
     private lateinit var recyclerView: RecyclerView
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -43,7 +49,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
+        sharedViewModel.liked.observe(requireActivity(), Observer { item ->
             recyclerViewAdapter?.updateItem(item)
         })
     }
@@ -71,6 +77,10 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         val movieRepository =
             MovieRepositoryImpl(movieDao, RetrofitService.getPostApi(), movieStatusDao)
         moviesListViewModel = MoviesListViewModel(requireContext(), movieRepository)
+
+        sharedViewModel =
+            activity?.run { ViewModelProviders.of(this).get(SharedViewModel::class.java) }
+                ?: throw Exception("Invalid Activity")
     }
 
     private fun bindViews(view: View) {
@@ -115,11 +125,16 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
     override fun itemClick(position: Int, item: Movie) {
         logEvent(MOVIE_CLICKED, item)
-
-        val intent = Intent(context, MovieDetailActivity::class.java)
-        intent.putExtra(INTENT_KEY, item.id)
-        startActivity(intent)
+        val bundle = Bundle()
+        bundle.putInt(INTENT_KEY, item.id)
+        val movieDetailedFragment = MovieDetailsFragment()
+        movieDetailedFragment.arguments = bundle
+        parentFragmentManager.beginTransaction().add(R.id.frame, movieDetailedFragment)
+            .addToBackStack(null).commit()
+        requireActivity().toolbar.visibility = View.GONE
+        requireActivity().bottomNavigation.visibility = View.GONE
     }
+
 
     override fun addToFavourites(position: Int, item: Movie) {
         if (!item.isClicked) logEvent(MOVIE_LIKED, item)
