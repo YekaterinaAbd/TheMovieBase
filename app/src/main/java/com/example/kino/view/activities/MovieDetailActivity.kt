@@ -37,7 +37,6 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var like: ImageView
 
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
-    private lateinit var movie: Movie
     private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,18 +69,6 @@ class MovieDetailActivity : AppCompatActivity() {
         votesCount = findViewById(R.id.votesCount)
         companies = findViewById(R.id.companies)
         like = findViewById(R.id.btnLike)
-
-        like.setOnClickListener {
-            if (movie.isClicked) {
-                movie.isClicked = false
-                like.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
-            } else {
-                movie.isClicked = true
-                like.setImageResource(R.drawable.ic_turned_in_black_24dp)
-            }
-            movieDetailsViewModel.updateLike(movie)
-            sharedViewModel.setMovie(movie)
-        }
     }
 
     private fun getMovie(id: Int) {
@@ -133,6 +120,18 @@ class MovieDetailActivity : AppCompatActivity() {
             like.setImageResource(R.drawable.ic_turned_in_black_24dp)
         } else {
             like.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
+        }
+
+        like.setOnClickListener {
+            if (movie.isClicked) {
+                movie.isClicked = false
+                like.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
+            } else {
+                movie.isClicked = true
+                like.setImageResource(R.drawable.ic_turned_in_black_24dp)
+            }
+            movieDetailsViewModel.updateLike(movie)
+            sharedViewModel.setMovie(movie)
         }
 
         Picasso.get()
