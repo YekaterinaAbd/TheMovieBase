@@ -44,7 +44,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
-            if (!item.isClicked) recyclerViewAdapter?.updateItem(item)
+            recyclerViewAdapter?.updateItem(item)
         })
     }
 

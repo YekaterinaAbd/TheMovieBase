@@ -7,6 +7,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.example.kino.R
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
@@ -16,6 +17,7 @@ import com.example.kino.utils.IMAGE_URL
 import com.example.kino.utils.INTENT_KEY
 import com.example.kino.utils.RetrofitService
 import com.example.kino.view_model.MovieDetailsViewModel
+import com.example.kino.view_model.SharedViewModel
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -35,6 +37,8 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var like: ImageView
 
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
+    private lateinit var movie: Movie
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +51,7 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun setViewModel() {
+        sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel::class.java)
         val movieDao: MovieDao = MovieDatabase.getDatabase(this).movieDao()
         movieDetailsViewModel =
             MovieDetailsViewModel(this, MovieRepositoryImpl(movieDao, RetrofitService.getPostApi()))
@@ -65,6 +70,18 @@ class MovieDetailActivity : AppCompatActivity() {
         votesCount = findViewById(R.id.votesCount)
         companies = findViewById(R.id.companies)
         like = findViewById(R.id.btnLike)
+
+        like.setOnClickListener {
+            if (movie.isClicked) {
+                movie.isClicked = false
+                like.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
+            } else {
+                movie.isClicked = true
+                like.setImageResource(R.drawable.ic_turned_in_black_24dp)
+            }
+            movieDetailsViewModel.updateLike(movie)
+            sharedViewModel.setMovie(movie)
+        }
     }
 
     private fun getMovie(id: Int) {
@@ -121,6 +138,8 @@ class MovieDetailActivity : AppCompatActivity() {
         Picasso.get()
             .load(IMAGE_URL + movie.posterPath)
             .into(poster)
+
+
     }
 }
 

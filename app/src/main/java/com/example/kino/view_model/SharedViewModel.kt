@@ -1,6 +1,6 @@
 package com.example.kino.view_model
 
-import androidx.lifecycle.LiveData
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kino.model.movie.Movie
@@ -10,6 +10,7 @@ class SharedViewModel: ViewModel() {
 
     fun setMovie(movie:Movie){
         liked.value = movie
+        Log.d("listtt", "liked")
     }
 
 }

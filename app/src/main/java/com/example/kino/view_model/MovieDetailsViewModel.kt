@@ -5,8 +5,11 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
+import com.example.kino.model.movie.MovieStatus
+import com.example.kino.model.movie.SelectedMovie
 import com.example.kino.model.repository.MovieRepository
 import com.example.kino.utils.API_KEY
+import com.example.kino.utils.MEDIA_TYPE
 import com.example.kino.utils.NULLABLE_VALUE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -72,6 +75,19 @@ class MovieDetailsViewModel(
         }
     }
 
+    fun updateLike(movie: Movie) {
+        launch {
+            val selectedMovie = SelectedMovie(MEDIA_TYPE, movie.id, movie.isClicked)
+            try {
+                movieRepository.addRemoveRemoteFavourites(API_KEY, sessionId, selectedMovie)
+            } catch (e: Exception) {
+                withContext(Dispatchers.IO) {
+                    movieRepository.updateLocalMovieIsCLicked(movie.isClicked, movie.id)
+                    movieRepository.insertLocalMovieStatus(MovieStatus(movie.id, movie.isClicked))
+                }
+            }
+        }
+    }
 
     sealed class State {
         object HideLoading : State()

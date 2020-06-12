@@ -57,8 +57,6 @@ class RecyclerViewAdapter(
 
     fun clearAll() {
         movies.clear()
-        Log.d("listtt", "cleared")
-        Log.d("listtt", movies.size.toString())
         moviePosition = 1
         notifyDataSetChanged()
     }
@@ -106,6 +104,7 @@ class RecyclerViewAdapter(
         val foundMovie = movies.find { it.id == id }
         foundMovie?.isClicked = isClicked
         notifyDataSetChanged()
+        Log.d("listtt", "item updated")
     }
 
     fun removeItem(movie: Movie) {
@@ -166,7 +165,7 @@ class RecyclerViewAdapter(
         }
     }
 
-    inner class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view) 
+    inner class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     interface RecyclerViewItemClick {
         fun itemClick(position: Int, item: Movie)
