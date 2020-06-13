@@ -10,9 +10,11 @@ import com.example.kino.R
 import com.example.kino.utils.FAVOURITES_PAGE_CLICKED
 import com.example.kino.utils.MAIN_PAGE_CLICKED
 import com.example.kino.utils.PROFILE_PAGE_CLICKED
+import com.example.kino.utils.TAG
 import com.example.kino.view.fragments.AccountFragment
 import com.example.kino.view.fragments.FavouritesFragment
 import com.example.kino.view.fragments.FilmsFragment
+import com.example.kino.view.fragments.MovieDetailsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,10 +23,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var toolbar: TextView
     private val fragmentManager: FragmentManager = supportFragmentManager
-    var activeFragment: Fragment = FilmsFragment()
+    private var activeFragment: Fragment = FilmsFragment()
     private var filmsFragment: Fragment = FilmsFragment()
     private var favouritesFragment: Fragment = FavouritesFragment()
     private var accountFragment: Fragment = AccountFragment()
+    private var movieDetailsFragment: Fragment = MovieDetailsFragment()
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +48,6 @@ class MainActivity : AppCompatActivity() {
         toolbar.visibility = View.VISIBLE
         bottomNavigation.visibility = View.VISIBLE
     }
-
     private fun logEvent(logMessage: String) {
         val bundle = Bundle()
         firebaseAnalytics.logEvent(logMessage, bundle)
@@ -57,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             .hide(favouritesFragment).commit()
         fragmentManager.beginTransaction().add(R.id.frame, accountFragment).hide(accountFragment)
             .commit()
+        fragmentManager.beginTransaction().add(R.id.frame, movieDetailsFragment).hide(movieDetailsFragment)
     }
 
     private val navListener =
@@ -91,4 +94,5 @@ class MainActivity : AppCompatActivity() {
             }
             return@OnNavigationItemSelectedListener false
         }
+
 }

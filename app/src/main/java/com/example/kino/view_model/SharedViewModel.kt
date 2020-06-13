@@ -10,7 +10,6 @@ class SharedViewModel: ViewModel() {
 
     fun setMovie(movie:Movie){
         liked.value = movie
-        Log.d("listtt", "liked")
     }
 
 }

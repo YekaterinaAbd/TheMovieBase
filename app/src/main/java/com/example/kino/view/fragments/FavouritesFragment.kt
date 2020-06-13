@@ -19,16 +19,16 @@ import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.FragmentEnum
 import com.example.kino.utils.INTENT_KEY
 import com.example.kino.utils.RetrofitService
-import com.example.kino.view.MovieAdapter
+import com.example.kino.view.FavouritesAdapter
 import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
-class FavouritesFragment : Fragment(), MovieAdapter.RecyclerViewItemClick {
+class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private var recyclerViewAdapter: MovieAdapter? = null
+    private var recyclerViewAdapter: FavouritesAdapter? = null
 
     private lateinit var moviesListViewModel: MoviesListViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -76,8 +76,7 @@ class FavouritesFragment : Fragment(), MovieAdapter.RecyclerViewItemClick {
     }
 
     private fun setAdapter() {
-        // recyclerViewAdapter = RecyclerViewAdapter(itemClickListener = this)
-        recyclerViewAdapter = MovieAdapter(itemClickListener = this)
+        recyclerViewAdapter = FavouritesAdapter(itemClickListener = this)
 
         recyclerView.adapter = recyclerViewAdapter
     }

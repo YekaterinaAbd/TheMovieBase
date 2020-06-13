@@ -50,7 +50,6 @@ class MoviesListViewModel(
     fun getMovies(type: FragmentEnum, page: Int = 1) {
         launch {
             if (page == 1) liveData.value = State.ShowLoading
-
             val moviesList = withContext(Dispatchers.IO) {
                 try {
                     updateFavourites()
