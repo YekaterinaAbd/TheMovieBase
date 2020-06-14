@@ -37,7 +37,7 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
         super.onActivityCreated(savedInstanceState)
         sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
             if (item.isClicked) recyclerViewAdapter?.addItem(item)
-            else if (!item.isClicked) recyclerViewAdapter?.removeItem(item)
+            else recyclerViewAdapter?.removeItem(item)
         })
     }
 

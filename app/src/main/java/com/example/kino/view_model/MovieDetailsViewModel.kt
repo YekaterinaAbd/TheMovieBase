@@ -2,6 +2,7 @@ package com.example.kino.view_model
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
@@ -14,6 +15,7 @@ import com.example.kino.utils.constants.NULLABLE_VALUE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class MovieDetailsViewModel(
     private val context: Context,
@@ -60,6 +62,7 @@ class MovieDetailsViewModel(
                         if (movieState != null) {
                             movieDetails.isClicked = movieState
                         }
+                        setGenres(movieDetails)
                         movieDetails.tagline?.let {
                             movieDetails.runtime?.let { it1 ->
                                 movieRepository.updateLocalMovieProperties(
@@ -94,6 +97,17 @@ class MovieDetailsViewModel(
         }
     }
 
+    private fun setGenres(movie:Movie){
+        movie.genreNames = ""
+        if (movie.genres != null) {
+            for (i in movie.genres.indices) {
+                if (i == 0) movie.genreNames += movie.genres[i].genre.toLowerCase(Locale.ROOT)
+                else movie.genreNames +=", " + movie.genres[i].genre.toLowerCase(Locale.ROOT)
+            }
+        } else {
+            movie.genreNames = movie.genreNames.substring(0, movie.genreNames.length)
+        }
+    }
     sealed class State {
         object HideLoading : State()
         data class Result(val movie: Movie?) : State()

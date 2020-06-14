@@ -109,10 +109,7 @@ class MovieDetailsFragment : Fragment() {
         genres.text = ""
 
         if (movie.genres != null) {
-            for (i in movie.genres.indices) {
-                if (i == 0) genres.text = movie.genres[i].genre.toLowerCase(Locale.ROOT)
-                else genres.append(", " + movie.genres[i].genre.toLowerCase(Locale.ROOT))
-            }
+            genres.text = movie.genreNames
         } else {
             genres.text = movie.genreNames.substring(0, movie.genreNames.length - 2)
         }
