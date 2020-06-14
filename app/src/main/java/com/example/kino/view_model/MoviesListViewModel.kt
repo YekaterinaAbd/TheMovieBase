@@ -52,10 +52,10 @@ class MoviesListViewModel(
             if (page == 1) liveData.value = State.ShowLoading
             val moviesList = withContext(Dispatchers.IO) {
                 try {
-                    updateFavourites()
+                    updateFavouritesDB()
                     when (type) {
-                        FragmentEnum.TOP -> return@withContext getTop(page)
-                        FragmentEnum.FAVOURITES -> return@withContext getFavourites()
+                        FragmentEnum.TOP -> return@withContext getTopMovies(page)
+                        FragmentEnum.FAVOURITES -> return@withContext getFavouriteMovies()
                     }
                 } catch (e: Exception) {
                     when (type) {
@@ -69,20 +69,17 @@ class MoviesListViewModel(
         }
     }
 
-    private fun updateFavourites() {
+    private fun updateFavouritesDB() {
         val moviesToUpdate = movieRepository.getLocalMovieStatuses()
-
         if (!moviesToUpdate.isNullOrEmpty()) {
             for (movie in moviesToUpdate) {
-                updateFavourites(
-                    SelectedMovie(movieId = movie.movieId, selectedStatus = movie.selectedStatus)
-                )
+                updateLikeStatus(SelectedMovie(MEDIA_TYPE, movie.movieId, movie.selectedStatus))
             }
         }
         movieRepository.deleteLocalMovieStatuses()
     }
 
-    private suspend fun getTop(page: Int): List<Movie>? {
+    private suspend fun getTopMovies(page: Int): List<Movie>? {
         return try {
             val movies = movieRepository.getRemoteMovieList(API_KEY, page)
             if (!movies.isNullOrEmpty()) {
@@ -101,7 +98,7 @@ class MoviesListViewModel(
         }
     }
 
-    private suspend fun getFavourites(): List<Movie>? {
+    private suspend fun getFavouriteMovies(): List<Movie>? {
         return try {
             val movies = movieRepository.getRemoteFavouriteMovies(API_KEY, sessionId)
 
@@ -130,13 +127,13 @@ class MoviesListViewModel(
     fun addToFavourites(item: Movie) {
         item.isClicked = !item.isClicked
         val selectedMovie = SelectedMovie(MEDIA_TYPE, item.id, item.isClicked)
-        updateFavourites(selectedMovie)
+        updateLikeStatus(selectedMovie)
     }
 
-    private fun updateFavourites(movie: SelectedMovie) {
+    private fun updateLikeStatus(movie: SelectedMovie) {
         launch {
             try {
-                movieRepository.addRemoveRemoteFavourites(API_KEY, sessionId, movie)
+                movieRepository.updateRemoteFavourites(API_KEY, sessionId, movie)
             } catch (e: Exception) {
                 withContext(Dispatchers.IO) {
                     movieRepository.updateLocalMovieIsCLicked(movie.selectedStatus, movie.movieId)
