@@ -12,6 +12,10 @@ import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.example.kino.R
+import com.example.kino.utils.constants.CHANNEL
+import com.example.kino.utils.constants.CONTENT
+import com.example.kino.utils.constants.MOVIES_URL
+import com.example.kino.utils.constants.TITLE
 import com.example.kino.view.activities.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -36,7 +40,10 @@ class MyMessagingService : FirebaseMessagingService() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
-                NotificationChannel(CHANNEL, CHANNEL, NotificationManager.IMPORTANCE_HIGH)
+                NotificationChannel(
+                    CHANNEL,
+                    CHANNEL, NotificationManager.IMPORTANCE_HIGH
+                )
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
@@ -59,7 +66,10 @@ class MyMessagingService : FirebaseMessagingService() {
         val pendingIntent: PendingIntent =
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
-        return NotificationCompat.Builder(applicationContext, CHANNEL)
+        return NotificationCompat.Builder(
+            applicationContext,
+            CHANNEL
+        )
             .setSmallIcon(R.drawable.ic_play_circle_filled_black_24dp)
             .setSound(uri)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())

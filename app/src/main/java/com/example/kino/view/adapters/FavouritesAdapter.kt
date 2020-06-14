@@ -1,5 +1,4 @@
-
-package com.example.kino.view
+package com.example.kino.view.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
+import com.example.kino.utils.constants.IMAGE_URL
 import com.squareup.picasso.Picasso
 
 class FavouritesAdapter(
@@ -28,7 +28,7 @@ class FavouritesAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is FavouritesAdapter.MovieViewHolder)
+        if (holder is MovieViewHolder)
             holder.bind(movies[position])
     }
 
@@ -37,33 +37,24 @@ class FavouritesAdapter(
         notifyDataSetChanged()
     }
 
-    private fun getItem(position: Int): Movie? {
-        return movies[position]
-    }
-
     fun addItems(moviesList: List<Movie>) {
         movies = moviesList as MutableList<Movie>
         notifyDataSetChanged()
     }
 
     fun addItem(movie: Movie) {
+        if (!movies.contains(movie)) {
             movies.add(movie)
-        notifyItemInserted(movies.size - 1)
-    }
-
-    fun updateItem(movie: Movie) {
-        val id = movie.id
-        val isClicked = movie.isClicked
-        val foundMovie = movies.find { it.id == id }
-        foundMovie?.isClicked = isClicked
-        if(foundMovie?.isClicked==false){
-            removeItem(foundMovie)
+            notifyItemInserted(movies.size - 1)
         }
-        notifyDataSetChanged()
     }
 
     fun removeItem(movie: Movie) {
-        movies.remove(movie)
+        val id = movie.id
+        val foundMovie = movies.find { it.id == id }
+        if (foundMovie != null) {
+            movies.remove(foundMovie)
+        }
         notifyDataSetChanged()
     }
 
@@ -77,7 +68,6 @@ class FavouritesAdapter(
             val poster = view.findViewById<ImageView>(R.id.ivPoster)
             val tvVotesCount = view.findViewById<TextView>(R.id.tvVotesCount)
             val tvRating = view.findViewById<TextView>(R.id.tvRating)
-            val number = view.findViewById<TextView>(R.id.number)
             val addToFav = view.findViewById<ImageView>(R.id.tvAddToFav)
 
             if (movie != null) {
@@ -91,11 +81,10 @@ class FavouritesAdapter(
                 tvReleaseDate.text = movie.releaseDate.substring(0, 4)
                 tvVotesCount.text = movie.voteCount.toString()
                 tvRating.text = movie.voteAverage.toString()
-                if(movie.genreNames.isNotEmpty())
-                tvGenres.text = movie.genreNames.substring(0, movie.genreNames.length - 2)
+                tvGenres.text = movie.genreNames
 
                 Picasso.get()
-                    .load("https://image.tmdb.org/t/p/w500" + movie.posterPath)
+                    .load(IMAGE_URL + movie.posterPath)
                     .into(poster)
 
                 view.setOnClickListener {
@@ -113,6 +102,7 @@ class FavouritesAdapter(
             }
         }
     }
+
     interface RecyclerViewItemClick {
         fun itemClick(position: Int, item: Movie)
         fun addToFavourites(position: Int, item: Movie)

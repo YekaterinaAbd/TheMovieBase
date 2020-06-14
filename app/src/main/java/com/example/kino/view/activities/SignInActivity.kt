@@ -14,8 +14,8 @@ import com.example.kino.model.repository.AccountRepository
 import com.example.kino.model.repository.AccountRepositoryImpl
 import com.example.kino.model.repository.MarkerRepositoryImpl
 import com.example.kino.utils.RetrofitService
-import com.example.kino.utils.SIGNED_IN
-import com.example.kino.utils.SIGN_UP_URL
+import com.example.kino.utils.constants.SIGNED_IN
+import com.example.kino.utils.constants.SIGN_UP_URL
 import com.example.kino.view_model.MarkersViewModel
 import com.example.kino.view_model.SignInViewModel
 import com.example.kino.view_model.ViewModelProviderFactory

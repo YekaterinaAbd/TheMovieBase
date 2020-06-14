@@ -7,7 +7,7 @@ import com.example.kino.R
 import com.example.kino.model.account.LoginValidationData
 import com.example.kino.model.account.Token
 import com.example.kino.model.repository.AccountRepository
-import com.example.kino.utils.API_KEY
+import com.example.kino.utils.constants.API_KEY
 import kotlinx.coroutines.launch
 
 class SignInViewModel(

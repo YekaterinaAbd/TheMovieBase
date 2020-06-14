@@ -2,16 +2,15 @@ package com.example.kino.view_model
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.movie.MovieStatus
 import com.example.kino.model.movie.SelectedMovie
 import com.example.kino.model.repository.MovieRepository
-import com.example.kino.utils.API_KEY
-import com.example.kino.utils.MEDIA_TYPE
-import com.example.kino.utils.NULLABLE_VALUE
+import com.example.kino.utils.constants.API_KEY
+import com.example.kino.utils.constants.MEDIA_TYPE
+import com.example.kino.utils.constants.NULLABLE_VALUE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,10 +20,10 @@ class MovieDetailsViewModel(
     private val movieRepository: MovieRepository
 ) : BaseViewModel() {
 
-    val liveData = MutableLiveData<State>()
-
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sessionId: String
+
+    val liveData = MutableLiveData<State>()
 
     init {
         getSharedPreferences()
@@ -44,14 +43,19 @@ class MovieDetailsViewModel(
         }
     }
 
-
     fun getMovie(id: Int) {
 
         launch {
             val movie = withContext(Dispatchers.IO) {
                 try {
-                    val movieDetails = movieRepository.getRemoteMovie(id, API_KEY)
-                    val movieState = movieRepository.getRemoteMovieStates(id, API_KEY, sessionId)
+                    val movieDetails = movieRepository.getRemoteMovie(
+                        id,
+                        API_KEY
+                    )
+                    val movieState = movieRepository.getRemoteMovieStates(
+                        id,
+                        API_KEY, sessionId
+                    )
                     if (movieDetails != null) {
                         if (movieState != null) {
                             movieDetails.isClicked = movieState
@@ -85,7 +89,6 @@ class MovieDetailsViewModel(
                 withContext(Dispatchers.IO) {
                     movieRepository.updateLocalMovieIsCLicked(movie.isClicked, movie.id)
                     movieRepository.insertLocalMovieStatus(MovieStatus(movie.id, movie.isClicked))
-                    Log.d("listtt", movieRepository.getLocalMovieStatuses().toString())
                 }
             }
         }

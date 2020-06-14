@@ -1,27 +1,29 @@
-package com.example.kino.view.activities
+package com.example.kino.view.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.example.kino.R
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.repository.MovieRepositoryImpl
-import com.example.kino.utils.IMAGE_URL
-import com.example.kino.utils.INTENT_KEY
 import com.example.kino.utils.RetrofitService
+import com.example.kino.utils.constants.IMAGE_URL
+import com.example.kino.utils.constants.INTENT_KEY
 import com.example.kino.view_model.MovieDetailsViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.squareup.picasso.Picasso
 import java.util.*
 
-class MovieDetailActivity : AppCompatActivity() {
+class MovieDetailsFragment : Fragment() {
 
     private lateinit var progressBar: ProgressBar
     private lateinit var poster: ImageView
@@ -37,57 +39,53 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var like: ImageView
 
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
-    private lateinit var sharedViewModel: SharedViewModel
-    private lateinit var movie: Movie
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_movie_detail)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.activity_movie_detail, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setViewModel()
-        bindViews()
+        bindViews(view)
+        val bundle = this.arguments
 
-        val postId = intent.getIntExtra(INTENT_KEY, 1)
-        getMovie(id = postId)
+        if (bundle != null) {
+            getMovie(bundle.getInt(INTENT_KEY))
+        }
     }
 
     private fun setViewModel() {
-        sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel::class.java)
-        val movieDao: MovieDao = MovieDatabase.getDatabase(this).movieDao()
+        val movieDao: MovieDao = MovieDatabase.getDatabase(requireContext()).movieDao()
         movieDetailsViewModel =
-            MovieDetailsViewModel(this, MovieRepositoryImpl(movieDao, RetrofitService.getPostApi()))
-        sharedViewModel=this.run { ViewModelProviders.of(this).get(SharedViewModel::class.java) }
+            MovieDetailsViewModel(
+                requireContext(),
+                MovieRepositoryImpl(movieDao, RetrofitService.getPostApi())
+            )
     }
 
-    private fun bindViews() {
-        progressBar = findViewById(R.id.progressBar)
-        poster = findViewById(R.id.ivPoster)
-        title = findViewById(R.id.tvName)
-        year = findViewById(R.id.tvYear)
-        genres = findViewById(R.id.tvGenres)
-        durationTime = findViewById(R.id.duration)
-        tagline = findViewById(R.id.tvTagline)
-        description = findViewById(R.id.description)
-        rating = findViewById(R.id.rating)
-        votesCount = findViewById(R.id.votesCount)
-        companies = findViewById(R.id.companies)
-        like = findViewById(R.id.btnLike)
-        like.setOnClickListener {
-            if (movie.isClicked) {
-                movie.isClicked = false
-                like.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
-            } else {
-                movie.isClicked = true
-                like.setImageResource(R.drawable.ic_turned_in_black_24dp)
-            }
-            movieDetailsViewModel.updateLike(movie)
-            sharedViewModel.setMovie(movie)
-        }
+    private fun bindViews(view: View) {
+        progressBar = view.findViewById(R.id.progressBar)
+        poster = view.findViewById(R.id.ivPoster)
+        title = view.findViewById(R.id.tvName)
+        year = view.findViewById(R.id.tvYear)
+        genres = view.findViewById(R.id.tvGenres)
+        durationTime = view.findViewById(R.id.duration)
+        tagline = view.findViewById(R.id.tvTagline)
+        description = view.findViewById(R.id.description)
+        rating = view.findViewById(R.id.rating)
+        votesCount = view.findViewById(R.id.votesCount)
+        companies = view.findViewById(R.id.companies)
+        like = view.findViewById(R.id.btnLike)
     }
 
     private fun getMovie(id: Int) {
 
         movieDetailsViewModel.getMovie(id)
-        movieDetailsViewModel.liveData.observe(this, Observer { result ->
+        movieDetailsViewModel.liveData.observe(requireActivity(), Observer { result ->
             when (result) {
                 is MovieDetailsViewModel.State.HideLoading -> {
                     progressBar.visibility = View.GONE
@@ -95,7 +93,6 @@ class MovieDetailActivity : AppCompatActivity() {
                 is MovieDetailsViewModel.State.Result -> {
                     if (result.movie != null) {
                         bindData(result.movie)
-                        movie = result.movie
                     }
                 }
             }
@@ -136,12 +133,20 @@ class MovieDetailActivity : AppCompatActivity() {
             like.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
         }
 
-
+        like.setOnClickListener {
+            if (movie.isClicked) {
+                movie.isClicked = false
+                like.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
+            } else {
+                movie.isClicked = true
+                like.setImageResource(R.drawable.ic_turned_in_black_24dp)
+            }
+            movieDetailsViewModel.updateLike(movie)
+            sharedViewModel.setMovie(movie)
+        }
 
         Picasso.get()
             .load(IMAGE_URL + movie.posterPath)
             .into(poster)
     }
 }
-
-

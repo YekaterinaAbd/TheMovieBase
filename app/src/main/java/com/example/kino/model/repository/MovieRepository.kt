@@ -18,7 +18,7 @@ interface MovieRepository {
     fun deleteLocalMovies()
 
     fun getLocalMovieStatuses(): List<MovieStatus>?
-    fun insertLocalMovieStatus(movieState:MovieStatus)
+    fun insertLocalMovieStatus(movieState: MovieStatus)
     fun deleteLocalMovieStatuses()
 
     suspend fun getRemoteGenres(apiKey: String): Genres?
@@ -79,14 +79,17 @@ class MovieRepositoryImpl(
         return service?.getGenres(apiKey)?.body()
     }
 
-    override suspend fun getRemoteMovie(id: Int, apiKey: String): Movie? =
-        service?.getMovieById(id, apiKey)?.body()
+    override suspend fun getRemoteMovie(id: Int, apiKey: String): Movie? {
+        return service?.getMovieById(id, apiKey)?.body()
+    }
 
-    override suspend fun getRemoteMovieList(apiKey: String, page:Int): List<Movie>? =
-        service?.getMovieList(apiKey, page)?.body()?.movieList
+    override suspend fun getRemoteMovieList(apiKey: String, page: Int): List<Movie>? {
+        return service?.getMovieList(apiKey, page)?.body()?.movieList
+    }
 
-    override suspend fun getRemoteFavouriteMovies(apiKey: String, sessionId: String): List<Movie>? =
-        service?.getFavouriteMovies(apiKey, sessionId)?.body()?.movieList
+    override suspend fun getRemoteFavouriteMovies(apiKey: String, sessionId: String): List<Movie>? {
+        return service?.getFavouriteMovies(apiKey, sessionId)?.body()?.movieList
+    }
 
     override suspend fun addRemoveRemoteFavourites(
         apiKey: String,

@@ -1,4 +1,4 @@
-package com.example.kino.utils
+package com.example.kino.utils.constants
 
 val NULL = null
 const val BASE_URL = "https://api.themoviedb.org/3/"
