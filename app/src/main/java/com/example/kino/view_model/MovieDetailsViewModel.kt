@@ -2,7 +2,6 @@ package com.example.kino.view_model
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
@@ -83,11 +82,11 @@ class MovieDetailsViewModel(
         }
     }
 
-    fun updateLike(movie: Movie) {
+    fun updateLikeStatus(movie: Movie) {
         launch {
             val selectedMovie = SelectedMovie(MEDIA_TYPE, movie.id, movie.isClicked)
             try {
-                movieRepository.addRemoveRemoteFavourites(API_KEY, sessionId, selectedMovie)
+                movieRepository.updateRemoteFavourites(API_KEY, sessionId, selectedMovie)
             } catch (e: Exception) {
                 withContext(Dispatchers.IO) {
                     movieRepository.updateLocalMovieIsCLicked(movie.isClicked, movie.id)
@@ -97,17 +96,18 @@ class MovieDetailsViewModel(
         }
     }
 
-    private fun setGenres(movie:Movie){
+    private fun setGenres(movie: Movie) {
         movie.genreNames = ""
         if (movie.genres != null) {
             for (i in movie.genres.indices) {
                 if (i == 0) movie.genreNames += movie.genres[i].genre.toLowerCase(Locale.ROOT)
-                else movie.genreNames +=", " + movie.genres[i].genre.toLowerCase(Locale.ROOT)
+                else movie.genreNames += ", " + movie.genres[i].genre.toLowerCase(Locale.ROOT)
             }
         } else {
             movie.genreNames = movie.genreNames.substring(0, movie.genreNames.length)
         }
     }
+
     sealed class State {
         object HideLoading : State()
         data class Result(val movie: Movie?) : State()

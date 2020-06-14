@@ -21,7 +21,6 @@ import com.example.kino.utils.constants.INTENT_KEY
 import com.example.kino.view_model.MovieDetailsViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.squareup.picasso.Picasso
-import java.util.*
 
 class MovieDetailsFragment : Fragment() {
 
@@ -138,7 +137,7 @@ class MovieDetailsFragment : Fragment() {
                 movie.isClicked = true
                 like.setImageResource(R.drawable.ic_turned_in_black_24dp)
             }
-            movieDetailsViewModel.updateLike(movie)
+            movieDetailsViewModel.updateLikeStatus(movie)
             sharedViewModel.setMovie(movie)
         }
 
