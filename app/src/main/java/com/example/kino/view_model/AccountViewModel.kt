@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kino.R
-import com.example.kino.utils.DEFAULT_VALUE
+import com.example.kino.utils.constants.DEFAULT_VALUE
 
 class AccountViewModel(private val context: Context) : ViewModel() {
 

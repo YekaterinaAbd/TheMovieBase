@@ -1,16 +1,10 @@
 package com.example.kino.view.fragments
 
-import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,10 +16,11 @@ import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.database.MovieStatusDao
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.repository.MovieRepositoryImpl
-import com.example.kino.utils.*
+import com.example.kino.utils.FragmentEnum
+import com.example.kino.utils.RetrofitService
+import com.example.kino.utils.constants.*
 import com.example.kino.utils.pagination.PaginationScrollListener
-import com.example.kino.view.RecyclerViewAdapter
-import com.example.kino.view.activities.MovieDetailActivity
+import com.example.kino.view.adapters.RecyclerViewAdapter
 import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.google.firebase.analytics.FirebaseAnalytics

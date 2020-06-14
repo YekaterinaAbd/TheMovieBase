@@ -9,10 +9,10 @@ import com.example.kino.model.movie.Movie
 import com.example.kino.model.movie.MovieStatus
 import com.example.kino.model.movie.SelectedMovie
 import com.example.kino.model.repository.MovieRepository
-import com.example.kino.utils.API_KEY
 import com.example.kino.utils.FragmentEnum
-import com.example.kino.utils.MEDIA_TYPE
-import com.example.kino.utils.NULLABLE_VALUE
+import com.example.kino.utils.constants.API_KEY
+import com.example.kino.utils.constants.MEDIA_TYPE
+import com.example.kino.utils.constants.NULLABLE_VALUE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -71,19 +71,18 @@ class MoviesListViewModel(
 
     private fun updateFavourites() {
         val moviesToUpdate = movieRepository.getLocalMovieStatuses()
+
         if (!moviesToUpdate.isNullOrEmpty()) {
             for (movie in moviesToUpdate) {
-                val selectedMovie = SelectedMovie(
-                    movieId = movie.movieId,
-                    selectedStatus = movie.selectedStatus
+                updateFavourites(
+                    SelectedMovie(movieId = movie.movieId, selectedStatus = movie.selectedStatus)
                 )
-                addRemoveFavourites(selectedMovie)
             }
         }
         movieRepository.deleteLocalMovieStatuses()
     }
 
-    private suspend fun getTop(page:Int): List<Movie>? {
+    private suspend fun getTop(page: Int): List<Movie>? {
         return try {
             val movies = movieRepository.getRemoteMovieList(API_KEY, page)
             if (!movies.isNullOrEmpty()) {
@@ -125,34 +124,25 @@ class MoviesListViewModel(
                 .toString().toLowerCase(Locale.ROOT)
             movie.genreNames += context.getString(R.string.genre_name, genreName)
         }
+        movie.genreNames = movie.genreNames.substring(0, movie.genreNames.length - 2)
     }
 
     fun addToFavourites(item: Movie) {
-        lateinit var selectedMovie: SelectedMovie
-
-        if (!item.isClicked) {
-            item.isClicked = true
-            selectedMovie = SelectedMovie(MEDIA_TYPE, item.id, item.isClicked)
-        } else {
-            item.isClicked = false
-            selectedMovie = SelectedMovie(MEDIA_TYPE, item.id, item.isClicked)
-        }
-        addRemoveFavourites(selectedMovie)
+        item.isClicked = !item.isClicked
+        val selectedMovie = SelectedMovie(MEDIA_TYPE, item.id, item.isClicked)
+        updateFavourites(selectedMovie)
     }
 
-    private fun addRemoveFavourites(selectedMovie: SelectedMovie) {
+    private fun updateFavourites(movie: SelectedMovie) {
         launch {
             try {
-                movieRepository.addRemoveRemoteFavourites(API_KEY, sessionId, selectedMovie)
+                movieRepository.addRemoveRemoteFavourites(API_KEY, sessionId, movie)
             } catch (e: Exception) {
                 withContext(Dispatchers.IO) {
-                    movieRepository.updateLocalMovieIsCLicked(
-                        selectedMovie.selectedStatus,
-                        selectedMovie.movieId
+                    movieRepository.updateLocalMovieIsCLicked(movie.selectedStatus, movie.movieId)
+                    movieRepository.insertLocalMovieStatus(
+                        MovieStatus(movie.movieId, movie.selectedStatus)
                     )
-                    val movieStatus =
-                        MovieStatus(selectedMovie.movieId, selectedMovie.selectedStatus)
-                    movieRepository.insertLocalMovieStatus(movieStatus)
                 }
             }
         }
@@ -161,7 +151,10 @@ class MoviesListViewModel(
     private fun saveLikeStatus(movie: Movie) {
         launch {
             try {
-                val movieStatus = movieRepository.getRemoteMovieStates(movie.id, API_KEY, sessionId)
+                val movieStatus = movieRepository.getRemoteMovieStates(
+                    movie.id,
+                    API_KEY, sessionId
+                )
                 if (movieStatus != null) {
                     movie.isClicked = movieStatus
                     withContext(Dispatchers.IO) {

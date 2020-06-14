@@ -1,4 +1,3 @@
-
 package com.example.kino.view.fragments
 
 import android.os.Bundle
@@ -10,17 +9,15 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.example.kino.R
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.repository.MovieRepositoryImpl
-import com.example.kino.utils.IMAGE_URL
-import com.example.kino.utils.INTENT_KEY
 import com.example.kino.utils.RetrofitService
+import com.example.kino.utils.constants.IMAGE_URL
+import com.example.kino.utils.constants.INTENT_KEY
 import com.example.kino.view_model.MovieDetailsViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.squareup.picasso.Picasso

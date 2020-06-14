@@ -1,4 +1,4 @@
-package com.example.kino.utils
+package com.example.kino.utils.constants
 
 const val MOVIE_ID = "id"
 const val MOVIE_TITLE = "name"

@@ -3,8 +3,8 @@ package com.example.kino.model.movie
 import com.example.kino.model.repository.MovieRepository
 import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.RetrofitService
-import com.example.kino.utils.API_KEY
-import com.example.kino.utils.NULL
+import com.example.kino.utils.constants.API_KEY
+import com.example.kino.utils.constants.NULL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

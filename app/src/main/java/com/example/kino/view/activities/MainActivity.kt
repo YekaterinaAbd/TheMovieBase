@@ -7,10 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.kino.R
-import com.example.kino.utils.FAVOURITES_PAGE_CLICKED
-import com.example.kino.utils.MAIN_PAGE_CLICKED
-import com.example.kino.utils.PROFILE_PAGE_CLICKED
-import com.example.kino.utils.TAG
+import com.example.kino.utils.constants.FAVOURITES_PAGE_CLICKED
+import com.example.kino.utils.constants.MAIN_PAGE_CLICKED
+import com.example.kino.utils.constants.PROFILE_PAGE_CLICKED
 import com.example.kino.view.fragments.AccountFragment
 import com.example.kino.view.fragments.FavouritesFragment
 import com.example.kino.view.fragments.FilmsFragment

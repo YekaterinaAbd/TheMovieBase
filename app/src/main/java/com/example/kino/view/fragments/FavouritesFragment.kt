@@ -17,9 +17,9 @@ import com.example.kino.model.database.MovieStatusDao
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.FragmentEnum
-import com.example.kino.utils.INTENT_KEY
 import com.example.kino.utils.RetrofitService
-import com.example.kino.view.FavouritesAdapter
+import com.example.kino.utils.constants.INTENT_KEY
+import com.example.kino.view.adapters.FavouritesAdapter
 import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,7 +37,7 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
         super.onActivityCreated(savedInstanceState)
         sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
             if (item.isClicked) recyclerViewAdapter?.addItem(item)
-            if (!item.isClicked) recyclerViewAdapter?.removeItem(item)
+            else if (!item.isClicked) recyclerViewAdapter?.removeItem(item)
         })
     }
 
@@ -76,7 +76,8 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
     }
 
     private fun setAdapter() {
-        recyclerViewAdapter = FavouritesAdapter(itemClickListener = this)
+        recyclerViewAdapter =
+            FavouritesAdapter(itemClickListener = this)
 
         recyclerView.adapter = recyclerViewAdapter
     }

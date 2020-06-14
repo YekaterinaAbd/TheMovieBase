@@ -1,6 +1,5 @@
-package com.example.kino.view
+package com.example.kino.view.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
+import com.example.kino.utils.constants.IMAGE_URL
 import com.squareup.picasso.Picasso
 
 class RecyclerViewAdapter(
@@ -38,22 +38,15 @@ class RecyclerViewAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return if (isLoaderVisible) {
-            if (position == movies.size - 1) {
-                VIEW_TYPE_LOADING
-            } else {
-                VIEW_TYPE_NORMAL
-            }
-        } else {
-            VIEW_TYPE_NORMAL
-        }
+            if (position == movies.size - 1) VIEW_TYPE_LOADING
+            else VIEW_TYPE_NORMAL
+        } else VIEW_TYPE_NORMAL
     }
 
     override fun getItemCount(): Int = movies.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is MovieViewHolder){
-            holder.bind(movies[position])
-        }
+        if (holder is MovieViewHolder) holder.bind(movies[position])
     }
 
     fun clearAll() {
@@ -78,7 +71,6 @@ class RecyclerViewAdapter(
                 notifyItemRemoved(position)
             }
         }
-
     }
 
     private fun getItem(position: Int): Movie? {
@@ -93,23 +85,11 @@ class RecyclerViewAdapter(
         }
         notifyDataSetChanged()
     }
-
-    fun addItem(movie: Movie) {
-        movies.add(movie)
-        notifyDataSetChanged()
-    }
-
     fun updateItem(movie: Movie) {
         val id = movie.id
         val isClicked = movie.isClicked
         val foundMovie = movies.find { it.id == id }
         foundMovie?.isClicked = isClicked
-        notifyDataSetChanged()
-        Log.d("listtt", "item updated")
-    }
-
-    fun removeItem(movie: Movie) {
-        movies.remove(movie)
         notifyDataSetChanged()
     }
 
@@ -133,7 +113,6 @@ class RecyclerViewAdapter(
                     addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
                 }
 
-
                 if (movie.position == 0) {
                     movie.position = moviePosition
                     moviePosition++
@@ -144,10 +123,10 @@ class RecyclerViewAdapter(
                 tvVotesCount.text = movie.voteCount.toString()
                 tvRating.text = movie.voteAverage.toString()
                 number.text = movie.position.toString()
-                tvGenres.text = movie.genreNames.substring(0, movie.genreNames.length - 2)
+                tvGenres.text = movie.genreNames
 
                 Picasso.get()
-                    .load("https://image.tmdb.org/t/p/w500" + movie.posterPath)
+                    .load(IMAGE_URL + movie.posterPath)
                     .into(poster)
 
                 view.setOnClickListener {

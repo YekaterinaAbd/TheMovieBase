@@ -5,6 +5,7 @@ import com.example.kino.model.account.LoginValidationData
 import com.example.kino.model.account.Session
 import com.example.kino.model.account.Token
 import com.example.kino.model.movie.*
+import com.example.kino.utils.constants.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
