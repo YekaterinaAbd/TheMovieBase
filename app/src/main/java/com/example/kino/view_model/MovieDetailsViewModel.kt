@@ -83,12 +83,14 @@ class MovieDetailsViewModel(
     }
 
     fun updateLikeStatus(movie: Movie) {
+
         launch {
-            val selectedMovie = SelectedMovie(MEDIA_TYPE, movie.id, movie.isClicked)
-            try {
-                movieRepository.updateRemoteFavourites(API_KEY, sessionId, selectedMovie)
-            } catch (e: Exception) {
-                withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
+                val selectedMovie = SelectedMovie(MEDIA_TYPE, movie.id, movie.isClicked)
+                try {
+                    movieRepository.updateRemoteFavourites(API_KEY, sessionId, selectedMovie)
+                    movieRepository.updateLocalMovieIsCLicked(movie.isClicked, movie.id)
+                } catch (e: Exception) {
                     movieRepository.updateLocalMovieIsCLicked(movie.isClicked, movie.id)
                     movieRepository.insertLocalMovieStatus(MovieStatus(movie.id, movie.isClicked))
                 }

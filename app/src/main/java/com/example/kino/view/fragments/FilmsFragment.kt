@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -30,12 +30,13 @@ import kotlinx.android.synthetic.main.activity_main.*
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-    private lateinit var sharedViewModel: SharedViewModel
     private lateinit var recyclerView: RecyclerView
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var moviesListViewModel: MoviesListViewModel
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
 
     private var currentPage = PaginationScrollListener.PAGE_START
     private var isLocal = false
@@ -73,10 +74,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         val movieRepository =
             MovieRepositoryImpl(movieDao, RetrofitService.getPostApi(), movieStatusDao)
         moviesListViewModel = MoviesListViewModel(requireContext(), movieRepository)
-
-        sharedViewModel =
-            activity?.run { ViewModelProviders.of(this).get(SharedViewModel::class.java) }
-                ?: throw Exception("Invalid Activity")
     }
 
     private fun bindViews(view: View) {
@@ -134,7 +131,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         requireActivity().toolbar.visibility = View.GONE
         requireActivity().bottomNavigation.visibility = View.GONE
     }
-
 
     override fun addToFavourites(position: Int, item: Movie) {
         if (!item.isClicked) logEvent(MOVIE_LIKED, item)

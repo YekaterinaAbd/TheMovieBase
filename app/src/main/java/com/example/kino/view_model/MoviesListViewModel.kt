@@ -135,10 +135,12 @@ class MoviesListViewModel(
 
     private fun updateLikeStatus(movie: SelectedMovie) {
         launch {
-            try {
-                movieRepository.updateRemoteFavourites(API_KEY, sessionId, movie)
-            } catch (e: Exception) {
-                withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
+                try {
+                    movieRepository.updateRemoteFavourites(API_KEY, sessionId, movie)
+                    movieRepository.updateLocalMovieIsCLicked(movie.selectedStatus, movie.movieId)
+
+                } catch (e: Exception) {
                     movieRepository.updateLocalMovieIsCLicked(movie.selectedStatus, movie.movieId)
                     movieRepository.insertLocalMovieStatus(
                         MovieStatus(movie.movieId, movie.selectedStatus)
