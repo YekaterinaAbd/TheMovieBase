@@ -2,6 +2,7 @@ package com.example.kino.view_model
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.kino.R
 import com.example.kino.model.movie.GenresList
@@ -145,6 +146,7 @@ class MoviesListViewModel(
                     movieRepository.insertLocalMovieStatus(
                         MovieStatus(movie.movieId, movie.selectedStatus)
                     )
+                    Log.d("testt", movieRepository.getLocalMovieStatuses().toString())
                 }
             }
         }

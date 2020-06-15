@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import com.example.kino.R
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
+import com.example.kino.model.database.MovieStatusDao
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.repository.MovieRepositoryImpl
 import com.example.kino.utils.RetrofitService
@@ -59,10 +60,12 @@ class MovieDetailsFragment : Fragment() {
 
     private fun setViewModel() {
         val movieDao: MovieDao = MovieDatabase.getDatabase(requireContext()).movieDao()
+        val movieStatusDao: MovieStatusDao =
+            MovieDatabase.getDatabase(requireContext()).movieStatusDao()
         movieDetailsViewModel =
             MovieDetailsViewModel(
                 requireContext(),
-                MovieRepositoryImpl(movieDao, RetrofitService.getPostApi())
+                MovieRepositoryImpl(movieDao, RetrofitService.getPostApi(), movieStatusDao)
             )
     }
 
