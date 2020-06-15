@@ -38,6 +38,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     private lateinit var moviesListViewModel: MoviesListViewModel
 
     private var currentPage = PaginationScrollListener.PAGE_START
+    private var isLocal = false
     private var isLastPage = false
     private var isLoading = false
     private var itemCount = 0
@@ -108,6 +109,8 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
             override fun isLastPage(): Boolean = isLastPage
             override fun isLoading(): Boolean = isLoading
+            override fun isLocal(): Boolean = isLocal
+
         })
     }
 
@@ -122,8 +125,10 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         logEvent(MOVIE_CLICKED, item)
         val bundle = Bundle()
         bundle.putInt(INTENT_KEY, item.id)
+
         val movieDetailedFragment = MovieDetailsFragment()
         movieDetailedFragment.arguments = bundle
+
         parentFragmentManager.beginTransaction().add(R.id.frame, movieDetailedFragment)
             .addToBackStack(null).commit()
         requireActivity().toolbar.visibility = View.GONE
@@ -148,10 +153,15 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
                     swipeRefreshLayout.isRefreshing = false
                 }
                 is MoviesListViewModel.State.Result -> {
-                    recyclerViewAdapter?.removeLoading()
-                    recyclerViewAdapter?.addItems(result.moviesList ?: emptyList())
-                    recyclerViewAdapter?.addLoading()
-                    isLoading = false
+                    isLocal = result.isLocal
+                    if (result.isLocal) {
+                        recyclerViewAdapter?.replaceItems(result.moviesList ?: emptyList())
+                    } else {
+                        recyclerViewAdapter?.removeLoading()
+                        recyclerViewAdapter?.addItems(result.moviesList ?: emptyList())
+                        recyclerViewAdapter?.addLoading()
+                        isLoading = false
+                    }
                 }
                 is MoviesListViewModel.State.Update -> {
                     recyclerViewAdapter?.notifyDataSetChanged()

@@ -85,6 +85,14 @@ class RecyclerViewAdapter(
         }
         notifyDataSetChanged()
     }
+
+    fun replaceItems(moviesList: List<Movie>) {
+        isLoaderVisible = false
+        movies = moviesList as MutableList<Movie>
+        moviePosition = 1
+        notifyDataSetChanged()
+    }
+
     fun updateItem(movie: Movie) {
         val id = movie.id
         val isClicked = movie.isClicked
