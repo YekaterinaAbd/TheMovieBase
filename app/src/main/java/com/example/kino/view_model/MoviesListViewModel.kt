@@ -65,7 +65,7 @@ class MoviesListViewModel(
                 }
             }
             liveData.value = State.HideLoading
-            liveData.value = State.Result(moviesList)
+            liveData.value = State.Result(moviesList, isLocal)
         }
     }
 
@@ -79,10 +79,12 @@ class MoviesListViewModel(
         movieRepository.deleteLocalMovieStatuses()
     }
 
+    private var isLocal = false
     private suspend fun getTopMovies(page: Int): List<Movie>? {
         return try {
             val movies = movieRepository.getRemoteMovieList(API_KEY, page)
             if (!movies.isNullOrEmpty()) {
+                isLocal = false
                 for (movie in movies) {
                     setMovieGenres(movie)
                     saveLikeStatus(movie)
@@ -94,6 +96,7 @@ class MoviesListViewModel(
             }
             movies
         } catch (e: Exception) {
+            isLocal = true
             movieRepository.getLocalMovies()
         }
     }
@@ -168,6 +171,6 @@ class MoviesListViewModel(
         object Update : State()
         object ShowLoading : State()
         object HideLoading : State()
-        data class Result(val moviesList: List<Movie>?) : State()
+        data class Result(val moviesList: List<Movie>?, val isLocal: Boolean) : State()
     }
 }
