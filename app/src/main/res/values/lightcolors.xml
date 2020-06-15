@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lightColorPrimary">#FF6501</color>
+    <color name="lightColorAccent">#FF6501</color>
+    <color name="lightColorPrimaryText">#000000</color>
+    <color name="lightColorSecondaryText">#858585</color>
+    <color name="lightColorRating">#2F7C52</color>
+    <color name="lightColorSelectedIcon">#FF6501</color>
+    <color name="lightColorLike">#FF6501</color>
+    <color name="lightColorBackground">#F7F7F7</color>
+    <color name="lightColorItems">#FFFFFF</color>
+    <color name="lightColorToolbar">#FFFFFF</color>
+    <color name="lightColorButtons">#FF6501</color>
+    <color name="lightColorSecondaryIcons">#FF6501</color>
+    <color name="lightColorAccount">#FFFFFF</color>
+    <color name="lightColorUnselectedIcons">#949494</color>
+</resources>

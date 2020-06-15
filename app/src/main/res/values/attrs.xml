@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorPrimaryText" format="color|reference"/>
+    <attr name="colorSecondaryText" format="color|reference"/>
+    <attr name="colorRating" format="color|reference"/>
+    <attr name="colorSelectedIcon" format="color|reference"/>
+    <attr name="colorLike" format="color|reference"/>
+    <attr name="colorBackground" format="color|reference"/>
+    <attr name="colorButtons" format="color|reference"/>
+    <attr name="colorToolbar" format="color|reference"/>
+    <attr name="colorThemeSwitcherIcon" format="color|reference"/>
+    <attr name="colorSecondaryIcons" format="color|reference"/>
+    <attr name="colorItems" format="color|reference"/>
+    <attr name="colorAccount" format="color|reference"/>
+    <attr name="colorUnselectedIcons" format="color|reference"/>
+    <attr name="colorMode" format="color|reference"/>
+</resources>

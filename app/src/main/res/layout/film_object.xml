@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="10dp">
+    android:background="?attr/colorItems"
+    android:elevation="0dp">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -14,7 +15,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:maxLines="1"
-        android:textColor="#000000"
+        android:textColor="?attr/colorPrimaryText"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,6 +27,7 @@
         android:id="@+id/tvGenres"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textColor="?attr/colorPrimaryText"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/tvReleaseDate"
         app:layout_constraintStart_toStartOf="@+id/tvReleaseDate"
@@ -36,7 +38,7 @@
         android:id="@+id/tvReleaseDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
+        android:textColor="?attr/colorPrimaryText"
         app:layout_constraintEnd_toEndOf="@+id/tvTitle"
         app:layout_constraintStart_toStartOf="@+id/tvTitle"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
@@ -60,10 +62,11 @@
         android:id="@+id/number"
         android:layout_width="0dp"
         android:layout_height="36dp"
-        android:background="#F7F7F7"
+        android:background="?attr/colorBackground"
         android:gravity="center"
         android:paddingStart="16dp"
         android:textAlignment="viewStart"
+        android:textColor="?attr/colorPrimaryText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -86,6 +89,7 @@
         android:layout_marginStart="4dp"
         android:gravity="center"
         android:text="TextView"
+        android:textColor="?attr/colorPrimaryText"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/tvRating"
         app:layout_constraintStart_toEndOf="@+id/tvRating"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="?attr/colorBackground"
     tools:context=".view.fragments.AccountFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,7 +35,7 @@
                     android:layout_marginEnd="16dp"
                     android:text="TextView"
                     android:textAlignment="viewStart"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="28sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/ivPhoto"
@@ -60,6 +60,7 @@
                     android:layout_marginTop="2dp"
                     android:text="no email address"
                     android:textAlignment="viewStart"
+                    android:textColor="?attr/colorPrimaryText"
                     app:layout_constraintStart_toStartOf="@+id/tvUsernameData"
                     app:layout_constraintTop_toBottomOf="@+id/tvUsernameData" />
 
@@ -69,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Subscriptions"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/tvEmail"
@@ -104,7 +105,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="TheMovieDB HD"
-                            android:textColor="#000000"
+                            android:textColor="?attr/colorPrimaryText"
                             android:textStyle="bold"
                             tools:text="TheMovieDB HD" />
 
@@ -113,6 +114,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
+                            android:textColor="?attr/colorPrimaryText"
                             android:text="30 days free, then $ 3 monthly"
                             tools:text="30 days free, then $ 3 monthly" />
                     </LinearLayout>
@@ -138,7 +140,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="My MovieDB"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/LinearLayout"
@@ -151,7 +153,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="sans-serif-medium"
                     android:text="My stars"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="@+id/tvMyMovieDb"
                     app:layout_constraintTop_toBottomOf="@+id/tvMyMovieDb" />
@@ -163,7 +165,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="sans-serif-medium"
                     android:text="My films"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="@+id/tvStars"
                     app:layout_constraintTop_toBottomOf="@+id/tvStars" />
@@ -175,7 +177,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="sans-serif-medium"
                     android:text="My purchases"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="@+id/tvFilms"
                     app:layout_constraintTop_toBottomOf="@+id/tvFilms" />
@@ -187,7 +189,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="sans-serif-medium"
                     android:text="My downloads"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="@+id/tvPurchases"
                     app:layout_constraintTop_toBottomOf="@+id/tvPurchases" />
@@ -198,7 +200,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Application"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/tvDownloads"
@@ -211,7 +213,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="sans-serif-medium"
                     android:text="Settings"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="@+id/tvApplication"
                     app:layout_constraintTop_toBottomOf="@+id/tvApplication" />
@@ -223,7 +225,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="sans-serif-medium"
                     android:text="Support service"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="@+id/tvSettings"
                     app:layout_constraintTop_toBottomOf="@+id/tvSettings" />
@@ -235,7 +237,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="sans-serif-medium"
                     android:text="History"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorPrimaryText"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="@+id/tvSupport"
                     app:layout_constraintTop_toBottomOf="@+id/tvSupport" />
@@ -244,14 +246,11 @@
                     android:id="@+id/map"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="24dp"
                     android:background="@drawable/button_background"
                     android:text="cinemas map"
                     android:textColor="#FFFFFF"
                     app:layout_constraintEnd_toEndOf="@+id/LinearLayout"
-                    app:layout_constraintHorizontal_bias="0.415"
                     app:layout_constraintStart_toStartOf="@+id/LinearLayout"
                     app:layout_constraintTop_toBottomOf="@+id/LinearLayout" />
             </androidx.constraintlayout.widget.ConstraintLayout>

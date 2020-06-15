@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="darkColorPrimary">#323D4E</color>
+    <color name="darkColorAccent">#FF6501</color>
+    <color name="darkColorPrimaryText">#FFFFFF</color>
+    <color name="darkColorSecondaryText">#C2C5CC</color>
+    <color name="darkColorRating">#46BA7B</color>
+    <color name="darkColorSelectedIcon">#1789DB</color>
+    <color name="darkColorLike">#FF6501</color>
+    <color name="darkColorBackground">#252E3A</color>
+    <color name="darkColorItems">#323D4E</color>
+    <color name="darkColorToolbar">#323D4E</color>
+    <color name="darkColorButtons">#FF6501</color>
+    <color name="darkColorSecondaryIcons">#10649F</color>
+    <color name="darkColorAccount">#323D4E</color>
+    <color name="darkColorUnselectedIcons">#FFFFFF</color>
+</resources>
