@@ -1,5 +1,7 @@
 package com.example.kino.utils.constants
 
+import com.example.kino.R
+
 val NULL = null
 const val BASE_URL = "https://api.themoviedb.org/3/"
 const val API_KEY: String = "d118a5a4e56930c8ce9bd2321609d877"
@@ -21,3 +23,4 @@ const val CHANNEL = "main"
 const val VIEW_TYPE_LOADING = 0
 const val VIEW_TYPE_NORMAL = 1
 
+const val DEFAULT_THEME = R.style.AppThemeLight

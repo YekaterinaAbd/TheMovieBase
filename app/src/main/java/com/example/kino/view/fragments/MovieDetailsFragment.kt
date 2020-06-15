@@ -22,6 +22,7 @@ import com.example.kino.utils.constants.INTENT_KEY
 import com.example.kino.view_model.MovieDetailsViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MovieDetailsFragment : Fragment() {
 
@@ -82,6 +83,7 @@ class MovieDetailsFragment : Fragment() {
         votesCount = view.findViewById(R.id.votesCount)
         companies = view.findViewById(R.id.companies)
         like = view.findViewById(R.id.btnLike)
+        requireActivity().themeModeImage.visibility = View.GONE
     }
 
     private fun getMovie(id: Int) {
