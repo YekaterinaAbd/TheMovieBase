@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.example.kino.CinemaApplication
 import com.example.kino.R
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
@@ -20,6 +21,7 @@ import com.example.kino.utils.RetrofitService
 import com.example.kino.utils.constants.IMAGE_URL
 import com.example.kino.utils.constants.INTENT_KEY
 import com.example.kino.view_model.MovieDetailsViewModel
+import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
@@ -60,14 +62,8 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun setViewModel() {
-        val movieDao: MovieDao = MovieDatabase.getDatabase(requireContext()).movieDao()
-        val movieStatusDao: MovieStatusDao =
-            MovieDatabase.getDatabase(requireContext()).movieStatusDao()
-        movieDetailsViewModel =
-            MovieDetailsViewModel(
-                requireContext(),
-                MovieRepositoryImpl(movieDao, RetrofitService.getPostApi(), movieStatusDao)
-            )
+        val appContainer = (activity?.application as CinemaApplication).appContainer
+        movieDetailsViewModel = MovieDetailsViewModel(requireContext(), appContainer.movieRepository)
     }
 
     private fun bindViews(view: View) {
