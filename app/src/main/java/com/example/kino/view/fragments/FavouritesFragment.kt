@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.kino.CinemaApplication
 import com.example.kino.R
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieDatabase
@@ -56,12 +57,8 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
     }
 
     private fun setViewModel() {
-        val movieDao: MovieDao = MovieDatabase.getDatabase(requireContext()).movieDao()
-        val movieStatusDao: MovieStatusDao =
-            MovieDatabase.getDatabase(requireContext()).movieStatusDao()
-        val movieRepository =
-            MovieRepositoryImpl(movieDao, RetrofitService.getPostApi(), movieStatusDao)
-        moviesListViewModel = MoviesListViewModel(requireContext(), movieRepository)
+        val appContainer = (activity?.application as CinemaApplication).appContainer
+        moviesListViewModel = appContainer.movieListViewModelFactory.create()
     }
 
     private fun bindViews(view: View) = with(view) {
