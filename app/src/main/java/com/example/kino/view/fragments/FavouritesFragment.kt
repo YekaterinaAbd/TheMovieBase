@@ -28,7 +28,6 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
 
     private lateinit var moviesListViewModel: MoviesListViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
