@@ -7,18 +7,13 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.example.kino.CinemaApplication
 import com.example.kino.R
-import com.example.kino.model.database.MarkerDao
-import com.example.kino.model.database.MovieDatabase
 import com.example.kino.model.repository.AccountRepository
-import com.example.kino.model.repository.AccountRepositoryImpl
-import com.example.kino.model.repository.MarkerRepositoryImpl
-import com.example.kino.utils.RetrofitService
 import com.example.kino.utils.constants.SIGNED_IN
 import com.example.kino.utils.constants.SIGN_UP_URL
 import com.example.kino.view_model.MarkersViewModel
 import com.example.kino.view_model.SignInViewModel
-import com.example.kino.view_model.ViewModelProviderFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
 
@@ -35,7 +30,6 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var signInRepository: AccountRepository
     private lateinit var signInViewModel: SignInViewModel
     private lateinit var markersViewModel: MarkersViewModel
-    private lateinit var viewModelProviderFactory: ViewModelProviderFactory
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private val topic = "movies"
@@ -56,11 +50,9 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun setViewModel() {
-        viewModelProviderFactory = ViewModelProviderFactory(context = this)
-        signInRepository = AccountRepositoryImpl(RetrofitService.getPostApi())
-        signInViewModel = SignInViewModel(this, signInRepository)
-        val markerDao: MarkerDao = MovieDatabase.getDatabase(this).markerDao()
-        markersViewModel = MarkersViewModel(MarkerRepositoryImpl(markerDao))
+        val appContainer = CinemaApplication.appContainer
+        signInViewModel = SignInViewModel(this, appContainer.accountRepository)
+        markersViewModel = appContainer.movieViewModelFactory.create(MarkersViewModel::class.java)
     }
 
     private fun bindViews() {

@@ -3,6 +3,7 @@ package com.example.kino.view_model
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
+import com.example.kino.CinemaApplication
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.movie.MovieStatus
@@ -21,9 +22,7 @@ class MovieDetailsViewModel(
     private val movieRepository: MovieRepository
 ) : BaseViewModel() {
 
-    private lateinit var sharedPref: SharedPreferences
     private lateinit var sessionId: String
-
     val liveData = MutableLiveData<State>()
 
     init {
@@ -32,14 +31,10 @@ class MovieDetailsViewModel(
 
     private fun getSharedPreferences() {
 
-        sharedPref = context.getSharedPreferences(
-            context.getString(R.string.preference_file),
-            Context.MODE_PRIVATE
-        )
+        val sharedPref = CinemaApplication.appContainer.sharedPreferences
         if (sharedPref.contains(context.getString(R.string.session_id))) {
             sessionId = sharedPref.getString(
-                context.getString(R.string.session_id),
-                NULLABLE_VALUE
+                context.getString(R.string.session_id), NULLABLE_VALUE
             ) as String
         }
     }

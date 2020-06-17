@@ -12,16 +12,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.example.kino.CinemaApplication
 import com.example.kino.R
-import com.example.kino.model.database.MovieDao
-import com.example.kino.model.database.MovieDatabase
-import com.example.kino.model.database.MovieStatusDao
 import com.example.kino.model.movie.Movie
-import com.example.kino.model.repository.MovieRepositoryImpl
-import com.example.kino.utils.RetrofitService
 import com.example.kino.utils.constants.IMAGE_URL
 import com.example.kino.utils.constants.INTENT_KEY
 import com.example.kino.view_model.MovieDetailsViewModel
-import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
@@ -62,8 +56,9 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun setViewModel() {
-        val appContainer = (activity?.application as CinemaApplication).appContainer
-        movieDetailsViewModel = MovieDetailsViewModel(requireContext(), appContainer.movieRepository)
+        val appContainer = CinemaApplication.appContainer
+        movieDetailsViewModel =
+            MovieDetailsViewModel(requireContext(), appContainer.movieRepository)
     }
 
     private fun bindViews(view: View) {

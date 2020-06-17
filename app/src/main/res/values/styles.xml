@@ -17,12 +17,11 @@
         <item name="colorLike">@color/lightColorLike</item>
         <item name="colorRating">@color/lightColorRating</item>
         <item name="colorUnselectedIcons">@color/lightColorUnselectedIcons</item>
-<!--        <item name="android:actionMenuTextColor">@color/darkColorButtons</item>-->
         <item name="colorThemeSwitcherIcon">@drawable/ic_sun</item>
     </style>
     <style name="AppThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:windowLightStatusBar">true</item>
+
         <item name="colorPrimary">@color/lightColorPrimary</item>
         <item name="colorAccent">@color/darkColorAccent</item>
         <item name="colorPrimaryDark">@color/darkColorPrimary</item>
