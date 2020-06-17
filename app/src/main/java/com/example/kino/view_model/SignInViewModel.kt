@@ -54,8 +54,8 @@ class SignInViewModel(
     private fun validateWithLogin() {
         launch {
             try {
-                val response = accountRepository?.validateWithLogin(API_KEY, loginValidationData)
-                if (response == true) {
+                val response = accountRepository.validateWithLogin(API_KEY, loginValidationData)
+                if (response) {
                     createSession()
                 } else {
                     liveData.value = State.WrongDataProvided
@@ -73,7 +73,7 @@ class SignInViewModel(
             liveData.value = State.ShowLoading
             try {
                 sessionId =
-                    token?.let { accountRepository?.getSessionId(API_KEY, it).toString() }
+                    token?.let { accountRepository.getSessionId(API_KEY, it).toString() }
                         .toString()
                 saveLoginData()
                 liveData.value = State.HideLoading
