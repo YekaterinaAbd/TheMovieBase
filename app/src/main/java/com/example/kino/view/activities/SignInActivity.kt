@@ -7,9 +7,8 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.example.kino.CinemaApplication
 import com.example.kino.R
-import com.example.kino.model.repository.AccountRepository
+import com.example.kino.utils.AppContainer
 import com.example.kino.utils.constants.SIGNED_IN
 import com.example.kino.utils.constants.SIGN_UP_URL
 import com.example.kino.view_model.MarkersViewModel
@@ -27,7 +26,6 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var registrationLink: TextView
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var signInRepository: AccountRepository
     private lateinit var signInViewModel: SignInViewModel
     private lateinit var markersViewModel: MarkersViewModel
     private lateinit var firebaseAnalytics: FirebaseAnalytics
@@ -50,9 +48,8 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun setViewModel() {
-        val appContainer = CinemaApplication.appContainer
-        signInViewModel = SignInViewModel(this, appContainer.accountRepository)
-        markersViewModel = appContainer.movieViewModelFactory.create(MarkersViewModel::class.java)
+        signInViewModel = SignInViewModel(this, AppContainer.getAccountRepository())
+        markersViewModel = MarkersViewModel(AppContainer.getMarkerRepository())
     }
 
     private fun bindViews() {

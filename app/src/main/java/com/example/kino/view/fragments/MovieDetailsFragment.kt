@@ -10,9 +10,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.example.kino.CinemaApplication
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
+import com.example.kino.utils.AppContainer
 import com.example.kino.utils.constants.IMAGE_URL
 import com.example.kino.utils.constants.INTENT_KEY
 import com.example.kino.view_model.MovieDetailsViewModel
@@ -56,9 +56,8 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun setViewModel() {
-        val appContainer = CinemaApplication.appContainer
         movieDetailsViewModel =
-            MovieDetailsViewModel(requireContext(), appContainer.movieRepository)
+            MovieDetailsViewModel(requireContext(), AppContainer.getMovieRepository())
     }
 
     private fun bindViews(view: View) {

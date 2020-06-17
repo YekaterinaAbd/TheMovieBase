@@ -1,10 +1,8 @@
 package com.example.kino.view_model
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.example.kino.CinemaApplication
 import com.example.kino.R
 import com.example.kino.model.movie.GenresList
 import com.example.kino.model.movie.Movie
@@ -14,7 +12,6 @@ import com.example.kino.model.repository.MovieRepository
 import com.example.kino.utils.FragmentEnum
 import com.example.kino.utils.constants.API_KEY
 import com.example.kino.utils.constants.MEDIA_TYPE
-import com.example.kino.utils.constants.NULLABLE_VALUE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,23 +22,13 @@ class MoviesListViewModel(
     private var movieRepository: MovieRepository
 ) : BaseViewModel() {
 
-    private lateinit var sessionId: String
+    private val sessionId = movieRepository.getLocalSessionId(context)
     val liveData = MutableLiveData<State>()
 
     init {
         GenresList.getGenres()
-        getSharedPreferences()
     }
 
-    private fun getSharedPreferences() {
-
-        val sharedPref = CinemaApplication.appContainer.sharedPreferences
-        if (sharedPref.contains(context.getString(R.string.session_id))) {
-            sessionId = sharedPref.getString(
-                context.getString(R.string.session_id), NULLABLE_VALUE
-            ) as String
-        }
-    }
 
     fun getMovies(type: FragmentEnum, page: Int = 1) {
         launch {

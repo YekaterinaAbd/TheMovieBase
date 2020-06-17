@@ -1,5 +1,8 @@
 package com.example.kino.model.repository
 
+import android.content.Context
+import android.content.SharedPreferences
+import com.example.kino.R
 import com.example.kino.model.database.MovieDao
 import com.example.kino.model.database.MovieStatusDao
 import com.example.kino.model.movie.Genres
@@ -7,6 +10,7 @@ import com.example.kino.model.movie.Movie
 import com.example.kino.model.movie.MovieStatus
 import com.example.kino.model.movie.SelectedMovie
 import com.example.kino.utils.PostApi
+import com.example.kino.utils.constants.NULLABLE_VALUE
 
 interface MovieRepository {
     fun getLocalMovies(): List<Movie>?
@@ -20,6 +24,7 @@ interface MovieRepository {
     fun getLocalMovieStatuses(): List<MovieStatus>?
     fun insertLocalMovieStatus(movieState: MovieStatus)
     fun deleteLocalMovieStatuses()
+    fun getLocalSessionId(context: Context): String
 
     suspend fun getRemoteGenres(apiKey: String): Genres?
     suspend fun getRemoteMovie(id: Int, apiKey: String): Movie?
@@ -32,7 +37,8 @@ interface MovieRepository {
 class MovieRepositoryImpl(
     private var movieDao: MovieDao? = null,
     private var service: PostApi? = null,
-    private var movieStatusDao: MovieStatusDao? = null
+    private var movieStatusDao: MovieStatusDao? = null,
+    private var sharedPreferences: SharedPreferences
 ) : MovieRepository {
 
     override fun getLocalMovies(): List<Movie>? {
@@ -105,6 +111,14 @@ class MovieRepositoryImpl(
         sessionId: String
     ): Boolean? {
         return service?.getMovieStates(movieId, apiKey, sessionId)?.body()?.selectedStatus
+    }
+
+    override fun getLocalSessionId(context: Context): String {
+        return if (sharedPreferences.contains(context.getString(R.string.session_id))) {
+            sharedPreferences.getString(
+                context.getString(R.string.session_id), NULLABLE_VALUE
+            ) as String
+        } else NULLABLE_VALUE
     }
 }
 

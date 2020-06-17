@@ -1,6 +1,5 @@
 package com.example.kino.view.activities
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -96,15 +95,19 @@ class MainActivity : AppCompatActivity() {
             .commit()
         fragmentManager.beginTransaction().add(R.id.frame, movieDetailsFragment)
             .hide(movieDetailsFragment)
+        // transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+
     }
 
     private val navListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
+
                 R.id.films -> {
                     logEvent(MAIN_PAGE_CLICKED)
                     fragmentManager.beginTransaction().hide(activeFragment).show(filmsFragment)
                         .commit()
+
                     activeFragment = filmsFragment
                     toolbar.text = getString(R.string.top_rated_movies)
                     toolbar.visibility = View.VISIBLE
