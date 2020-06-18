@@ -10,9 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.kino.CinemaApplication
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
+import com.example.kino.utils.AppContainer
 import com.example.kino.utils.FragmentEnum
 import com.example.kino.utils.constants.INTENT_KEY
 import com.example.kino.view.adapters.FavouritesAdapter
@@ -52,9 +52,8 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
     }
 
     private fun setViewModel() {
-        val appContainer = CinemaApplication.appContainer
         moviesListViewModel =
-            appContainer.movieViewModelFactory.create(MoviesListViewModel::class.java)
+            MoviesListViewModel(requireContext(), AppContainer.getMovieRepository())
     }
 
     private fun bindViews(view: View) = with(view) {

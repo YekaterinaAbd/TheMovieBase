@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.kino.R
+import com.example.kino.utils.AppContainer
 import com.example.kino.view.activities.GoogleMapsActivity
 import com.example.kino.view_model.AccountViewModel
 
@@ -31,7 +32,7 @@ class AccountFragment : Fragment() {
     }
 
     private fun setViewModel() {
-        accountViewModel = AccountViewModel(requireContext())
+        accountViewModel = AccountViewModel(requireContext(), AppContainer.getAccountRepository())
     }
 
     private fun bindViews(view: View) = with(view) {

@@ -2,9 +2,9 @@ package com.example.kino.view.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.kino.CinemaApplication
 import com.example.kino.R
 import com.example.kino.model.Marker
+import com.example.kino.utils.AppContainer
 import com.example.kino.view_model.MarkersViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -32,8 +32,7 @@ class GoogleMapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setViewModel() {
-        val appContainer = CinemaApplication.appContainer
-        markersViewModel = appContainer.movieViewModelFactory.create(MarkersViewModel::class.java)
+        markersViewModel = MarkersViewModel(AppContainer.getMarkerRepository())
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

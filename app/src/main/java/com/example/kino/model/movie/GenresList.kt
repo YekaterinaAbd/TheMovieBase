@@ -1,6 +1,6 @@
 package com.example.kino.model.movie
 
-import com.example.kino.CinemaApplication
+import com.example.kino.utils.AppContainer
 import com.example.kino.utils.constants.API_KEY
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +11,7 @@ import kotlin.coroutines.CoroutineContext
 object GenresList : CoroutineScope {
     var genres: MutableMap<Int, String>? = HashMap()
     private var job = Job()
-    private var movieRepository = CinemaApplication.appContainer.movieRepository
+    private var movieRepository = AppContainer.getMovieRepository()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job

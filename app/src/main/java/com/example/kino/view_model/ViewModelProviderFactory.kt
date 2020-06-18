@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.kino.model.repository.MarkerRepository
 import com.example.kino.model.repository.MovieRepository
 
-class MovieViewModelFactory(
+class ViewModelFactory(
     private val context: Context,
     private val movieRepository: MovieRepository,
     private val markerRepository: MarkerRepository

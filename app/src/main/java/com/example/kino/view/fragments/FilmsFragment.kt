@@ -10,9 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.kino.CinemaApplication
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
+import com.example.kino.utils.AppContainer
 import com.example.kino.utils.FragmentEnum
 import com.example.kino.utils.constants.*
 import com.example.kino.utils.pagination.PaginationScrollListener
@@ -62,9 +62,8 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     }
 
     private fun setViewModels() {
-        val appContainer = CinemaApplication.appContainer
         moviesListViewModel =
-            appContainer.movieViewModelFactory.create(MoviesListViewModel::class.java)
+            MoviesListViewModel(requireContext(), AppContainer.getMovieRepository())
     }
 
     private fun bindViews(view: View) {
