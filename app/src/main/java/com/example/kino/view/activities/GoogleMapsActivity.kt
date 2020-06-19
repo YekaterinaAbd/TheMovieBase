@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kino.R
 import com.example.kino.model.Marker
-import com.example.kino.utils.AppContainer
 import com.example.kino.view_model.MarkersViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -12,17 +11,18 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import org.koin.android.ext.android.inject
 
 class GoogleMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
-    private lateinit var markersViewModel: MarkersViewModel
+    private val markersViewModel: MarkersViewModel by inject()
+
     private lateinit var markers: List<Marker>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_maps)
-        setViewModel()
 
         markers = markersViewModel.getMarkers()
 
@@ -31,9 +31,6 @@ class GoogleMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    private fun setViewModel() {
-        markersViewModel = MarkersViewModel(AppContainer.getMarkerRepository())
-    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap

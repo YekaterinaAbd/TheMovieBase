@@ -12,13 +12,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
-import com.example.kino.utils.AppContainer
 import com.example.kino.utils.constants.IMAGE_URL
 import com.example.kino.utils.constants.INTENT_KEY
 import com.example.kino.view_model.MovieDetailsViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.ext.android.inject
 
 class MovieDetailsFragment : Fragment() {
 
@@ -35,7 +35,7 @@ class MovieDetailsFragment : Fragment() {
     private lateinit var companies: TextView
     private lateinit var like: ImageView
 
-    private lateinit var movieDetailsViewModel: MovieDetailsViewModel
+    private val movieDetailsViewModel: MovieDetailsViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -46,18 +46,12 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setViewModel()
         bindViews(view)
         val bundle = this.arguments
 
         if (bundle != null) {
             getMovie(bundle.getInt(INTENT_KEY))
         }
-    }
-
-    private fun setViewModel() {
-        movieDetailsViewModel =
-            MovieDetailsViewModel(requireContext(), AppContainer.getMovieRepository())
     }
 
     private fun bindViews(view: View) {
