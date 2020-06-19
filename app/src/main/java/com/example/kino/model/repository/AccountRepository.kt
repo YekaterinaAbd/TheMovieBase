@@ -16,6 +16,9 @@ interface AccountRepository {
     fun getUsername(context: Context): String
     fun hasSessionId(context: Context): Boolean
     fun saveLoginData(context: Context, username: String, password: String, sessionId: String)
+
+    fun setThemeState(themeState: Boolean, context: Context)
+    fun getTheme(context: Context): Boolean
 }
 
 class AccountRepositoryImpl(
@@ -54,5 +57,15 @@ class AccountRepositoryImpl(
         editor.putString(context.getString(R.string.session_id), sessionId)
         editor.putString(context.getString(R.string.password), password)
         editor.apply()
+    }
+
+    override fun setThemeState(themeState: Boolean, context: Context) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(context.getString(R.string.theme_state), themeState)
+        editor.apply()
+    }
+
+    override fun getTheme(context: Context): Boolean {
+        return sharedPreferences.getBoolean(context.getString(R.string.theme_state), false)
     }
 }

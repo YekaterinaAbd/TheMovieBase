@@ -9,15 +9,14 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.kino.R
-import com.example.kino.utils.AppContainer
 import com.example.kino.view.activities.GoogleMapsActivity
 import com.example.kino.view_model.AccountViewModel
+import org.koin.android.ext.android.inject
 
 class AccountFragment : Fragment() {
 
     private lateinit var username: TextView
-    private lateinit var accountViewModel: AccountViewModel
-
+    private val accountViewModel: AccountViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -27,13 +26,9 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setViewModel()
         bindViews(view)
     }
 
-    private fun setViewModel() {
-        accountViewModel = AccountViewModel(requireContext(), AppContainer.getAccountRepository())
-    }
 
     private fun bindViews(view: View) = with(view) {
         username = view.findViewById(R.id.tvUsernameData)
