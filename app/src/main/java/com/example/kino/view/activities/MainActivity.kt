@@ -77,11 +77,11 @@ class MainActivity : AppCompatActivity() {
                 themeModeState = true
             }
             themeViewModel.setThemeState(themeModeState)
-            updatingActivity()
+            updateActivity()
         }
     }
 
-    private fun updatingActivity() {
+    private fun updateActivity() {
         val intent = intent
         finish()
         startActivity(intent)
