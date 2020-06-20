@@ -2,7 +2,8 @@
 <p>Content(API) is provided by TheMovieDB website: https://developers.themoviedb.org/3/getting-started/introduction<p>
 <p>Application uses <b>Retrofit Service</b> to connect to TheMovieDB API<br>
 <b>Room</b> is used for observing films content and adding/removing movies to/from favourites offline<br>
-<b>MVVM</b> architecture design pattern, <b>Repository</b>, <b>Shared ViewModel</b> patterns
+<b>MVVM</b> architecture design pattern, <b>Repository</b>, <b>Shared ViewModel</b> patterns<br>
+Dependency Injection using <b>Koin</b>
 </p>
 
 

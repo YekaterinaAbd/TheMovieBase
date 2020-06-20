@@ -3,6 +3,7 @@ package com.example.kino.view.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -49,7 +50,9 @@ class SignInActivity : AppCompatActivity() {
 
     private fun bindViews() {
         username = findViewById(R.id.evUsername)
+        username.text = SpannableStringBuilder(signInViewModel.getSavedUsername())
         password = findViewById(R.id.evPassword)
+        password.text = SpannableStringBuilder(signInViewModel.getSavedPassword())
         signInButton = findViewById(R.id.btnSignIn)
         wrongDataText = findViewById(R.id.tvWrongData)
         registrationLink = findViewById(R.id.tvAccountLink)

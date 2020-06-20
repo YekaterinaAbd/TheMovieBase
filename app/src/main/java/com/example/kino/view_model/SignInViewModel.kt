@@ -90,6 +90,14 @@ class SignInViewModel(
         accountRepository.saveLoginData(context, username, password, sessionId)
     }
 
+    fun getSavedUsername(): String {
+        return accountRepository.getLocalUsername(context)
+    }
+
+    fun getSavedPassword(): String {
+        return accountRepository.getLocalPassword(context)
+    }
+
     sealed class State {
         object ShowLoading : State()
         object HideLoading : State()
