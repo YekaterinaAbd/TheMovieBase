@@ -1,6 +1,5 @@
 package com.example.kino.view.activities
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -20,6 +19,7 @@ import com.example.kino.view_model.ThemeViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,17 +27,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var themeModeImage: ImageView
     private var themeModeState: Boolean = false //false == DarkTheme, true = LightTheme
     private var themeMode: Int = 0
+
     private val fragmentManager: FragmentManager = supportFragmentManager
     private var activeFragment: Fragment = FilmsFragment()
     private var filmsFragment: Fragment = FilmsFragment()
     private var favouritesFragment: Fragment = FavouritesFragment()
     private var accountFragment: Fragment = AccountFragment()
     private var movieDetailsFragment: Fragment = MovieDetailsFragment()
+
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-    private lateinit var themeViewModel: ThemeViewModel
+    private val themeViewModel: ThemeViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        themeViewModel = ThemeViewModel(this)
         themeViewModel.getTheme()
         themeViewModel.themeStateLiveData.value?.let { themeModeState = it }
         themeMode = if (!themeModeState) {
@@ -49,9 +50,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNavigation.setOnNavigationItemSelectedListener(navListener)
-        hidingFragments()
+
+        createFragments()
         bindViews()
     }
 
@@ -63,32 +63,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindViews() {
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNavigation.setOnNavigationItemSelectedListener(navListener)
+
         toolbar = findViewById(R.id.toolbar)
         themeModeImage = findViewById(R.id.themeModeImage)
         themeModeImage.setOnClickListener {
-            if(themeMode == R.style.AppThemeLight){
+            if (themeMode == R.style.AppThemeLight) {
                 themeMode = R.style.AppThemeDark
                 themeModeState = false
-            }
-            else{
+            } else {
                 themeMode = R.style.AppThemeLight
                 themeModeState = true
             }
             themeViewModel.setThemeState(themeModeState)
-            updatingActivity()
+            updateActivity()
         }
     }
-    private fun updatingActivity(){
+
+    private fun updateActivity() {
         val intent = intent
         finish()
         startActivity(intent)
     }
+
     private fun logEvent(logMessage: String) {
         val bundle = Bundle()
         firebaseAnalytics.logEvent(logMessage, bundle)
     }
 
-    private fun hidingFragments() {
+    private fun createFragments() {
         fragmentManager.beginTransaction().add(R.id.frame, filmsFragment).commit()
         fragmentManager.beginTransaction().add(R.id.frame, favouritesFragment)
             .hide(favouritesFragment).commit()
@@ -101,10 +105,12 @@ class MainActivity : AppCompatActivity() {
     private val navListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
+
                 R.id.films -> {
                     logEvent(MAIN_PAGE_CLICKED)
                     fragmentManager.beginTransaction().hide(activeFragment).show(filmsFragment)
                         .commit()
+
                     activeFragment = filmsFragment
                     toolbar.text = getString(R.string.top_rated_movies)
                     toolbar.visibility = View.VISIBLE

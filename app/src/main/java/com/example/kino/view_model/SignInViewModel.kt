@@ -1,10 +1,7 @@
 package com.example.kino.view_model
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
-import com.example.kino.CinemaApplication
-import com.example.kino.R
 import com.example.kino.model.account.LoginValidationData
 import com.example.kino.model.account.Token
 import com.example.kino.model.repository.AccountRepository
@@ -13,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class SignInViewModel(
     private val context: Context,
-    private var accountRepository: AccountRepository? = null
+    private var accountRepository: AccountRepository
 ) : BaseViewModel() {
     private lateinit var loginValidationData: LoginValidationData
     private var token: Token? = null
@@ -22,19 +19,16 @@ class SignInViewModel(
     private var password: String = ""
 
     val liveData = MutableLiveData<State>()
-    private val sharedPreferences = CinemaApplication.appContainer.sharedPreferences
 
     init {
-        if (sharedPreferences.contains(context.getString(R.string.session_id))) {
-            liveData.value = State.Result
-        }
+        if (accountRepository.hasSessionId(context)) liveData.value = State.Result
     }
 
     fun createTokenRequest(receivedUsername: String, receivedPassword: String) {
         launch {
             liveData.value = State.ShowLoading
             try {
-                token = accountRepository?.createToken(API_KEY)
+                token = accountRepository.createToken(API_KEY)
                 username = receivedUsername
                 password = receivedPassword
 
@@ -60,8 +54,8 @@ class SignInViewModel(
     private fun validateWithLogin() {
         launch {
             try {
-                val response = accountRepository?.validateWithLogin(API_KEY, loginValidationData)
-                if (response == true) {
+                val response = accountRepository.validateWithLogin(API_KEY, loginValidationData)
+                if (response) {
                     createSession()
                 } else {
                     liveData.value = State.WrongDataProvided
@@ -79,9 +73,9 @@ class SignInViewModel(
             liveData.value = State.ShowLoading
             try {
                 sessionId =
-                    token?.let { accountRepository?.getSessionId(API_KEY, it).toString() }
+                    token?.let { accountRepository.getSessionId(API_KEY, it).toString() }
                         .toString()
-                saveToSharedPreferences()
+                saveLoginData()
                 liveData.value = State.HideLoading
                 liveData.value = State.Result
 
@@ -92,12 +86,8 @@ class SignInViewModel(
         }
     }
 
-    private fun saveToSharedPreferences() {
-        val editor = sharedPreferences.edit()
-        editor.putString(context.getString(R.string.username), username)
-        editor.putString(context.getString(R.string.session_id), sessionId)
-        editor.putString(context.getString(R.string.password), password)
-        editor.apply()
+    private fun saveLoginData() {
+        accountRepository.saveLoginData(context, username, password, sessionId)
     }
 
     sealed class State {

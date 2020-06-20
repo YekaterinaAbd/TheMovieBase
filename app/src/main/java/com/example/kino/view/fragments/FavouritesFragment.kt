@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.kino.CinemaApplication
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
 import com.example.kino.utils.FragmentEnum
@@ -19,22 +18,25 @@ import com.example.kino.view.adapters.FavouritesAdapter
 import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.ext.android.inject
 
 class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private var recyclerViewAdapter: FavouritesAdapter? = null
+    private val recyclerViewAdapter: FavouritesAdapter by lazy {
+        FavouritesAdapter(itemClickListener = this)
+    }
 
-    private lateinit var moviesListViewModel: MoviesListViewModel
+    private val moviesListViewModel: MoviesListViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
-            if (item.isClicked) recyclerViewAdapter?.addItem(item)
-            else recyclerViewAdapter?.removeItem(item)
+            if (item.isClicked) recyclerViewAdapter.addItem(item)
+            else recyclerViewAdapter.removeItem(item)
         })
     }
 
@@ -46,16 +48,9 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setViewModel()
         bindViews(view)
         setAdapter()
         getMovies()
-    }
-
-    private fun setViewModel() {
-        val appContainer = CinemaApplication.appContainer
-        moviesListViewModel =
-            appContainer.movieViewModelFactory.create(MoviesListViewModel::class.java)
     }
 
     private fun bindViews(view: View) = with(view) {
@@ -64,15 +59,12 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
 
         swipeRefreshLayout.setOnRefreshListener {
-            recyclerViewAdapter?.clearAll()
+            recyclerViewAdapter.clearAll()
             getMovies()
         }
     }
 
     private fun setAdapter() {
-        recyclerViewAdapter =
-            FavouritesAdapter(itemClickListener = this)
-
         recyclerView.adapter = recyclerViewAdapter
     }
 
@@ -105,10 +97,10 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
                     swipeRefreshLayout.isRefreshing = false
                 }
                 is MoviesListViewModel.State.Result -> {
-                    result.moviesList?.let { recyclerViewAdapter?.addItems(it) }
+                    result.moviesList?.let { recyclerViewAdapter.addItems(it) }
                 }
                 is MoviesListViewModel.State.Update -> {
-                    recyclerViewAdapter?.notifyDataSetChanged()
+                    recyclerViewAdapter.notifyDataSetChanged()
                 }
             }
         })

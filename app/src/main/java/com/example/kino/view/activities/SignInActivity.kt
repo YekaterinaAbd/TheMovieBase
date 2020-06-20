@@ -7,15 +7,14 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.example.kino.CinemaApplication
 import com.example.kino.R
-import com.example.kino.model.repository.AccountRepository
 import com.example.kino.utils.constants.SIGNED_IN
 import com.example.kino.utils.constants.SIGN_UP_URL
 import com.example.kino.view_model.MarkersViewModel
 import com.example.kino.view_model.SignInViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
+import org.koin.android.ext.android.inject
 
 
 class SignInActivity : AppCompatActivity() {
@@ -27,9 +26,8 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var registrationLink: TextView
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var signInRepository: AccountRepository
-    private lateinit var signInViewModel: SignInViewModel
-    private lateinit var markersViewModel: MarkersViewModel
+    private val signInViewModel: SignInViewModel by inject()
+    private val markersViewModel: MarkersViewModel by inject()
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private val topic = "movies"
@@ -39,7 +37,6 @@ class SignInActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_in)
         subscribeToTopic()
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-        setViewModel()
         markersViewModel.fillDatabase()
         signInProcessing()
         bindViews()
@@ -49,11 +46,6 @@ class SignInActivity : AppCompatActivity() {
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
     }
 
-    private fun setViewModel() {
-        val appContainer = CinemaApplication.appContainer
-        signInViewModel = SignInViewModel(this, appContainer.accountRepository)
-        markersViewModel = appContainer.movieViewModelFactory.create(MarkersViewModel::class.java)
-    }
 
     private fun bindViews() {
         username = findViewById(R.id.evUsername)

@@ -1,26 +1,51 @@
 package com.example.kino.view_model
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.kino.CinemaApplication
-import com.example.kino.R
-import com.example.kino.utils.constants.DEFAULT_VALUE
+import com.example.kino.model.repository.AccountRepository
+import com.example.kino.utils.constants.API_KEY
+import kotlinx.coroutines.launch
 
-class AccountViewModel(private val context: Context) : ViewModel() {
+class AccountViewModel(
+    private val context: Context,
+    private val accountRepository: AccountRepository
+) : BaseViewModel() {
 
-    val liveData = MutableLiveData<String>()
+    val username = MutableLiveData<String>()
+    val liveData = MutableLiveData<AccountViewModel.State>()
 
     init {
         getUsername()
     }
 
     private fun getUsername() {
-        val sharedPreferences = CinemaApplication.appContainer.sharedPreferences
-        if (sharedPreferences.contains(context.getString(R.string.username)))
-            liveData.value = sharedPreferences.getString(
-                context.getString(R.string.username), DEFAULT_VALUE
-            )
+        username.value = accountRepository.getUsername(context)
+    }
+
+    fun logOut() {
+        launch {
+            try {
+                val logOutSuccessful = accountRepository.logOut(API_KEY, context)
+                if (logOutSuccessful != null) {
+                    if (logOutSuccessful) {
+                        deleteLogInData()
+                        liveData.value = State.LogOutSuccessful
+                    } else {
+                        liveData.value = State.LogOutFailed
+                    }
+                }
+            } catch (e: Exception) {
+                liveData.value = State.LogOutFailed
+            }
+        }
+    }
+
+    private fun deleteLogInData() {
+        accountRepository.deleteLoginData(context)
+    }
+
+    sealed class State {
+        object LogOutSuccessful : State()
+        object LogOutFailed : State()
     }
 }

@@ -2,6 +2,7 @@ package com.example.kino.utils
 
 import com.example.kino.model.account.LoginValidationData
 import com.example.kino.model.account.Session
+import com.example.kino.model.account.Success
 import com.example.kino.model.account.Token
 import com.example.kino.model.movie.*
 import retrofit2.Response
@@ -58,4 +59,10 @@ interface PostApi {
         @Query("api_key") apiKey: String,
         @Body token: Token
     ): Response<Session>
+
+    @HTTP(method = "DELETE", path = "authentication/session", hasBody = true)
+    suspend fun deleteSession(
+        @Query("api_key") apiKey: String,
+        @Body session: Session
+    ): Response<Success>
 }

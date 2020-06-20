@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.kino.CinemaApplication
 import com.example.kino.R
 import com.example.kino.model.movie.Movie
 import com.example.kino.utils.FragmentEnum
@@ -21,17 +20,22 @@ import com.example.kino.view_model.MoviesListViewModel
 import com.example.kino.view_model.SharedViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
-
+import org.koin.android.ext.android.inject
 
 class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var recyclerView: RecyclerView
-    private var recyclerViewAdapter: RecyclerViewAdapter? = null
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var layoutManager: LinearLayoutManager
-    private lateinit var moviesListViewModel: MoviesListViewModel
+
+    private val recyclerViewAdapter: RecyclerViewAdapter by lazy {
+        RecyclerViewAdapter(itemClickListener = this)
+    }
+
+    private val moviesListViewModel: MoviesListViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
     private var currentPage = PaginationScrollListener.PAGE_START
     private var isLocal = false
     private var isLastPage = false
@@ -41,7 +45,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sharedViewModel.liked.observe(requireActivity(), Observer { item ->
-            recyclerViewAdapter?.updateItem(item)
+            recyclerViewAdapter.updateItem(item)
         })
     }
 
@@ -55,16 +59,9 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         super.onViewCreated(view, savedInstanceState)
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity())
-        setViewModels()
         bindViews(view)
         setAdapter()
         getMovies(currentPage)
-    }
-
-    private fun setViewModels() {
-        val appContainer = CinemaApplication.appContainer
-        moviesListViewModel =
-            appContainer.movieViewModelFactory.create(MoviesListViewModel::class.java)
     }
 
     private fun bindViews(view: View) {
@@ -75,7 +72,7 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
 
         swipeRefreshLayout.setOnRefreshListener {
-            recyclerViewAdapter?.clearAll()
+            recyclerViewAdapter.clearAll()
             itemCount = 0
             currentPage = PaginationScrollListener.PAGE_START
             isLastPage = false
@@ -84,8 +81,6 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
     }
 
     private fun setAdapter() {
-        recyclerViewAdapter =
-            RecyclerViewAdapter(itemClickListener = this)
         recyclerView.adapter = recyclerViewAdapter
 
         recyclerView.addOnScrollListener(object : PaginationScrollListener(layoutManager) {
@@ -142,16 +137,16 @@ class FilmsFragment : Fragment(), RecyclerViewAdapter.RecyclerViewItemClick {
                 is MoviesListViewModel.State.Result -> {
                     isLocal = result.isLocal
                     if (result.isLocal) {
-                        recyclerViewAdapter?.replaceItems(result.moviesList ?: emptyList())
+                        recyclerViewAdapter.replaceItems(result.moviesList ?: emptyList())
                     } else {
-                        recyclerViewAdapter?.removeLoading()
-                        recyclerViewAdapter?.addItems(result.moviesList ?: emptyList())
-                        recyclerViewAdapter?.addLoading()
+                        recyclerViewAdapter.removeLoading()
+                        recyclerViewAdapter.addItems(result.moviesList ?: emptyList())
+                        recyclerViewAdapter.addLoading()
                         isLoading = false
                     }
                 }
                 is MoviesListViewModel.State.Update -> {
-                    recyclerViewAdapter?.notifyDataSetChanged()
+                    recyclerViewAdapter.notifyDataSetChanged()
                 }
             }
         })

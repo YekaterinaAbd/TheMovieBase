@@ -1,43 +1,25 @@
 package com.example.kino.view_model
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
-import com.example.kino.CinemaApplication
-import com.example.kino.R
 import com.example.kino.model.movie.Movie
 import com.example.kino.model.movie.MovieStatus
 import com.example.kino.model.movie.SelectedMovie
 import com.example.kino.model.repository.MovieRepository
 import com.example.kino.utils.constants.API_KEY
 import com.example.kino.utils.constants.MEDIA_TYPE
-import com.example.kino.utils.constants.NULLABLE_VALUE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
 class MovieDetailsViewModel(
-    private val context: Context,
+    context: Context,
     private val movieRepository: MovieRepository
 ) : BaseViewModel() {
 
-    private lateinit var sessionId: String
+    private var sessionId = movieRepository.getLocalSessionId(context)
     val liveData = MutableLiveData<State>()
-
-    init {
-        getSharedPreferences()
-    }
-
-    private fun getSharedPreferences() {
-
-        val sharedPref = CinemaApplication.appContainer.sharedPreferences
-        if (sharedPref.contains(context.getString(R.string.session_id))) {
-            sessionId = sharedPref.getString(
-                context.getString(R.string.session_id), NULLABLE_VALUE
-            ) as String
-        }
-    }
 
     fun getMovie(id: Int) {
 
