@@ -16,12 +16,12 @@ interface AccountRepository {
     suspend fun validateWithLogin(apiKey: String, data: LoginValidationData): Boolean
     suspend fun logOut(apiKey: String, context: Context): Boolean?
 
-    fun getUsername(context: Context): String
+    fun getLocalUsername(context: Context): String
+    fun getLocalPassword(context: Context): String
     fun hasSessionId(context: Context): Boolean
     fun saveLoginData(context: Context, username: String, password: String, sessionId: String)
     fun deleteLoginData(context: Context)
     fun getLocalSessionId(context: Context): String
-
 
     fun setThemeState(themeState: Boolean, context: Context)
     fun getTheme(context: Context): Boolean
@@ -48,7 +48,15 @@ class AccountRepositoryImpl(
         return service.deleteSession(apiKey, session).body()?.success
     }
 
-    override fun getUsername(context: Context): String {
+    override fun getLocalPassword(context: Context): String {
+        return if (sharedPreferences.contains(context.getString(R.string.password)))
+            sharedPreferences.getString(
+                context.getString(R.string.password), DEFAULT_VALUE
+            ) as String
+        else DEFAULT_VALUE
+    }
+
+    override fun getLocalUsername(context: Context): String {
         return if (sharedPreferences.contains(context.getString(R.string.username)))
             sharedPreferences.getString(
                 context.getString(R.string.username), DEFAULT_VALUE

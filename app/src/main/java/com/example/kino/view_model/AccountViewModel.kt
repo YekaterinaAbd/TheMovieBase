@@ -19,7 +19,7 @@ class AccountViewModel(
     }
 
     private fun getUsername() {
-        username.value = accountRepository.getUsername(context)
+        username.value = accountRepository.getLocalUsername(context)
     }
 
     fun logOut() {
