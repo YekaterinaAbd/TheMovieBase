@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp"
+    app:cardCornerRadius="4dp">
+
+    <!--    <androidx.cardview.widget.CardView-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        app:cardCornerRadius="4dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent">-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="16dp">
+
+        <TextView
+            android:id="@+id/number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/darkColorSecondaryText"
+            app:layout_constraintEnd_toEndOf="@+id/tvAddToFav"
+            app:layout_constraintStart_toStartOf="@+id/tvAddToFav"
+            app:layout_constraintTop_toTopOf="@+id/tvTitle"
+            tools:text="123"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="?attr/colorPrimaryText"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/number"
+            app:layout_constraintStart_toEndOf="@+id/ivPoster"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title" />
+
+        <TextView
+            android:id="@+id/tvGenres"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:textColor="?attr/colorPrimaryText"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/tvAddToFav"
+            app:layout_constraintStart_toStartOf="@+id/tvReleaseDate"
+            app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate"
+            tools:text="genres" />
+
+        <TextView
+            android:id="@+id/tvReleaseDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorPrimaryText"
+            app:layout_constraintStart_toStartOf="@+id/tvTitle"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            tools:text="release year" />
+
+
+        <ImageView
+            android:id="@+id/ivPoster"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/luffy"
+            tools:srcCompat="@drawable/luffy" />
+
+        <TextView
+            android:id="@+id/tvRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textColor="#2F7C52"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvGenres"
+            app:layout_constraintTop_toBottomOf="@+id/tvGenres"
+            tools:text="9.2" />
+
+        <TextView
+            android:id="@+id/tvVotesCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:gravity="clip_vertical"
+            android:textColor="?attr/colorPrimaryText"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvRating"
+            app:layout_constraintStart_toEndOf="@+id/tvRating"
+            app:layout_constraintTop_toTopOf="@+id/tvRating"
+            tools:text="12000" />
+
+        <ImageView
+            android:id="@+id/tvAddToFav"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/tvRating"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_turned_in_not_black_24dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

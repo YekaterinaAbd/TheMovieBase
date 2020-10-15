@@ -1,0 +1,16 @@
+package com.example.kino.domain.use_case
+
+import com.example.kino.data.network.API_KEY
+import com.example.kino.domain.repository.MovieRepository
+
+class MoviesListsUseCase(
+    private val movieRepository: MovieRepository
+) {
+    suspend fun getTopMovies(page: Int) = movieRepository.getMovies(API_KEY, page)
+
+    suspend fun getFavouriteMovies(sessionId: String) =
+        movieRepository.getFavouriteMovies(API_KEY, sessionId)
+
+    suspend fun searchMovies(query: String, page: Int) =
+        movieRepository.searchMovies(API_KEY, query, page)
+}

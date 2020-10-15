@@ -32,10 +32,10 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".view.activities.GoogleMapsActivity"
+            android:name=".presentation.ui.markers.GoogleMapsActivity"
             android:label="@string/title_activity_google_maps"></activity>
         <activity
-            android:name=".view.activities.SignInActivity"
+            android:name=".presentation.ui.sign_in.SignInActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,7 +44,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activities.MainActivity"
+            android:name=".presentation.ui.MainActivity"
             android:launchMode="singleInstance"
             android:noHistory="true">
             <intent-filter>
@@ -53,7 +53,7 @@
         </activity>
 
         <service
-            android:name=".utils.MyMessagingService"
+            android:name=".data.network.MyMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

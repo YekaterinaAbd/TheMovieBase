@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorBackground"
+    tools:context=".presentation.ui.account.AccountFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8sp">
+
+
+                <TextView
+                    android:id="@+id/tvUsernameData"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="TextView"
+                    android:textAlignment="viewStart"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/ivPhoto"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/ivPhoto"
+                    android:layout_width="48sp"
+                    android:layout_height="48sp"
+                    android:layout_marginTop="44dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/acccount"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="no email address"
+                    android:textAlignment="viewStart"
+                    android:textColor="?attr/colorPrimaryText"
+                    app:layout_constraintStart_toStartOf="@+id/tvUsernameData"
+                    app:layout_constraintTop_toBottomOf="@+id/tvUsernameData" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Subscriptions"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/tvEmail"
+                    app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
+
+                <LinearLayout
+                    android:id="@+id/LinearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/llayout_border"
+                    android:orientation="horizontal"
+                    android:paddingLeft="12sp"
+                    android:paddingTop="24sp"
+                    android:paddingRight="8sp"
+                    android:paddingBottom="24sp"
+                    app:layout_constraintEnd_toEndOf="@+id/ivPhoto"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptions"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptions">
+
+                    <LinearLayout
+                        android:id="@+id/LinearLayoutInner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4sp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvSubsHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TheMovieDB HD"
+                            android:textColor="?attr/colorPrimaryText"
+                            android:textStyle="bold"
+                            tools:text="TheMovieDB HD" />
+
+                        <TextView
+                            android:id="@+id/tvSubsText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="30 days free, then $ 3 monthly"
+                            android:textColor="?attr/colorPrimaryText"
+                            tools:text="30 days free, then $ 3 monthly" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnSubscr"
+                        android:layout_width="91dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8sp"
+                        android:layout_marginLeft="4sp"
+                        android:layout_marginEnd="8sp"
+                        android:layout_marginRight="8sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_background"
+                        android:text="Subscribe"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvMyMovieDb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="My MovieDB"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/LinearLayout"
+                    app:layout_constraintTop_toBottomOf="@+id/map" />
+
+                <TextView
+                    android:id="@+id/tvStars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="My stars"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvMyMovieDb"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMyMovieDb" />
+
+                <TextView
+                    android:id="@+id/tvFilms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="My films"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvStars"
+                    app:layout_constraintTop_toBottomOf="@+id/tvStars" />
+
+                <TextView
+                    android:id="@+id/tvPurchases"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="My purchases"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvFilms"
+                    app:layout_constraintTop_toBottomOf="@+id/tvFilms" />
+
+                <TextView
+                    android:id="@+id/tvDownloads"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="My downloads"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvPurchases"
+                    app:layout_constraintTop_toBottomOf="@+id/tvPurchases" />
+
+                <TextView
+                    android:id="@+id/tvApplication"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Application"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/tvDownloads"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDownloads" />
+
+                <TextView
+                    android:id="@+id/tvSettings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Settings"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvApplication"
+                    app:layout_constraintTop_toBottomOf="@+id/tvApplication" />
+
+                <TextView
+                    android:id="@+id/tvSupport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Support service"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvSettings"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSettings" />
+
+                <TextView
+                    android:id="@+id/tvHistory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="History"
+                    android:textColor="?attr/colorPrimaryText"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvSupport"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSupport" />
+
+                <Button
+                    android:id="@+id/map"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button_background"
+                    android:text="cinemas map"
+                    android:textColor="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/LinearLayout"
+                    app:layout_constraintStart_toStartOf="@+id/LinearLayout"
+                    app:layout_constraintTop_toBottomOf="@+id/LinearLayout" />
+
+                <Button
+                    android:id="@+id/btnLogOut"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button_background"
+                    android:text="LOG OUT"
+                    android:textColor="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/map"
+                    app:layout_constraintStart_toStartOf="@+id/map"
+                    app:layout_constraintTop_toBottomOf="@+id/tvHistory" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
