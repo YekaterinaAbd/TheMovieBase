@@ -6,7 +6,9 @@ import com.example.kino.domain.repository.MovieRepository
 class MoviesListsUseCase(
     private val movieRepository: MovieRepository
 ) {
-    suspend fun getTopMovies(page: Int) = movieRepository.getMovies(API_KEY, page)
+    suspend fun getTopMovies(page: Int) = movieRepository.getTopMovies(API_KEY, page)
+
+    suspend fun getCurrentPlaying(page: Int) = movieRepository.getCurrentMovies(API_KEY, page)
 
     suspend fun getFavouriteMovies(sessionId: String) =
         movieRepository.getFavouriteMovies(API_KEY, sessionId)

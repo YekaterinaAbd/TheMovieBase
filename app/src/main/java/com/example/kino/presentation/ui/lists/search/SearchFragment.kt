@@ -19,7 +19,6 @@ import com.example.kino.presentation.ui.lists.top.TopAdapter
 import com.example.kino.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.kino.presentation.utils.constants.INTENT_KEY
 import com.example.kino.presentation.utils.pagination.PaginationScrollListener
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 
 class SearchFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
@@ -50,10 +49,10 @@ class SearchFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
         val movieDetailedFragment = MovieDetailsFragment()
         movieDetailedFragment.arguments = bundle
 
-        parentFragmentManager.beginTransaction().add(R.id.frame, movieDetailedFragment)
+        parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
             .addToBackStack(null).commit()
-        requireActivity().toolbar.visibility = View.GONE
-        requireActivity().bottomNavigation.visibility = View.GONE
+        //requireActivity().toolbar.visibility = View.GONE
+        //requireActivity().bottomNavigation.visibility = View.GONE
     }
 
     override fun addToFavourites(position: Int, item: Movie) {

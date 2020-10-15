@@ -1,12 +1,15 @@
 package com.example.kino.domain.repository
 
 import android.content.Context
-import com.example.kino.data.model.movie.*
+import com.example.kino.data.model.movie.Genres
+import com.example.kino.data.model.movie.MovieStatus
+import com.example.kino.data.model.movie.SelectedMovie
 import com.example.kino.domain.model.Movie
 
 interface MovieRepository {
 
-    suspend fun getMovies(apiKey: String, page: Int): Pair<List<Movie>?, Boolean>
+    suspend fun getTopMovies(apiKey: String, page: Int): Pair<List<Movie>?, Boolean>
+    suspend fun getCurrentMovies(apiKey: String, page: Int): Pair<List<Movie>?, Boolean>
     suspend fun getFavouriteMovies(apiKey: String, sessionId: String): Pair<List<Movie>?, Boolean>
     suspend fun updateLikeStatus(movie: SelectedMovie, sessionId: String)
     suspend fun loadLocalLikes(sessionId: String)

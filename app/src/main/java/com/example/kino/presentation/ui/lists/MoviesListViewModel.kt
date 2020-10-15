@@ -30,13 +30,14 @@ class MoviesListViewModel(
         GenresList.getGenres()
     }
 
-    fun getMovies(type: FragmentEnum, page: Int = 1) {
+    fun getMovies(type: MoviesType, page: Int = 1) {
         launch {
             if (page == 1) liveData.value = State.ShowLoading
             likes.loadLocalLikes(sessionId)
             when (type) {
-                FragmentEnum.TOP -> getTopMovies(page)
-                FragmentEnum.FAVOURITES -> getFavouriteMovies()
+                MoviesType.TOP -> getTopMovies(page)
+                MoviesType.CURRENT_PLAYING -> getCurrentPlaying(page)
+                MoviesType.FAVOURITES -> getFavouriteMovies()
             }
         }
     }
@@ -54,7 +55,24 @@ class MoviesListViewModel(
             }
         }
         liveData.value = State.HideLoading
-        liveData.value = State.Result(movies.first, !movies.second)
+        liveData.value = State.Result(movies.first, !movies.second, MoviesType.TOP)
+        return movies
+    }
+
+    private suspend fun getCurrentPlaying(page: Int): Pair<List<Movie>?, Boolean>? {
+        val movies = moviesLists.getCurrentPlaying(page)
+        if (movies.second && !movies.first.isNullOrEmpty()) {
+            for (movie in movies.first!!) {
+                setMovieGenres(movie)
+                saveLikeStatus(movie)
+            }
+            if (page == 1) {
+                localMovies.deleteLocalMovies()
+                localMovies.insertLocalMovies(movies.first!!)
+            }
+        }
+        liveData.value = State.HideLoading
+        liveData.value = State.Result(movies.first, !movies.second, MoviesType.CURRENT_PLAYING)
         return movies
     }
 
@@ -138,7 +156,10 @@ class MoviesListViewModel(
         object Update : State()
         object ShowLoading : State()
         object HideLoading : State()
-        data class Result(val moviesList: List<Movie>?, val isLocal: Boolean = false) :
-            State()
+        data class Result(
+            val moviesList: List<Movie>?,
+            val isLocal: Boolean = false,
+            val type: MoviesType? = null
+        ) : State()
     }
 }

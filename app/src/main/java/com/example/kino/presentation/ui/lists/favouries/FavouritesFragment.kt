@@ -12,12 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
 import com.example.kino.domain.model.Movie
-import com.example.kino.presentation.ui.lists.FragmentEnum
 import com.example.kino.presentation.ui.lists.MoviesListViewModel
+import com.example.kino.presentation.ui.lists.MoviesType
 import com.example.kino.presentation.ui.lists.SharedViewModel
 import com.example.kino.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.kino.presentation.utils.constants.INTENT_KEY
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 
 class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
@@ -73,11 +72,11 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
 
         val movieDetailedFragment = MovieDetailsFragment()
         movieDetailedFragment.arguments = bundle
-        parentFragmentManager.beginTransaction().add(R.id.frame, movieDetailedFragment)
+        parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
             .addToBackStack(null)
             .commit()
-        requireActivity().toolbar.visibility = View.GONE
-        requireActivity().bottomNavigation.visibility = View.GONE
+        // requireActivity().toolbar.visibility = View.GONE
+        // requireActivity().bottomNavigation.visibility = View.GONE
     }
 
     override fun addToFavourites(position: Int, item: Movie) {
@@ -86,7 +85,7 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
     }
 
     private fun getMovies() {
-        moviesListViewModel.getMovies(FragmentEnum.FAVOURITES, 1)
+        moviesListViewModel.getMovies(MoviesType.FAVOURITES, 1)
         moviesListViewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {

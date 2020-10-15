@@ -25,7 +25,7 @@
             android:id="@+id/evUsername"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/edittext_border"
             android:ems="10"
             android:hint="Username"
@@ -80,15 +80,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="48dp"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="48dp"
             android:text="Specify the username and password that you used to log in to TheMovieDB"
             android:textAlignment="center"
             android:textColor="#B1B1B1"
             android:textSize="14.5sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -100,5 +101,17 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:text="TheMovieBase"
+        android:textColor="@color/darkColorAccount"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvHint"
+        app:layout_constraintStart_toStartOf="@+id/tvHint"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

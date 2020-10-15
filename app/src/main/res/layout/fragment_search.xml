@@ -7,6 +7,22 @@
     android:background="?attr/colorBackground"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorItems"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="16dp"
+        android:text="@string/search"
+        android:textColor="?attr/colorPrimaryText"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"

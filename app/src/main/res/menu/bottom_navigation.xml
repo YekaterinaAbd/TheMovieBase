@@ -5,10 +5,6 @@
         android:icon="@drawable/ic_view_list_black_24dp"
         android:title="Movies" />
     <item
-        android:id="@+id/favourites"
-        android:icon="@drawable/ic_turned_in_not_black_24dp"
-        android:title="Favorites"/>
-    <item
         android:id="@+id/search"
         android:icon="@drawable/ic_baseline_search_24"
         android:title="Search" />

@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.data.network.IMAGE_URL
-import com.example.kino.data.model.movie.RemoteMovie
 import com.example.kino.domain.model.Movie
 import com.squareup.picasso.Picasso
 
@@ -18,7 +17,8 @@ class FavouritesAdapter(
 
     private var movies = mutableListOf<Movie>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.film_object_view, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.film_object_view, parent, false)
         return MovieViewHolder(view)
     }
 
@@ -60,6 +60,7 @@ class FavouritesAdapter(
     }
 
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+
 
         fun bind(movie: Movie?) {
 

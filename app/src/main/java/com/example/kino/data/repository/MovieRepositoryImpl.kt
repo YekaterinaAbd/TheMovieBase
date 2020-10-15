@@ -28,10 +28,27 @@ class MovieRepositoryImpl(
     private val localMovieMapper: LocalMovieMapper
 ) : MovieRepository {
 
-    override suspend fun getMovies(apiKey: String, page: Int): Pair<List<Movie>?, Boolean> =
+    override suspend fun getTopMovies(apiKey: String, page: Int): Pair<List<Movie>?, Boolean> =
         withContext(Dispatchers.IO) {
             try {
-                val response = service.getMovieList(apiKey, page)
+                val response = service.getTopMovies(apiKey, page)
+                if (response.isSuccessful) {
+                    val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
+                    return@withContext Pair(list, true)
+                } else {
+                    val list = movieDao?.getMovies()?.map { localMovieMapper.from(it) }
+                    return@withContext Pair(list, false)
+                }
+            } catch (e: Exception) {
+                val list = movieDao?.getMovies()?.map { localMovieMapper.from(it) }
+                return@withContext Pair(list, false)
+            }
+        }
+
+    override suspend fun getCurrentMovies(apiKey: String, page: Int): Pair<List<Movie>?, Boolean> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = service.getCurrentMovies(apiKey, page)
                 if (response.isSuccessful) {
                     val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
                     return@withContext Pair(list, true)
@@ -149,7 +166,7 @@ class MovieRepositoryImpl(
     }
 
     override suspend fun getRemoteMovieList(apiKey: String, page: Int): List<Movie>? {
-        return service.getMovieList(apiKey, page)
+        return service.getTopMovies(apiKey, page)
             .body()?.movieList?.map { remoteMovieMapper.from(it) }
     }
 

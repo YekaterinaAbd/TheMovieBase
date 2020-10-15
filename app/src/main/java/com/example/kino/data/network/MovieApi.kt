@@ -11,7 +11,13 @@ import retrofit2.http.*
 interface MovieApi {
 
     @GET("movie/top_rated")
-    suspend fun getMovieList(
+    suspend fun getTopMovies(
+        @Query("api_key") apiKey: String,
+        @Query("page") page: Int
+    ): Response<Movies>
+
+    @GET("movie/now_playing")
+    suspend fun getCurrentMovies(
         @Query("api_key") apiKey: String,
         @Query("page") page: Int
     ): Response<Movies>

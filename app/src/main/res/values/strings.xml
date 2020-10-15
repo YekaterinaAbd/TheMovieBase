@@ -5,7 +5,6 @@
     <string name="username">username</string>
     <string name="password">password</string>
     <string name="session_id">session_id</string>
-    <string name="top_rated_movies">Top-rated movies</string>
     <string name="favourite_movie">Favourite movies</string>
     <string name="duration_time">%1$s min</string>
     <string name="tagline">« %1$s »</string>
@@ -17,7 +16,13 @@
     <string name="genre_name">%1$s,\u0020</string>
     <string name="theme_state">Boolean theme</string>
     <string name="title_activity_google_maps">Map</string>
-    
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search">Search</string>
+
+    <string name="top_rated_movies">Top-rated movies</string>
+    <string name="media">Media</string>
+    <string name="account">Account</string>
+    <string name="movie">Movie</string>
+    <string name="current_playing">Current Playing</string>
+    <string name="log_out">LOG OUT</string>
 </resources>

@@ -12,12 +12,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.example.kino.R
 import com.example.kino.data.network.IMAGE_URL
-import com.example.kino.data.model.movie.RemoteMovie
 import com.example.kino.domain.model.Movie
 import com.example.kino.presentation.ui.lists.SharedViewModel
 import com.example.kino.presentation.utils.constants.INTENT_KEY
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 
 class MovieDetailsFragment : Fragment() {
@@ -46,6 +44,7 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //requireActivity().bottomNavigation.visibility = View.GONE
         bindViews(view)
         val bundle = this.arguments
 
@@ -80,7 +79,7 @@ class MovieDetailsFragment : Fragment() {
         votesCount = findViewById(R.id.votesCount)
         companies = findViewById(R.id.companies)
         like = findViewById(R.id.btnLike)
-        requireActivity().themeModeImage.visibility = View.GONE
+        //requireActivity().themeModeImage.visibility = View.GONE
     }
 
     private fun getMovie(id: Int) {
