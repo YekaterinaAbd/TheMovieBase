@@ -1,0 +1,18 @@
+<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:text="Hello"
+    android:textAppearance="?android:attr/textAppearance"
+    android:theme="@style/Theme.MaterialComponents.Light"
+    app:chipBackgroundColor="#1E10649F"
+    app:chipCornerRadius="12dp"
+    app:chipMinHeight="26dp"
+    app:ensureMinTouchTargetSize="false" />
+
+    <!--<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    android:layout_width="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:text="Hello"-->
+    <!--    android:theme="@style/Theme.MaterialComponents.Light" />-->

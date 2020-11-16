@@ -38,7 +38,7 @@ class AccountFragment : Fragment() {
     }
 
     private fun bindViews(view: View) = with(view) {
-        username = view.findViewById(R.id.tvUsernameData)
+        username = view.findViewById(R.id.toolbar)
         logOutButton = view.findViewById(R.id.btnLogOut)
         username.text = accountViewModel.username.value
 

@@ -10,7 +10,7 @@ Dependency Injection using <b>Koin</b>
 <p><b>Some other features:</b></p>
 
 <ul>
- <li>Dark Theme</li>
+<li>Dark Theme</li>
 <li>Pagination(infinite scrolling)</li>
 <li>Firebase push notifications(customized design)</li>
 <li>Google maps: providing markers of 10 cinemas in Almaty</li>

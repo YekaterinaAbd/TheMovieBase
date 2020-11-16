@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -29,6 +30,7 @@ class TopFilmsFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var tvTitle: TextView
+    private lateinit var ivBack: ImageView
 
     private var movieType: MoviesType = MoviesType.TOP
 
@@ -45,13 +47,6 @@ class TopFilmsFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
     private var isLoading = false
     private var itemCount = 0
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        sharedViewModel.liked.observe(requireActivity(), Observer { item ->
-            adapter.updateItem(item)
-        })
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -65,6 +60,10 @@ class TopFilmsFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        sharedViewModel.liked.observe(requireActivity(), Observer { item ->
+            adapter.updateItem(item)
+        })
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity())
         bindViews(view)
@@ -80,8 +79,12 @@ class TopFilmsFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
 
         tvTitle.text = MoviesType.typeToString(movieType)
 
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        ivBack = view.findViewById(R.id.ivBack)
+        ivBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
 
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             adapter.clearAll()
             itemCount = 0
@@ -119,12 +122,12 @@ class TopFilmsFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
         logEvent(MOVIE_CLICKED, item)
         val bundle = Bundle()
         bundle.putInt(INTENT_KEY, item.id)
-
         val movieDetailedFragment = MovieDetailsFragment()
         movieDetailedFragment.arguments = bundle
-
         parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-            .addToBackStack(null).commit()
+            .addToBackStack(null)
+            .hide(this)
+            .commit()
     }
 
     override fun addToFavourites(position: Int, item: Movie) {

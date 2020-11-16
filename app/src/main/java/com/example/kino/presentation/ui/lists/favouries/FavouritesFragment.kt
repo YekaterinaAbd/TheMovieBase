@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -23,6 +24,7 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var ivBack: ImageView
     private val recyclerViewAdapter: FavouritesAdapter by lazy {
         FavouritesAdapter(itemClickListener = this)
     }
@@ -54,11 +56,16 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
     private fun bindViews(view: View) = with(view) {
         recyclerView = view.findViewById(R.id.favRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
 
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             recyclerViewAdapter.clearAll()
             getMovies()
+        }
+
+        ivBack = view.findViewById(R.id.ivBack)
+        ivBack.setOnClickListener {
+            requireActivity().onBackPressed()
         }
     }
 
@@ -75,8 +82,6 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
         parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
             .addToBackStack(null)
             .commit()
-        // requireActivity().toolbar.visibility = View.GONE
-        // requireActivity().bottomNavigation.visibility = View.GONE
     }
 
     override fun addToFavourites(position: Int, item: Movie) {

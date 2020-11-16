@@ -38,6 +38,7 @@ class MoviesListViewModel(
                 MoviesType.TOP -> getTopMovies(page)
                 MoviesType.CURRENT_PLAYING -> getCurrentPlaying(page)
                 MoviesType.FAVOURITES -> getFavouriteMovies()
+                MoviesType.UPCOMING -> getUpcomingMovies(page)
             }
         }
     }
@@ -73,6 +74,23 @@ class MoviesListViewModel(
         }
         liveData.value = State.HideLoading
         liveData.value = State.Result(movies.first, !movies.second, MoviesType.CURRENT_PLAYING)
+        return movies
+    }
+
+    private suspend fun getUpcomingMovies(page: Int): Pair<List<Movie>?, Boolean>? {
+        val movies = moviesLists.getUpcomingMovies(page)
+        if (movies.second && !movies.first.isNullOrEmpty()) {
+            for (movie in movies.first!!) {
+                setMovieGenres(movie)
+                saveLikeStatus(movie)
+            }
+            if (page == 1) {
+                localMovies.deleteLocalMovies()
+                localMovies.insertLocalMovies(movies.first!!)
+            }
+        }
+        liveData.value = State.HideLoading
+        liveData.value = State.Result(movies.first, !movies.second, MoviesType.UPCOMING)
         return movies
     }
 

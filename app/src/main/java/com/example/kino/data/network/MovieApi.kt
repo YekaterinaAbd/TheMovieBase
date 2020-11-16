@@ -22,11 +22,35 @@ interface MovieApi {
         @Query("page") page: Int
     ): Response<Movies>
 
+    @GET("movie/upcoming")
+    suspend fun getUpcomingMovies(
+        @Query("api_key") apiKey: String,
+        @Query("page") page: Int
+    ): Response<Movies>
+
     @GET("movie/{id}")
     suspend fun getMovieById(
         @Path("id") id: Int,
         @Query("api_key") apiKey: String
-    ): Response<RemoteMovie>
+    ): Response<RemoteMovieDetails>
+
+    @GET("movie/{movie_id}/similar")
+    suspend fun getSimilarMovies(
+        @Path("movie_id") id: Int,
+        @Query("api_key") apiKey: String
+    ): Response<Movies>
+
+    @GET("movie/{movie_id}/keywords")
+    suspend fun getKeywords(
+        @Path("movie_id") id: Int,
+        @Query("api_key") apiKey: String
+    ): Response<Keywords>
+
+    @GET("movie/{movie_id}/videos")
+    suspend fun getMovieVideos(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String
+    ): Response<Videos>
 
     @GET("movie/{movie_id}/account_states")
     suspend fun getMovieStates(

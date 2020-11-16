@@ -1,5 +1,6 @@
 package com.example.kino.presentation.ui.lists.favouries
 
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +62,18 @@ class FavouritesAdapter(
 
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
+        private fun setMargin() {
+            val sizeInDP = 16
+
+            val marginInDp = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, sizeInDP.toFloat(), itemView.context.resources
+                    .displayMetrics
+            ).toInt()
+
+            val params: ViewGroup.MarginLayoutParams =
+                view.layoutParams as ViewGroup.MarginLayoutParams
+            params.topMargin = marginInDp
+        }
 
         fun bind(movie: Movie?) {
 
@@ -73,6 +86,7 @@ class FavouritesAdapter(
             val addToFav = view.findViewById<ImageView>(R.id.tvAddToFav)
 
             if (movie != null) {
+                if (adapterPosition == 0) setMargin()
                 if (movie.isClicked) {
                     addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
                 } else {

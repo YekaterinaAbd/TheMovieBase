@@ -1,5 +1,6 @@
 package com.example.kino.presentation.ui.lists.top
 
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,7 +104,22 @@ class TopAdapter(
 
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
+        private fun setMargin() {
+            val sizeInDP = 16
+
+            val marginInDp = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, sizeInDP.toFloat(), itemView.context.resources
+                    .displayMetrics
+            ).toInt()
+
+            val params: ViewGroup.MarginLayoutParams =
+                view.layoutParams as ViewGroup.MarginLayoutParams
+            params.topMargin = marginInDp
+        }
+
         fun bind(movie: Movie?) {
+
+            if (adapterPosition == 0 && !searchFragment) setMargin()
 
             val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
             val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)

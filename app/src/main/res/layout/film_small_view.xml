@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="16dp"
-    android:layout_marginEnd="16dp"
+    android:layout_marginEnd="14dp"
     android:layout_marginBottom="16dp">
 
     <androidx.cardview.widget.CardView
@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/ivPoster"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
+            android:layout_width="115dp"
+            android:layout_height="160dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/poster" />

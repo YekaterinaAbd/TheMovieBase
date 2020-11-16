@@ -7,15 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".presentation.ui.sign_in.SignInActivity">
 
-
-        <Button
+        <android.widget.Button
             android:id="@+id/btnSignIn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:background="@drawable/button_background"
             android:text="Sign In"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/darkColorAccount"
             app:layout_constraintEnd_toEndOf="@+id/evPassword"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/evPassword"
@@ -110,6 +109,7 @@
         android:text="TheMovieBase"
         android:textColor="@color/darkColorAccount"
         android:textSize="36sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/tvHint"
         app:layout_constraintStart_toStartOf="@+id/tvHint"
         app:layout_constraintTop_toTopOf="parent" />

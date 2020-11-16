@@ -1,11 +1,12 @@
 package com.example.kino.presentation.ui
 
+//import com.example.kino.presentation.ThemeViewModel
+
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.kino.R
-import com.example.kino.presentation.ThemeViewModel
 import com.example.kino.presentation.ui.account.AccountFragment
 import com.example.kino.presentation.ui.lists.search.SearchFragment
 import com.example.kino.presentation.ui.lists.top.MainListsFragment
@@ -14,10 +15,10 @@ import com.example.kino.presentation.utils.constants.PROFILE_PAGE_CLICKED
 import com.example.kino.presentation.utils.constants.SEARCH_PAGE_CLICKED
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
-import org.koin.android.ext.android.inject
+
 
 class MainActivity : AppCompatActivity() {
-    
+
     // private lateinit var themeModeImage: ImageView
     private var themeModeState: Boolean = true //false == DarkTheme, true = LightTheme
     private var themeMode: Int = 0
@@ -29,17 +30,17 @@ class MainActivity : AppCompatActivity() {
     private var accountFragment: Fragment = AccountFragment()
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-    private val themeViewModel: ThemeViewModel by inject()
+    // private val themeViewModel: ThemeViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        themeViewModel.getTheme()
-        themeViewModel.themeStateLiveData.value?.let { themeModeState = it }
-        themeMode = if (!themeModeState) {
-            R.style.AppThemeDark
-        } else {
-            R.style.AppThemeLight
-        }
-        super.setTheme(themeMode)
+//        themeViewModel.getTheme()
+//        themeViewModel.themeStateLiveData.value?.let { themeModeState = it }
+//        themeMode = if (!themeModeState) {
+//            R.style.AppThemeDark
+//        } else {
+//            R.style.AppThemeLight
+//        }
+//        super.setTheme(themeMode)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
@@ -121,8 +122,3 @@ class MainActivity : AppCompatActivity() {
             return@OnNavigationItemSelectedListener false
         }
 }
-
-
-
-
-

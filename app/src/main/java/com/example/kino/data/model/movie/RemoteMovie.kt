@@ -12,17 +12,11 @@ data class RemoteMovie(
     @SerializedName("release_date") var releaseDate: String? = null,
     @SerializedName("popularity") var popularity: String? = null,
     @SerializedName("overview") var overview: String? = null,
-    @SerializedName("genre_ids") var genreIds: ArrayList<Int>? = null,
+    @SerializedName("genre_ids") var genreIds: ArrayList<Int>? = null
 
-
-    //need remote detailed movie class
-
-    var isClicked: Boolean = false,
-    var runtime: Int? = null,
-    var tagline: String? = null,
-    var genreNames: String = "",
-    var position: Int = 0,
-    val genres: List<Genre>? = null
+//    var isClicked: Boolean = false,
+//    var genreNames: String = "",
+//    var position: Int = 0,
 
 )
 

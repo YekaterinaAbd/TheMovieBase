@@ -19,6 +19,7 @@ import com.example.kino.presentation.ui.lists.top.TopAdapter
 import com.example.kino.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.kino.presentation.utils.constants.INTENT_KEY
 import com.example.kino.presentation.utils.pagination.PaginationScrollListener
+import com.google.android.material.appbar.AppBarLayout
 import org.koin.android.ext.android.inject
 
 class SearchFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
@@ -26,6 +27,7 @@ class SearchFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
     private lateinit var search: SearchView
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var appbar: AppBarLayout
     private lateinit var layoutManager: LinearLayoutManager
     private var query: String? = null
 
@@ -76,10 +78,14 @@ class SearchFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
         recyclerView = findViewById(R.id.recycler_view)
         search = findViewById(R.id.search)
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+        appbar = findViewById(R.id.appbar)
         layoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = layoutManager
 
-        search.setOnClickListener { }
+        search.setOnClickListener {
+            search.isIconified = false
+            appbar.setExpanded(false, true)
+        }
 
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {

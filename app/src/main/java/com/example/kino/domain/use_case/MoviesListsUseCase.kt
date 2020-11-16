@@ -10,6 +10,8 @@ class MoviesListsUseCase(
 
     suspend fun getCurrentPlaying(page: Int) = movieRepository.getCurrentMovies(API_KEY, page)
 
+    suspend fun getUpcomingMovies(page: Int) = movieRepository.getUpcomingMovies(API_KEY, page)
+
     suspend fun getFavouriteMovies(sessionId: String) =
         movieRepository.getFavouriteMovies(API_KEY, sessionId)
 

@@ -7,9 +7,7 @@ import com.example.kino.data.database.MovieDao
 import com.example.kino.data.database.MovieStatusDao
 import com.example.kino.data.mapper.LocalMovieMapper
 import com.example.kino.data.mapper.RemoteMovieMapper
-import com.example.kino.data.model.movie.Genres
-import com.example.kino.data.model.movie.MovieStatus
-import com.example.kino.data.model.movie.SelectedMovie
+import com.example.kino.data.model.movie.*
 import com.example.kino.data.network.API_KEY
 import com.example.kino.data.network.MovieApi
 import com.example.kino.domain.model.Movie
@@ -49,6 +47,23 @@ class MovieRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val response = service.getCurrentMovies(apiKey, page)
+                if (response.isSuccessful) {
+                    val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
+                    return@withContext Pair(list, true)
+                } else {
+                    val list = movieDao?.getMovies()?.map { localMovieMapper.from(it) }
+                    return@withContext Pair(list, false)
+                }
+            } catch (e: Exception) {
+                val list = movieDao?.getMovies()?.map { localMovieMapper.from(it) }
+                return@withContext Pair(list, false)
+            }
+        }
+
+    override suspend fun getUpcomingMovies(apiKey: String, page: Int): Pair<List<Movie>?, Boolean> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = service.getUpcomingMovies(apiKey, page)
                 if (response.isSuccessful) {
                     val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
                     return@withContext Pair(list, true)
@@ -161,8 +176,43 @@ class MovieRepositoryImpl(
         return service.getGenres(apiKey).body()
     }
 
-    override suspend fun getRemoteMovie(id: Int, apiKey: String): Movie? {
-        return service.getMovieById(id, apiKey).body()?.let { remoteMovieMapper.from(it) }
+    override suspend fun getRemoteMovie(id: Int, apiKey: String): RemoteMovieDetails? {
+        return service.getMovieById(id, apiKey).body()
+        //return service.getMovieById(id, apiKey).body()?.let { remoteMovieMapper.from(it) }
+    }
+
+    override suspend fun getSimilarMovies(id: Int, apiKey: String): List<Movie>? =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = service.getSimilarMovies(id, apiKey)
+                if (response.isSuccessful) {
+                    return@withContext response.body()?.movieList?.map { remoteMovieMapper.from(it) }
+                } else {
+                    return@withContext emptyList<Movie>()
+                }
+            } catch (e: Exception) {
+                return@withContext emptyList<Movie>()
+
+            }
+        }
+
+    override suspend fun getKeywords(id: Int, apiKey: String): List<KeyWord>? =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = service.getKeywords(id, apiKey)
+                if (response.isSuccessful) {
+                    return@withContext response.body()?.keywordsList
+                } else {
+                    return@withContext emptyList<KeyWord>()
+                }
+            } catch (e: Exception) {
+                return@withContext emptyList<KeyWord>()
+            }
+        }
+
+
+    override suspend fun getTrailer(id: Int, apiKey: String): Video? {
+        return service.getMovieVideos(id, apiKey).body()?.results?.get(0)
     }
 
     override suspend fun getRemoteMovieList(apiKey: String, page: Int): List<Movie>? {
