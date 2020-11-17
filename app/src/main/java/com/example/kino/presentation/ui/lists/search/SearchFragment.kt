@@ -5,24 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
 import com.example.kino.domain.model.Movie
+import com.example.kino.presentation.ui.MovieState
 import com.example.kino.presentation.ui.lists.MoviesListViewModel
 import com.example.kino.presentation.ui.lists.SharedViewModel
-import com.example.kino.presentation.ui.lists.top.TopAdapter
 import com.example.kino.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.kino.presentation.utils.constants.INTENT_KEY
-import com.example.kino.presentation.utils.pagination.PaginationScrollListener
 import com.google.android.material.appbar.AppBarLayout
 import org.koin.android.ext.android.inject
 
-class SearchFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
+class SearchFragment : Fragment() {
 
     private lateinit var search: SearchView
     private lateinit var recyclerView: RecyclerView
@@ -34,32 +33,26 @@ class SearchFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
     private val viewModel: MoviesListViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    private var currentPage = PaginationScrollListener.PAGE_START
-    private var isLocal = false
-    private var isLastPage = false
-    private var isLoading = false
-    private var itemCount = 0
-
-    private val adapter: TopAdapter by lazy {
-        TopAdapter(itemClickListener = this, searchFragment = true)
+    private val adapter by lazy {
+        PaginationAdapter(itemClickListener = itemClickListener, searchFragment = true)
     }
 
-    override fun itemClick(position: Int, item: Movie) {
-        val bundle = Bundle()
-        bundle.putInt(INTENT_KEY, item.id)
+    private val itemClickListener = object : PaginationAdapter.RecyclerViewItemClick {
+        override fun itemClick(position: Int, item: Movie) {
+            val bundle = Bundle()
+            bundle.putInt(INTENT_KEY, item.id)
 
-        val movieDetailedFragment = MovieDetailsFragment()
-        movieDetailedFragment.arguments = bundle
+            val movieDetailedFragment = MovieDetailsFragment()
+            movieDetailedFragment.arguments = bundle
 
-        parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-            .addToBackStack(null).commit()
-        //requireActivity().toolbar.visibility = View.GONE
-        //requireActivity().bottomNavigation.visibility = View.GONE
-    }
+            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
+                .addToBackStack(null).commit()
+        }
 
-    override fun addToFavourites(position: Int, item: Movie) {
-        viewModel.addToFavourites(item)
-        sharedViewModel.setMovie(item)
+        override fun addToFavourites(position: Int, item: Movie) {
+            viewModel.addToFavourites(item)
+            sharedViewModel.setMovie(item)
+        }
     }
 
     override fun onCreateView(
@@ -91,12 +84,9 @@ class SearchFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 //Performs search when user hit the search button on the keyboard
                 if (!p0.isNullOrEmpty()) {
-                    adapter.clearAll()
-                    currentPage = PaginationScrollListener.PAGE_START
-                    isLastPage = false
-                    recyclerView.scrollToPosition(0)
+                    adapter.submitList(null)
                     query = p0
-                    searchMovies(query!!, 1)
+                    searchMovies(query!!)
                 }
                 return false
             }
@@ -108,9 +98,6 @@ class SearchFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
         })
 
         swipeRefreshLayout.setOnRefreshListener {
-            itemCount = 0
-            currentPage = PaginationScrollListener.PAGE_START
-            isLastPage = false
             recyclerView.scrollToPosition(0)
             swipeRefreshLayout.isRefreshing = false
         }
@@ -118,44 +105,31 @@ class SearchFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
 
     private fun setAdapter() {
         recyclerView.adapter = adapter
-
-        recyclerView.addOnScrollListener(object : PaginationScrollListener(layoutManager) {
-            override fun loadMoreItems() {
-                isLoading = true
-                currentPage++
-                if (!query.isNullOrEmpty()) {
-                    searchMovies(query!!, currentPage)
-                }
-            }
-
-            override fun isLastPage(): Boolean = isLastPage
-            override fun isLoading(): Boolean = isLoading
-            override fun isLocal(): Boolean = isLocal
-
-        })
     }
 
-    private fun searchMovies(query: String, page: Int) {
-        viewModel.searchMovies(query, page)
+    private fun searchMovies(query: String) {
+        viewModel.searchMovies(query)
 
-        viewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is MoviesListViewModel.State.ShowLoading -> {
+        viewModel.searchPagedList.observe(viewLifecycleOwner, {
+            adapter.submitList(it)
+        })
+
+        viewModel.searchStateLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is MovieState.ShowLoading -> {
                     swipeRefreshLayout.isRefreshing = true
                 }
-                is MoviesListViewModel.State.HideLoading -> {
+                is MovieState.HideLoading -> {
                     swipeRefreshLayout.isRefreshing = false
                 }
-                is MoviesListViewModel.State.Result -> {
-                    adapter.removeLoading()
-                    adapter.addItems(result.moviesList ?: emptyList())
-                    adapter.addLoading()
-                    isLoading = false
+                is MovieState.HidePageLoading -> {
+                    swipeRefreshLayout.isRefreshing = false
                 }
-                is MoviesListViewModel.State.Update -> {
-                    adapter.notifyDataSetChanged()
+                is MovieState.Error -> {
+                    Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
                 }
             }
+            adapter.setNetworkState(it)
         })
     }
 }

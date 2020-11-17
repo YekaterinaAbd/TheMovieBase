@@ -78,7 +78,7 @@ interface MovieApi {
     @GET("/3/search/movie")
     suspend fun searchMovies(
         @Query("api_key") key: String,
-        @Query("query") query: String,
+        @Query("query") query: String?,
         @Query("page") page: Int
     ): Response<Movies>
 

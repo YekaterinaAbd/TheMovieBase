@@ -1,7 +1,11 @@
 package com.example.kino.presentation.ui.lists
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.example.kino.R
 import com.example.kino.data.model.movie.SelectedMovie
 import com.example.kino.domain.model.Movie
@@ -11,23 +15,38 @@ import com.example.kino.domain.use_case.MoviesListsUseCase
 import com.example.kino.domain.use_case.SessionIdUseCase
 import com.example.kino.presentation.BaseViewModel
 import com.example.kino.presentation.model.GenresList
+import com.example.kino.presentation.ui.MovieState
+import com.example.kino.presentation.ui.data_source.MoviesDataSource
+import com.example.kino.presentation.ui.data_source.MoviesDataSourceFactory
 import com.example.kino.presentation.utils.constants.MEDIA_TYPE
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
 class MoviesListViewModel(
     private val context: Context,
-    private val localSessionId: SessionIdUseCase,
+    localSessionId: SessionIdUseCase,
     private val likes: LikesUseCase,
     private val moviesLists: MoviesListsUseCase,
     private val localMovies: LocalMoviesUseCase
 ) : BaseViewModel() {
+
+    private val pagedListConfig: PagedList.Config
+
+    private lateinit var searchMoviesDataSourceFactory: MoviesDataSourceFactory
+    lateinit var searchPagedList: LiveData<PagedList<Movie>>
+    lateinit var searchStateLiveData: LiveData<MovieState>
 
     private val sessionId = localSessionId.getLocalSessionId(context)
     val liveData = MutableLiveData<State>()
 
     init {
         GenresList.getGenres()
+        pagedListConfig = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setPageSize(MoviesDataSource.PAGE_SIZE)
+            .setPrefetchDistance(10)
+            .build()
     }
 
     fun getMovies(type: MoviesType, page: Int = 1) {
@@ -108,19 +127,15 @@ class MoviesListViewModel(
         return movies
     }
 
-    fun searchMovies(query: String, page: Int = 1) {
-        launch {
-            if (page == 1) liveData.value = State.ShowLoading
-            val movies = moviesLists.searchMovies(query, page)
-            if (!movies.isNullOrEmpty()) {
-                for (movie in movies) {
-                    setMovieGenres(movie)
-                    getLikeStatus(movie)
-                }
-            }
-            liveData.value = State.Result(movies)
-            liveData.value = State.HideLoading
-        }
+    fun searchMovies(query: String) {
+        searchMoviesDataSourceFactory = MoviesDataSourceFactory(moviesLists, Dispatchers.IO, query)
+        searchPagedList =
+            LivePagedListBuilder(searchMoviesDataSourceFactory, pagedListConfig).build()
+
+        searchStateLiveData = Transformations.switchMap(
+            searchMoviesDataSourceFactory.liveData,
+            MoviesDataSource::getState
+        )
     }
 
     private fun updateLikeStatus(movie: SelectedMovie) {

@@ -2,6 +2,7 @@ package com.example.kino.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.kino.R
 import com.example.kino.data.database.MovieDao
 import com.example.kino.data.database.MovieStatusDao
@@ -248,15 +249,16 @@ class MovieRepositoryImpl(
     }
 
     override suspend fun searchMovies(
-        apiKey: String, query: String, page: Int
+        apiKey: String, query: String?, page: Int
     ): List<Movie>? {
         return try {
             val response = service.searchMovies(apiKey, query, page)
-            if (response.isSuccessful) response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-            else null
+            if (response.isSuccessful) {
+                Log.d("testt", "repository " + response.body()?.movieList?.size.toString())
+                response.body()?.movieList?.map { remoteMovieMapper.from(it) }
+            } else null
         } catch (e: java.lang.Exception) {
             null
         }
     }
 }
-

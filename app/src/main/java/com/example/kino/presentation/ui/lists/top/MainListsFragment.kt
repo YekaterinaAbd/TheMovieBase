@@ -24,12 +24,7 @@ class MainListsFragment : Fragment() {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
-    //    private lateinit var topRecyclerView: RecyclerView
-//    private lateinit var currentRecyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-//    private lateinit var topTitle: TextView
-//    private lateinit var currentTitle: TextView
-
     private lateinit var topMoviesView: MoviesListView
     private lateinit var currentMoviesView: MoviesListView
     private lateinit var upcomingMoviesView: MoviesListView
@@ -50,14 +45,6 @@ class MainListsFragment : Fragment() {
         }
     }
 
-//    private val topAdapter: HorizontalFilmsAdapter by lazy {
-//        HorizontalFilmsAdapter(itemClickListener = itemClickListener)
-//    }
-//
-//    private val currentAdapter: HorizontalFilmsAdapter by lazy {
-//        HorizontalFilmsAdapter(itemClickListener = itemClickListener)
-//    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -69,17 +56,11 @@ class MainListsFragment : Fragment() {
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity())
         bindViews(view)
-        //setAdapter()
         getMovies()
         observe()
     }
 
     private fun bindViews(view: View) {
-//        topRecyclerView = view.findViewById(R.id.filmsRecyclerView)
-//        currentRecyclerView = view.findViewById(R.id.currentFilmsRecyclerView)
-//        topTitle = view.findViewById(R.id.topTitle)
-//        currentTitle = view.findViewById(R.id.currentTitle)
-
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         topMoviesView = view.findViewById(R.id.topMovies)
         currentMoviesView = view.findViewById(R.id.currentMovies)
@@ -103,41 +84,11 @@ class MainListsFragment : Fragment() {
             setAdapter(itemClickListener)
         }
 
-//        topTitle.setOnClickListener {
-//            openListFragment(MoviesType.TOP)
-//        }
-//
-//        currentTitle.setOnClickListener {
-//            openListFragment(MoviesType.CURRENT_PLAYING)
-//        }
-
         swipeRefreshLayout.setOnRefreshListener {
             clear()
             getMovies()
         }
     }
-
-//    private fun openListFragment(type: MoviesType) {
-//        val bundle = Bundle()
-//        bundle.putSerializable("type", type)
-//
-//        val movieListsFragment = TopFilmsFragment()
-//        movieListsFragment.arguments = bundle
-//        parentFragmentManager.beginTransaction().add(R.id.framenav, movieListsFragment)
-//            .addToBackStack(null).commit()
-//    }
-
-//    private fun setAdapter() {
-//
-//        topRecyclerView.layoutManager =
-//            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-//
-//        currentRecyclerView.layoutManager =
-//            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-//
-//        topRecyclerView.adapter = topAdapter
-//        currentRecyclerView.adapter = currentAdapter
-//    }
 
     private fun logEvent(logMessage: String, item: Movie) {
         val bundle = Bundle()

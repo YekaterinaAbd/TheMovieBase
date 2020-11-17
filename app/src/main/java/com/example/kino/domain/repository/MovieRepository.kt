@@ -36,5 +36,5 @@ interface MovieRepository {
     suspend fun getRemoteFavouriteMovies(apiKey: String, sessionId: String): List<Movie>?
     suspend fun getRemoteMovieStates(movieId: Int, apiKey: String, sessionId: String): Boolean?
     suspend fun updateRemoteFavourites(apiKey: String, sessionId: String, fav: SelectedMovie)
-    suspend fun searchMovies(apiKey: String, query: String, page: Int): List<Movie>?
+    suspend fun searchMovies(apiKey: String, query: String?, page: Int): List<Movie>?
 }
