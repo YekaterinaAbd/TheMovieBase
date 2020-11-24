@@ -1,7 +1,7 @@
 package com.example.kino.data.repository
 
 import com.example.kino.data.database.MarkerDao
-import com.example.kino.data.model.Marker
+import com.example.kino.data.model.entities.Marker
 import com.example.kino.domain.repository.MarkerRepository
 
 class MarkerRepositoryImpl(private var markerDao: MarkerDao) : MarkerRepository {

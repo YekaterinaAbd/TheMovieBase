@@ -7,4 +7,3 @@ const val ORIGINAL_IMAGE_URL: String = "https://image.tmdb.org/t/p/original"
 const val VIDEO_URL: String = "https://www.youtube.com/embed/"
 const val MOVIES_URL = "https://www.themoviedb.org/movie"
 const val SIGN_UP_URL: String = "https://www.themoviedb.org/account/signup"
-

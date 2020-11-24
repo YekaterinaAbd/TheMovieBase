@@ -6,24 +6,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kino.R
-import com.example.kino.presentation.ui.lists.MoviesType
+import com.example.kino.data.model.movie.MoviesType
+import com.example.kino.presentation.ui.MainActivity
 import com.example.kino.presentation.ui.lists.favouries.FavouritesFragment
 import com.example.kino.presentation.ui.markers.GoogleMapsActivity
 import com.example.kino.presentation.ui.sign_in.SignInActivity
 import org.koin.android.ext.android.inject
 
+
 class AccountFragment : Fragment() {
 
-    private lateinit var username: TextView
+    private lateinit var username: androidx.appcompat.widget.Toolbar
     private val accountViewModel: AccountViewModel by inject()
-    private lateinit var viewFavourites: CardView
-    private lateinit var viewWatchList: CardView
+    private lateinit var viewFavourites: ConstraintLayout
+    private lateinit var viewWatchList: ConstraintLayout
     private lateinit var logOutButton: Button
 
     override fun onCreateView(
@@ -40,8 +42,9 @@ class AccountFragment : Fragment() {
     private fun bindViews(view: View) = with(view) {
         username = view.findViewById(R.id.toolbar)
         logOutButton = view.findViewById(R.id.btnLogOut)
-        username.text = accountViewModel.username.value
-
+        //username.text = accountViewModel.username.value
+        (activity as MainActivity).setSupportActionBar(username)
+        (activity as MainActivity).supportActionBar?.title = accountViewModel.username.value
         viewFavourites = view.findViewById(R.id.btnFavourites)
         viewWatchList = view.findViewById(R.id.btnWatchList)
 

@@ -3,6 +3,7 @@ package com.example.kino.presentation.module
 import com.example.kino.presentation.ThemeViewModel
 import com.example.kino.presentation.ui.account.AccountViewModel
 import com.example.kino.presentation.ui.lists.MoviesListViewModel
+import com.example.kino.presentation.ui.lists.search.SearchViewModel
 import com.example.kino.presentation.ui.markers.MarkersViewModel
 import com.example.kino.presentation.ui.movie_details.MovieDetailsViewModel
 import com.example.kino.presentation.ui.sign_in.SignInViewModel
@@ -13,12 +14,14 @@ val viewModelModule = module {
     viewModel {
         MoviesListViewModel(
             context = get(),
-            likes = get(),
-            localMovies = get(),
-            localSessionId = get(),
-            moviesLists = get()
+            likesUseCase = get(),
+            localMoviesUseCase = get(),
+            sessionIdUseCase = get(),
+            moviesListsUseCase = get(),
+            searchMoviesUseCase = get()
         )
     }
+    viewModel { SearchViewModel(context = get(), searchUseCase = get()) }
     viewModel { MovieDetailsViewModel(context = get(), movieRepository = get()) }
     viewModel { AccountViewModel(context = get(), accountRepository = get()) }
     viewModel { MarkersViewModel(markerRepository = get()) }

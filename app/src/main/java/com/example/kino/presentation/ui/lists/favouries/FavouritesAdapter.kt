@@ -87,7 +87,7 @@ class FavouritesAdapter(
 
             if (movie != null) {
                 if (adapterPosition == 0) setMargin()
-                if (movie.isClicked) {
+                if (movie.isFavourite) {
                     addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
                 } else {
                     addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
@@ -109,7 +109,7 @@ class FavouritesAdapter(
 
                 addToFav.setOnClickListener {
                     itemClickListener?.addToFavourites(adapterPosition, movie)
-                    if (movie.isClicked) {
+                    if (movie.isFavourite) {
                         addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
                     } else {
                         addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)

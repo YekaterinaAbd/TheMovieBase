@@ -1,6 +1,5 @@
 package com.example.kino.presentation.ui.lists.search
 
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +16,7 @@ import com.example.kino.presentation.utils.LoadMoreItemViewHolder
 import com.squareup.picasso.Picasso
 
 class PaginationAdapter(
-    private val itemClickListener: RecyclerViewItemClick? = null,
-    private val searchFragment: Boolean = false
+    private val itemClickListener: RecyclerViewItemClick? = null
 ) : PagedListAdapter<Movie, RecyclerView.ViewHolder>(DiffUtilCallBack) {
 
     private val VIEW_TYPE_LOADING = 0
@@ -37,10 +35,6 @@ class PaginationAdapter(
             }
         }
     }
-    //private var isLoaderVisible = false
-
-//    private var moviePosition = 1
-//    private var movies = mutableListOf<Movie>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -65,11 +59,6 @@ class PaginationAdapter(
         return if (position < super.getItemCount()) VIEW_TYPE_DATA else VIEW_TYPE_LOADING
     }
 
-    fun clearAll() {
-        submitList(null)
-        notifyDataSetChanged()
-    }
-
     fun setNetworkState(newState: MovieState) {
         val previousState: MovieState? = this.state
         val previousExtraRow = hasExtraRow()
@@ -92,22 +81,7 @@ class PaginationAdapter(
 
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-        private fun setMargin() {
-            val sizeInDP = 16
-
-            val marginInDp = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, sizeInDP.toFloat(), itemView.context.resources
-                    .displayMetrics
-            ).toInt()
-
-            val params: ViewGroup.MarginLayoutParams =
-                view.layoutParams as ViewGroup.MarginLayoutParams
-            params.topMargin = marginInDp
-        }
-
         fun bind(movie: Movie?) {
-
-            if (adapterPosition == 0 && !searchFragment) setMargin()
 
             val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
             val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
@@ -118,12 +92,14 @@ class PaginationAdapter(
             val number = view.findViewById<TextView>(R.id.number)
             val addToFav = view.findViewById<ImageView>(R.id.tvAddToFav)
 
+            addToFav.visibility = View.GONE
+
             if (movie != null) {
-                if (movie.isClicked) {
-                    addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
-                } else {
-                    addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
-                }
+//                if (movie.isClicked) {
+//                    addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
+//                } else {
+//                    addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
+//                }
 
                 tvTitle.text = movie.title
                 if (!movie.releaseDate.isNullOrEmpty())
@@ -131,8 +107,6 @@ class PaginationAdapter(
                 tvVotesCount.text = movie.voteCount.toString()
                 tvRating.text = movie.voteAverage.toString()
                 tvGenres.text = movie.genreNames
-
-                if (!searchFragment) number.text = movie.position.toString()
 
                 if (!movie.posterPath.isNullOrEmpty())
                     Picasso.get()
@@ -143,14 +117,14 @@ class PaginationAdapter(
                     itemClickListener?.itemClick(adapterPosition, movie)
                 }
 
-                addToFav.setOnClickListener {
-                    itemClickListener?.addToFavourites(adapterPosition, movie)
-                    if (movie.isClicked) {
-                        addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
-                    } else {
-                        addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
-                    }
-                }
+//                addToFav.setOnClickListener {
+//                    itemClickListener?.addToFavourites(adapterPosition, movie)
+//                    if (movie.isClicked) {
+//                        addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
+//                    } else {
+//                        addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
+//                    }
+//                }
             }
         }
     }

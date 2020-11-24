@@ -3,7 +3,7 @@ package com.example.kino.presentation.ui.markers
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kino.R
-import com.example.kino.data.model.Marker
+import com.example.kino.data.model.entities.Marker
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback

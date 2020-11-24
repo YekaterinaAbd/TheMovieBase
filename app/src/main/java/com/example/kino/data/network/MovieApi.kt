@@ -4,6 +4,7 @@ import com.example.kino.data.model.account.LoginValidationData
 import com.example.kino.data.model.account.Session
 import com.example.kino.data.model.account.Success
 import com.example.kino.data.model.account.Token
+import com.example.kino.data.model.entities.MovieStatus
 import com.example.kino.data.model.movie.*
 import retrofit2.Response
 import retrofit2.http.*
@@ -65,11 +66,24 @@ interface MovieApi {
         @Query("session_id") sessionId: String
     ): Response<Movies>
 
+    @GET("account/{account_id}/watchlist/movies")
+    suspend fun getMoviesWatchList(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String
+    ): Response<Movies>
+
     @POST("account/{account_id}/favorite")
-    suspend fun addRemoveFavourites(
+    suspend fun markFavourite(
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String,
-        @Body fav: SelectedMovie
+        @Body fav: FavouriteMovie
+    ): Response<StatusResponse>
+
+    @POST("account/{account_id}/watchlist")
+    suspend fun markWatchList(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String,
+        @Body fav: WatchListMovie
     ): Response<StatusResponse>
 
     @GET("genre/movie/list")

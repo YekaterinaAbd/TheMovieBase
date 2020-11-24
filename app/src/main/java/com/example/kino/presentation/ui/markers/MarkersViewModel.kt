@@ -1,7 +1,7 @@
 package com.example.kino.presentation.ui.markers
 
-import com.example.kino.data.model.Marker
-import com.example.kino.data.model.generateMarkers
+import com.example.kino.data.model.entities.Marker
+import com.example.kino.data.model.entities.generateMarkers
 import com.example.kino.domain.repository.MarkerRepository
 import com.example.kino.presentation.BaseViewModel
 import kotlinx.coroutines.Dispatchers

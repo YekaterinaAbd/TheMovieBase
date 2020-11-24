@@ -96,9 +96,9 @@ class TopAdapter(
 
     fun updateItem(movie: Movie) {
         val id = movie.id
-        val isClicked = movie.isClicked
+        val isClicked = movie.isFavourite
         val foundMovie = movies.find { it.id == id }
-        foundMovie?.isClicked = isClicked
+        foundMovie?.isFavourite = isClicked
         notifyDataSetChanged()
     }
 
@@ -131,7 +131,7 @@ class TopAdapter(
             val addToFav = view.findViewById<ImageView>(R.id.tvAddToFav)
 
             if (movie != null) {
-                if (movie.isClicked) {
+                if (movie.isFavourite) {
                     addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
                 } else {
                     addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
@@ -162,7 +162,7 @@ class TopAdapter(
 
                 addToFav.setOnClickListener {
                     itemClickListener?.addToFavourites(adapterPosition, movie)
-                    if (movie.isClicked) {
+                    if (movie.isFavourite) {
                         addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
                     } else {
                         addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)

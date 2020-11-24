@@ -2,9 +2,9 @@ package com.example.kino.presentation.ui.movie_details
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import com.example.kino.data.model.movie.FavouriteMovie
 import com.example.kino.data.model.movie.KeyWord
 import com.example.kino.data.model.movie.RemoteMovieDetails
-import com.example.kino.data.model.movie.SelectedMovie
 import com.example.kino.data.model.movie.Video
 import com.example.kino.data.network.API_KEY
 import com.example.kino.domain.model.Movie
@@ -38,13 +38,13 @@ class MovieDetailsViewModel(
                             movieDetails.isClicked = movieState
                         }
                         // setGenres(movieDetails)
-                        movieDetails.tagLine?.let {
-                            movieDetails.runtime?.let { it1 ->
-                                movieDetails.id?.let { it2 ->
-                                    movieRepository.updateLocalMovieProperties(it, it1, it2)
-                                }
-                            }
-                        }
+//                        movieDetails.tagLine?.let {
+//                            movieDetails.runtime?.let { it1 ->
+//                                movieDetails.id?.let { it2 ->
+//                                    movieRepository.updateLocalMovieProperties(it, it1, it2)
+//                                }
+//                            }
+//                        }
                     }
                     return@withContext movieDetails
 
@@ -87,7 +87,7 @@ class MovieDetailsViewModel(
     }
 
     fun updateLikeStatus(id: Int, isClicked: Boolean) {
-        val movie = SelectedMovie(MEDIA_TYPE, id, isClicked)
+        val movie = FavouriteMovie(MEDIA_TYPE, id, isClicked)
         launch {
             movieRepository.updateLikeStatus(movie, sessionId)
         }

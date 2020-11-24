@@ -6,11 +6,12 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.findFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
+import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.domain.model.Movie
-import com.example.kino.presentation.ui.lists.MoviesType
 import com.example.kino.presentation.ui.lists.top.HorizontalFilmsAdapter
 import com.example.kino.presentation.ui.lists.top.TopFilmsFragment
 
@@ -63,9 +64,8 @@ class MoviesListView : LinearLayout {
         val movieListsFragment = TopFilmsFragment()
         movieListsFragment.arguments = bundle
         fm.beginTransaction().add(R.id.framenav, movieListsFragment)
-            .addToBackStack(null).commit()
+            .addToBackStack(null).hide(this.findFragment()).commit()
     }
-
 
     private fun init(context: Context) {
         inflate(context, R.layout.list_view, this)

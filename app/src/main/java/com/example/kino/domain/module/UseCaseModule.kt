@@ -1,9 +1,6 @@
-package com.example.kino.domain
+package com.example.kino.domain.module
 
-import com.example.kino.domain.use_case.LikesUseCase
-import com.example.kino.domain.use_case.LocalMoviesUseCase
-import com.example.kino.domain.use_case.MoviesListsUseCase
-import com.example.kino.domain.use_case.SessionIdUseCase
+import com.example.kino.domain.use_case.*
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -11,4 +8,6 @@ val useCaseModule = module {
     factory { LikesUseCase(movieRepository = get()) }
     factory { MoviesListsUseCase(movieRepository = get()) }
     factory { LocalMoviesUseCase(movieRepository = get()) }
+    factory { SearchUseCase(searchRepository = get()) }
+    factory { SearchMoviesUseCase(movieRepository = get()) }
 }

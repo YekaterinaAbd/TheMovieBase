@@ -2,12 +2,13 @@ package com.example.kino.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import com.example.kino.R
 import com.example.kino.data.database.MovieDao
 import com.example.kino.data.database.MovieStatusDao
+import com.example.kino.data.mapper.DataSource
 import com.example.kino.data.mapper.LocalMovieMapper
 import com.example.kino.data.mapper.RemoteMovieMapper
+import com.example.kino.data.model.entities.MovieStatus
 import com.example.kino.data.model.movie.*
 import com.example.kino.data.network.API_KEY
 import com.example.kino.data.network.MovieApi
@@ -27,101 +28,147 @@ class MovieRepositoryImpl(
     private val localMovieMapper: LocalMovieMapper
 ) : MovieRepository {
 
-    override suspend fun getTopMovies(apiKey: String, page: Int): Pair<List<Movie>?, Boolean> =
+    private fun insertToDatabase(list: List<Movie>?, type: MoviesType) {
+        if (!list.isNullOrEmpty()) {
+            movieDao?.deleteAll(type.name)
+            for (item in list) item.type = type.name
+            movieDao?.insertAll(list.map { localMovieMapper.to(it) })
+        }
+    }
+
+    private fun getFromDatabase(type: MoviesType) =
+        movieDao?.getMovies(type.name)?.map { localMovieMapper.from(it) }
+
+
+    override suspend fun getTopMovies(apiKey: String, page: Int): Pair<List<Movie>?, DataSource> =
         withContext(Dispatchers.IO) {
             try {
                 val response = service.getTopMovies(apiKey, page)
                 if (response.isSuccessful) {
                     val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                    return@withContext Pair(list, true)
+                    insertToDatabase(list, MoviesType.TOP)
+                    return@withContext Pair(list, DataSource.REMOTE)
                 } else {
-                    val list = movieDao?.getMovies()?.map { localMovieMapper.from(it) }
-                    return@withContext Pair(list, false)
+                    val list = getFromDatabase(MoviesType.TOP)
+                    return@withContext Pair(list, DataSource.LOCAL)
                 }
             } catch (e: Exception) {
-                val list = movieDao?.getMovies()?.map { localMovieMapper.from(it) }
-                return@withContext Pair(list, false)
+                val list = getFromDatabase(MoviesType.TOP)
+                return@withContext Pair(list, DataSource.LOCAL)
             }
         }
 
-    override suspend fun getCurrentMovies(apiKey: String, page: Int): Pair<List<Movie>?, Boolean> =
+    override suspend fun getCurrentMovies(
+        apiKey: String,
+        page: Int
+    ): Pair<List<Movie>?, DataSource> =
         withContext(Dispatchers.IO) {
             try {
                 val response = service.getCurrentMovies(apiKey, page)
                 if (response.isSuccessful) {
                     val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                    return@withContext Pair(list, true)
+                    insertToDatabase(list, MoviesType.CURRENT)
+                    return@withContext Pair(list, DataSource.REMOTE)
                 } else {
-                    val list = movieDao?.getMovies()?.map { localMovieMapper.from(it) }
-                    return@withContext Pair(list, false)
+                    val list = getFromDatabase(MoviesType.CURRENT)
+                    return@withContext Pair(list, DataSource.LOCAL)
                 }
             } catch (e: Exception) {
-                val list = movieDao?.getMovies()?.map { localMovieMapper.from(it) }
-                return@withContext Pair(list, false)
+                val list = getFromDatabase(MoviesType.CURRENT)
+                return@withContext Pair(list, DataSource.LOCAL)
             }
         }
 
-    override suspend fun getUpcomingMovies(apiKey: String, page: Int): Pair<List<Movie>?, Boolean> =
+    override suspend fun getUpcomingMovies(
+        apiKey: String,
+        page: Int
+    ): Pair<List<Movie>?, DataSource> =
         withContext(Dispatchers.IO) {
             try {
                 val response = service.getUpcomingMovies(apiKey, page)
                 if (response.isSuccessful) {
                     val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                    return@withContext Pair(list, true)
+                    insertToDatabase(list, MoviesType.UPCOMING)
+                    return@withContext Pair(list, DataSource.REMOTE)
                 } else {
-                    val list = movieDao?.getMovies()?.map { localMovieMapper.from(it) }
-                    return@withContext Pair(list, false)
+                    val list = getFromDatabase(MoviesType.UPCOMING)
+                    return@withContext Pair(list, DataSource.LOCAL)
                 }
             } catch (e: Exception) {
-                val list = movieDao?.getMovies()?.map { localMovieMapper.from(it) }
-                return@withContext Pair(list, false)
+                val list = getFromDatabase(MoviesType.UPCOMING)
+                return@withContext Pair(list, DataSource.LOCAL)
             }
         }
 
     override suspend fun getFavouriteMovies(
         apiKey: String, sessionId: String
-    ): Pair<List<Movie>?, Boolean> = withContext(Dispatchers.IO) {
+    ): Pair<List<Movie>?, DataSource> = withContext(Dispatchers.IO) {
         try {
             val response = service.getFavouriteMovies(apiKey, sessionId)
             if (response.isSuccessful) {
                 val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                return@withContext Pair(list, true)
+                insertToDatabase(list, MoviesType.FAVOURITES)
+                return@withContext Pair(list, DataSource.REMOTE)
             } else {
-                val list = movieDao?.getFavouriteMovies()?.map { localMovieMapper.from(it) }
-                return@withContext Pair(list, false)
+                val list = getFromDatabase(MoviesType.FAVOURITES)
+                return@withContext Pair(list, DataSource.LOCAL)
             }
         } catch (e: Exception) {
-            val list = movieDao?.getFavouriteMovies()?.map { localMovieMapper.from(it) }
-            return@withContext Pair(list, false)
+            val list = getFromDatabase(MoviesType.FAVOURITES)
+            return@withContext Pair(list, DataSource.LOCAL)
         }
     }
 
-    override suspend fun updateLikeStatus(movie: SelectedMovie, sessionId: String) =
-        withContext(Dispatchers.IO) {
+    override suspend fun getWatchListMovies(
+        apiKey: String,
+        sessionId: String
+    ): Pair<List<Movie>?, DataSource> = withContext(Dispatchers.IO) {
+        try {
+            val response = service.getMoviesWatchList(apiKey, sessionId)
+            if (response.isSuccessful) {
+                val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
+                insertToDatabase(list, MoviesType.WATCH_LIST)
+                return@withContext Pair(list, DataSource.REMOTE)
+            } else {
+                val list = getFromDatabase(MoviesType.WATCH_LIST)
+                return@withContext Pair(list, DataSource.LOCAL)
+            }
+        } catch (e: Exception) {
+            val list = getFromDatabase(MoviesType.WATCH_LIST)
+            return@withContext Pair(list, DataSource.LOCAL)
+        }
+    }
+
+    override suspend fun updateLikeStatus(movie: FavouriteMovie, sessionId: String): Boolean {
+        return withContext(Dispatchers.IO) {
             try {
                 updateRemoteFavourites(API_KEY, sessionId, movie)
                 updateLocalMovieIsCLicked(movie.selectedStatus, movie.movieId)
+                return@withContext true
 
             } catch (e: Exception) {
                 updateLocalMovieIsCLicked(movie.selectedStatus, movie.movieId)
                 insertLocalMovieStatus(
                     MovieStatus(movie.movieId, movie.selectedStatus)
                 )
+                if (!movie.selectedStatus) movieDao?.deleteFromFavourites(movie.movieId)
+                return@withContext false
             }
         }
+    }
 
     override suspend fun loadLocalLikes(sessionId: String) {
         withContext(Dispatchers.IO) {
             val moviesToUpdate = movieStatusDao?.getMovieStatuses()
             if (!moviesToUpdate.isNullOrEmpty()) {
                 for (movie in moviesToUpdate) {
-                    updateLikeStatus(
-                        SelectedMovie(MEDIA_TYPE, movie.movieId, movie.selectedStatus),
+                    val updated = updateLikeStatus(
+                        FavouriteMovie(MEDIA_TYPE, movie.movieId, movie.selectedStatus),
                         sessionId
                     )
+                    if (updated) deleteLocalMovieStatus(movie.movieId)
                 }
             }
-            deleteLocalMovieStatuses()
         }
     }
 
@@ -140,15 +187,8 @@ class MovieRepositoryImpl(
     override suspend fun updateLocalMovieIsCLicked(isClicked: Boolean, id: Int) {
         withContext(Dispatchers.IO) {
             movieDao?.updateMovieIsCLicked(isClicked, id)
+            if (!isClicked) movieDao?.deleteFromFavourites(id)
         }
-    }
-
-    override fun updateLocalMovieProperties(tagLine: String, runtime: Int, id: Int) {
-        movieDao?.updateMovieProperties(tagLine, runtime, id)
-    }
-
-    override fun getLocalMovie(id: Int): Movie? {
-        return movieDao?.getMovie(id)?.let { localMovieMapper.from(it) }
     }
 
     override fun insertLocalMovieStatus(movieState: MovieStatus) {
@@ -159,9 +199,9 @@ class MovieRepositoryImpl(
         return@withContext movieStatusDao?.getMovieStatuses()
     }
 
-    override suspend fun deleteLocalMovieStatuses() {
+    override suspend fun deleteLocalMovieStatus(id: Int) {
         withContext(Dispatchers.IO) {
-            movieStatusDao?.deleteAll()
+            movieStatusDao?.deleteMovieStatus(id)
         }
     }
 
@@ -179,7 +219,6 @@ class MovieRepositoryImpl(
 
     override suspend fun getRemoteMovie(id: Int, apiKey: String): RemoteMovieDetails? {
         return service.getMovieById(id, apiKey).body()
-        //return service.getMovieById(id, apiKey).body()?.let { remoteMovieMapper.from(it) }
     }
 
     override suspend fun getSimilarMovies(id: Int, apiKey: String): List<Movie>? =
@@ -231,9 +270,9 @@ class MovieRepositoryImpl(
     override suspend fun updateRemoteFavourites(
         apiKey: String,
         sessionId: String,
-        fav: SelectedMovie
+        fav: FavouriteMovie
     ) {
-        service.addRemoveFavourites(apiKey, sessionId, fav)
+        service.markFavourite(apiKey, sessionId, fav)
     }
 
     override suspend fun getRemoteMovieStates(
@@ -254,7 +293,6 @@ class MovieRepositoryImpl(
         return try {
             val response = service.searchMovies(apiKey, query, page)
             if (response.isSuccessful) {
-                Log.d("testt", "repository " + response.body()?.movieList?.size.toString())
                 response.body()?.movieList?.map { remoteMovieMapper.from(it) }
             } else null
         } catch (e: java.lang.Exception) {

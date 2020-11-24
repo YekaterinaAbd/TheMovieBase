@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
+import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.domain.model.Movie
 import com.example.kino.presentation.ui.lists.MoviesListViewModel
-import com.example.kino.presentation.ui.lists.MoviesType
 import com.example.kino.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.kino.presentation.utils.constants.INTENT_KEY
 import com.example.kino.presentation.utils.constants.MOVIE_CLICKED
@@ -73,7 +73,7 @@ class MainListsFragment : Fragment() {
         }
 
         currentMoviesView.apply {
-            setData(MoviesType.CURRENT_PLAYING)
+            setData(MoviesType.CURRENT)
             setListeners(parentFragmentManager)
             setAdapter(itemClickListener)
         }
@@ -99,7 +99,7 @@ class MainListsFragment : Fragment() {
 
     private fun getMovies() {
         getMovies(MoviesType.TOP)
-        getMovies(MoviesType.CURRENT_PLAYING)
+        getMovies(MoviesType.CURRENT)
         getMovies(MoviesType.UPCOMING)
     }
 
@@ -124,16 +124,24 @@ class MainListsFragment : Fragment() {
                 }
                 is MoviesListViewModel.State.Result -> {
                     if (result.type == MoviesType.TOP) {
-                        result.moviesList?.let { topMoviesView.addItems(it.subList(0, 10)) }
+                        addToAdapter(topMoviesView, result.moviesList)
                     }
-                    if (result.type == MoviesType.CURRENT_PLAYING) {
-                        result.moviesList?.let { currentMoviesView.addItems(it.subList(0, 10)) }
+                    if (result.type == MoviesType.CURRENT) {
+                        addToAdapter(currentMoviesView, result.moviesList)
                     }
                     if (result.type == MoviesType.UPCOMING) {
-                        result.moviesList?.let { upcomingMoviesView.addItems(it.subList(0, 10)) }
+                        addToAdapter(upcomingMoviesView, result.moviesList)
                     }
                 }
             }
         })
+    }
+
+    private fun addToAdapter(view: MoviesListView, list: List<Movie>?) {
+        if (!list.isNullOrEmpty()) {
+            if (list.size > 10) view.addItems(list.subList(0, 10))
+            else view.addItems(list)
+        }
+
     }
 }

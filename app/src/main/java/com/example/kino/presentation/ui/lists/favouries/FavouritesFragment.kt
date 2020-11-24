@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
+import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.domain.model.Movie
 import com.example.kino.presentation.ui.lists.MoviesListViewModel
-import com.example.kino.presentation.ui.lists.MoviesType
 import com.example.kino.presentation.ui.lists.SharedViewModel
 import com.example.kino.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.kino.presentation.utils.constants.INTENT_KEY
@@ -25,17 +25,34 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var ivBack: ImageView
-    private val recyclerViewAdapter: FavouritesAdapter by lazy {
-        FavouritesAdapter(itemClickListener = this)
-    }
 
     private val moviesListViewModel: MoviesListViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
+    override fun itemClick(position: Int, item: Movie) {
+        val bundle = Bundle()
+        bundle.putInt(INTENT_KEY, item.id)
+
+        val movieDetailedFragment = MovieDetailsFragment()
+        movieDetailedFragment.arguments = bundle
+        parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    override fun addToFavourites(position: Int, item: Movie) {
+        moviesListViewModel.addToFavourites(item)
+        sharedViewModel.setMovie(item)
+    }
+
+    private val recyclerViewAdapter: FavouritesAdapter by lazy {
+        FavouritesAdapter(itemClickListener = this)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
-            if (item.isClicked) recyclerViewAdapter.addItem(item)
+            if (item.isFavourite) recyclerViewAdapter.addItem(item)
             else recyclerViewAdapter.removeItem(item)
         })
     }
@@ -71,22 +88,6 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
 
     private fun setAdapter() {
         recyclerView.adapter = recyclerViewAdapter
-    }
-
-    override fun itemClick(position: Int, item: Movie) {
-        val bundle = Bundle()
-        bundle.putInt(INTENT_KEY, item.id)
-
-        val movieDetailedFragment = MovieDetailsFragment()
-        movieDetailedFragment.arguments = bundle
-        parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    override fun addToFavourites(position: Int, item: Movie) {
-        moviesListViewModel.addToFavourites(item)
-        sharedViewModel.setMovie(item)
     }
 
     private fun getMovies() {

@@ -4,7 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.kino.data.model.movie.LocalMovie
+import com.example.kino.data.model.entities.LocalMovie
+import com.example.kino.data.model.movie.MoviesType
 
 @Dao
 interface MovieDao {
@@ -12,21 +13,24 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(movies: List<LocalMovie>)
 
-    @Query("SELECT * FROM movies ORDER BY voteAverage DESC, voteCount DESC")
+    @Query("SELECT * FROM movies ORDER BY voteAverage DESC")
     fun getMovies(): List<LocalMovie>
 
-    @Query("SELECT * FROM movies WHERE isClicked=1")
+    @Query("SELECT * FROM movies WHERE type = :type")
+    fun getMovies(type: String): List<LocalMovie>
+
+    @Query("SELECT * FROM movies WHERE isFavourite=1")
     fun getFavouriteMovies(): List<LocalMovie>
 
-    @Query("SELECT * FROM movies WHERE id=:id")
-    fun getMovie(id: Int): LocalMovie
-
-    @Query("UPDATE movies SET tagline = :tagline, runtime = :runtime WHERE id = :id")
-    fun updateMovieProperties(tagline: String, runtime: Int, id: Int)
-
-    @Query("UPDATE movies SET isClicked = :isClicked WHERE id = :id")
+    @Query("UPDATE movies SET isFavourite = :isClicked WHERE id = :id")
     fun updateMovieIsCLicked(isClicked: Boolean, id: Int)
 
     @Query("DELETE FROM movies")
     fun deleteAll()
+
+    @Query("DELETE FROM movies WHERE type = :type")
+    fun deleteAll(type: String)
+
+    @Query("DELETE FROM movies WHERE id=:id AND type = :type")
+    fun deleteFromFavourites(id: Int, type: String = MoviesType.FAVOURITES.name)
 }

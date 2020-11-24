@@ -5,7 +5,7 @@
     <string name="username">username</string>
     <string name="password">password</string>
     <string name="session_id">session_id</string>
-    <string name="favourite_movie">Favourite movies</string>
+    <string name="favourite_movie">Favourite Movies</string>
     <string name="duration_time">%1$s min</string>
     <string name="tagline">« %1$s »</string>
     <string name="error_occurred">Error occurred</string>
@@ -36,4 +36,5 @@
     <string name="watch_list">Watch List</string>
     <string name="like">Like</string>
     <string name="all">All</string>
+    <string name="movie_watch_list">Movie Watch List</string>
 </resources>

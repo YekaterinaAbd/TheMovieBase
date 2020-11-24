@@ -14,7 +14,4 @@ class MoviesListsUseCase(
 
     suspend fun getFavouriteMovies(sessionId: String) =
         movieRepository.getFavouriteMovies(API_KEY, sessionId)
-
-    suspend fun searchMovies(query: String?, page: Int) =
-        movieRepository.searchMovies(API_KEY, query, page)
 }

@@ -3,10 +3,7 @@ package com.example.kino.data.module
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.kino.R
-import com.example.kino.data.database.MarkerDao
-import com.example.kino.data.database.MovieDao
-import com.example.kino.data.database.MovieDatabase
-import com.example.kino.data.database.MovieStatusDao
+import com.example.kino.data.database.*
 import org.koin.dsl.module
 
 val storageModule = module {
@@ -14,6 +11,7 @@ val storageModule = module {
     single { getMovieDao(context = get()) }
     single { getMovieStatusDao(context = get()) }
     single { getMarkerDao(context = get()) }
+    single { getSearchHistoryDao(context = get()) }
 }
 
 private fun getMovieDao(context: Context): MovieDao {
@@ -26,6 +24,10 @@ private fun getMovieStatusDao(context: Context): MovieStatusDao {
 
 private fun getMarkerDao(context: Context): MarkerDao {
     return MovieDatabase.getDatabase(context).markerDao()
+}
+
+private fun getSearchHistoryDao(context: Context): SearchHistoryDao {
+    return MovieDatabase.getDatabase(context).searchHistoryDao()
 }
 
 private fun getSharedPreferences(context: Context): SharedPreferences {

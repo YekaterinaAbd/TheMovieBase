@@ -13,9 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
+import com.example.kino.data.mapper.DataSource
+import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.domain.model.Movie
 import com.example.kino.presentation.ui.lists.MoviesListViewModel
-import com.example.kino.presentation.ui.lists.MoviesType
 import com.example.kino.presentation.ui.lists.SharedViewModel
 import com.example.kino.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.kino.presentation.utils.constants.*
@@ -23,7 +24,7 @@ import com.example.kino.presentation.utils.pagination.PaginationScrollListener
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.android.inject
 
-class TopFilmsFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
+class TopFilmsFragment : Fragment() {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var recyclerView: RecyclerView
@@ -34,18 +35,41 @@ class TopFilmsFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
 
     private var movieType: MoviesType = MoviesType.TOP
 
-    private val adapter: TopAdapter by lazy {
-        TopAdapter(itemClickListener = this)
-    }
-
-    private val moviesListViewModel: MoviesListViewModel by inject()
-    private val sharedViewModel: SharedViewModel by activityViewModels()
-
     private var currentPage = PaginationScrollListener.PAGE_START
     private var isLocal = false
     private var isLastPage = false
     private var isLoading = false
     private var itemCount = 0
+
+    private val moviesListViewModel: MoviesListViewModel by inject()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
+    private val itemClickListener = object : TopAdapter.RecyclerViewItemClick {
+        override fun itemClick(position: Int, item: Movie) {
+            logEvent(MOVIE_CLICKED, item)
+
+            val bundle = Bundle()
+            bundle.putInt(INTENT_KEY, item.id)
+
+            val movieDetailedFragment = MovieDetailsFragment()
+            movieDetailedFragment.arguments = bundle
+
+            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
+                .addToBackStack(null)
+                .hide(this@TopFilmsFragment)
+                .commit()
+        }
+
+        override fun addToFavourites(position: Int, item: Movie) {
+            if (!item.isFavourite) logEvent(MOVIE_LIKED, item)
+            moviesListViewModel.addToFavourites(item)
+            sharedViewModel.setMovie(item)
+        }
+    }
+
+    private val adapter: TopAdapter by lazy {
+        TopAdapter(itemClickListener = itemClickListener)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -118,24 +142,6 @@ class TopFilmsFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
         firebaseAnalytics.logEvent(logMessage, bundle)
     }
 
-    override fun itemClick(position: Int, item: Movie) {
-        logEvent(MOVIE_CLICKED, item)
-        val bundle = Bundle()
-        bundle.putInt(INTENT_KEY, item.id)
-        val movieDetailedFragment = MovieDetailsFragment()
-        movieDetailedFragment.arguments = bundle
-        parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-            .addToBackStack(null)
-            .hide(this)
-            .commit()
-    }
-
-    override fun addToFavourites(position: Int, item: Movie) {
-        if (!item.isClicked) logEvent(MOVIE_LIKED, item)
-        moviesListViewModel.addToFavourites(item)
-        sharedViewModel.setMovie(item)
-    }
-
     private fun getMovies(page: Int) {
         moviesListViewModel.getMovies(movieType, page)
         moviesListViewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
@@ -147,8 +153,7 @@ class TopFilmsFragment : Fragment(), TopAdapter.RecyclerViewItemClick {
                     swipeRefreshLayout.isRefreshing = false
                 }
                 is MoviesListViewModel.State.Result -> {
-                    isLocal = result.isLocal
-                    if (result.isLocal) {
+                    if (result.dataSource == DataSource.LOCAL) {
                         adapter.replaceItems(result.moviesList ?: emptyList())
                     } else {
                         adapter.removeLoading()

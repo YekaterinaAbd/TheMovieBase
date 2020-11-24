@@ -1,6 +1,6 @@
 package com.example.kino.domain.repository
 
-import com.example.kino.data.model.Marker
+import com.example.kino.data.model.entities.Marker
 
 interface MarkerRepository {
     fun insertMarkers(markers: List<Marker>)

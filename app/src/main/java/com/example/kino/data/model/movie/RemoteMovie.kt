@@ -13,10 +13,5 @@ data class RemoteMovie(
     @SerializedName("popularity") var popularity: String? = null,
     @SerializedName("overview") var overview: String? = null,
     @SerializedName("genre_ids") var genreIds: ArrayList<Int>? = null
-
-//    var isClicked: Boolean = false,
-//    var genreNames: String = "",
-//    var position: Int = 0,
-
 )
 

@@ -1,24 +1,31 @@
 package com.example.kino.presentation.ui.data_source
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.example.kino.domain.model.Movie
-import com.example.kino.domain.use_case.MoviesListsUseCase
+import com.example.kino.domain.use_case.SearchMoviesUseCase
+import com.example.kino.presentation.model.GenresList
 import com.example.kino.presentation.ui.MovieState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class MoviesDataSource(
-    private val moviesLists: MoviesListsUseCase,
+class SearchDataSource(
     coroutineContext: CoroutineContext,
-    private val query: String? = null
+    private val searchUseCase: SearchMoviesUseCase,
+    private val query: String? = null,
+    private val context: Context
 ) : PageKeyedDataSource<Int, Movie>() {
 
     companion object {
         const val PAGE_SIZE = 20
         private const val FIRST_PAGE = 1
+    }
+
+    init {
+        GenresList.getGenres()
     }
 
     private var _state = MutableLiveData<MovieState>()
@@ -33,7 +40,10 @@ class MoviesDataSource(
         updateState(MovieState.ShowLoading)
         scope.launch {
             try {
-                val response = moviesLists.searchMovies(query, FIRST_PAGE) ?: emptyList()
+                val response = searchUseCase.searchMovies(query, FIRST_PAGE) ?: emptyList()
+                for (movie in response) {
+                    GenresList.setMovieGenres(movie, context)
+                }
                 callback.onResult(response, null, FIRST_PAGE + 1)
             } catch (e: Exception) {
                 updateState(MovieState.Error(e.message))
@@ -50,7 +60,10 @@ class MoviesDataSource(
                 updateState(MovieState.HideLoading)
             }
             try {
-                val response = moviesLists.searchMovies(query, params.key) ?: emptyList()
+                val response = searchUseCase.searchMovies(query, params.key) ?: emptyList()
+                for (movie in response) {
+                    GenresList.setMovieGenres(movie, context)
+                }
                 val key = if (response.isNotEmpty()) params.key + 1 else null
                 callback.onResult(response, key)
             } catch (e: Exception) {

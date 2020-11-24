@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.kino.data.model.Marker
+import com.example.kino.data.model.entities.Marker
 
 @Dao
 interface MarkerDao {

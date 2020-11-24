@@ -1,4 +1,4 @@
-package com.example.kino.data.model
+package com.example.kino.data.model.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
