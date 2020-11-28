@@ -9,6 +9,9 @@ class LocalMoviesUseCase(private val movieRepository: MovieRepository) {
 
     suspend fun insertLocalMovies(movies: List<Movie>) = movieRepository.insertLocalMovies(movies)
 
-    suspend fun updateLocalMovieIsLiked(isLiked: Boolean, id: Int) =
-        movieRepository.updateLocalMovieIsCLicked(isLiked, id)
+    suspend fun updateLocalMovieIsFavourite(isLiked: Boolean, id: Int) =
+        movieRepository.updateLocalMovieIsFavourite(isLiked, id)
+
+    suspend fun updateLocalMovieIsInWatchList(isInWatchlist: Boolean, id: Int) =
+        movieRepository.updateLocalMovieIsInWatchList(isInWatchlist, id)
 }

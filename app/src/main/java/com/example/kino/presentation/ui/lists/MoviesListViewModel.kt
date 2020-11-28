@@ -9,6 +9,7 @@ import androidx.paging.PagedList
 import com.example.kino.data.mapper.DataSource
 import com.example.kino.data.model.movie.FavouriteMovie
 import com.example.kino.data.model.movie.MoviesType
+import com.example.kino.data.model.movie.WatchListMovie
 import com.example.kino.domain.model.Movie
 import com.example.kino.domain.use_case.*
 import com.example.kino.presentation.BaseViewModel
@@ -50,12 +51,13 @@ class MoviesListViewModel(
     fun getMovies(type: MoviesType, page: Int = 1) {
         launch {
             if (page == 1) liveData.value = State.ShowLoading
-            likesUseCase.loadLocalLikes(sessionId)
+            likesUseCase.synchronizeLocalLikes(sessionId)
             when (type) {
                 MoviesType.TOP -> getTopMovies(page)
                 MoviesType.CURRENT -> getCurrentPlaying(page)
                 MoviesType.FAVOURITES -> getFavouriteMovies()
                 MoviesType.UPCOMING -> getUpcomingMovies(page)
+                MoviesType.WATCH_LIST -> getWatchListMovies()
             }
         }
     }
@@ -65,7 +67,7 @@ class MoviesListViewModel(
         if (!movies.first.isNullOrEmpty()) {
             for (movie in movies.first!!) {
                 GenresList.setMovieGenres(movie, context)
-                saveLikeStatus(movie)
+                getMovieStatuses(movie)
             }
         }
         liveData.value = State.HideLoading
@@ -77,7 +79,7 @@ class MoviesListViewModel(
         if (!movies.first.isNullOrEmpty()) {
             for (movie in movies.first!!) {
                 GenresList.setMovieGenres(movie, context)
-                saveLikeStatus(movie)
+                getMovieStatuses(movie)
             }
         }
         liveData.value = State.HideLoading
@@ -89,7 +91,7 @@ class MoviesListViewModel(
         if (!movies.first.isNullOrEmpty()) {
             for (movie in movies.first!!) {
                 GenresList.setMovieGenres(movie, context)
-                saveLikeStatus(movie)
+                getMovieStatuses(movie)
             }
         }
         liveData.value = State.HideLoading
@@ -107,7 +109,19 @@ class MoviesListViewModel(
         }
         liveData.value = State.HideLoading
         liveData.value = State.Result(movies.first)
+    }
 
+    private suspend fun getWatchListMovies() {
+        val movies = moviesListsUseCase.getWatchListMovies(sessionId)
+
+        if (!movies.first.isNullOrEmpty()) {
+            for (movie in movies.first!!) {
+                GenresList.setMovieGenres(movie, context)
+                movie.isInWatchList = true
+            }
+        }
+        liveData.value = State.HideLoading
+        liveData.value = State.Result(movies.first)
     }
 
     fun searchMovies(query: String) {
@@ -127,25 +141,38 @@ class MoviesListViewModel(
         )
     }
 
-    private fun updateLikeStatus(movie: FavouriteMovie) {
+    private fun updateIsFavourite(movie: FavouriteMovie) {
         launch {
-            likesUseCase.updateLikeStatus(movie, sessionId)
+            likesUseCase.updateIsFavourite(movie, sessionId)
+        }
+    }
+
+    private fun updateIsInWatchList(movie: WatchListMovie) {
+        launch {
+            likesUseCase.updateIsInWatchList(movie, sessionId)
         }
     }
 
     fun addToFavourites(item: Movie) {
         item.isFavourite = !item.isFavourite
         val selectedMovie = FavouriteMovie(MEDIA_TYPE, item.id, item.isFavourite)
-        updateLikeStatus(selectedMovie)
+        updateIsFavourite(selectedMovie)
     }
 
-    private fun saveLikeStatus(movie: Movie) {
+    fun addToWatchlist(item: Movie) {
+        item.isInWatchList = !item.isInWatchList
+        val selectedMovie = WatchListMovie(MEDIA_TYPE, item.id, item.isInWatchList)
+        updateIsInWatchList(selectedMovie)
+    }
+
+    private fun getMovieStatuses(movie: Movie) {
         launch {
             try {
-                val movieStatus = likesUseCase.getRemoteMovieLike(movie.id, sessionId)
+                val movieStatus = likesUseCase.getRemoteMovieStatuses(movie.id, sessionId)
                 if (movieStatus != null) {
-                    movie.isFavourite = movieStatus
-                    localMoviesUseCase.updateLocalMovieIsLiked(movie.isFavourite, movie.id)
+                    movie.isFavourite = movieStatus.favourite
+                    movie.isInWatchList = movieStatus.watchlist
+                    localMoviesUseCase.updateLocalMovieIsFavourite(movie.isFavourite, movie.id)
                     liveData.value = State.Update
                 }
             } catch (e: Exception) {

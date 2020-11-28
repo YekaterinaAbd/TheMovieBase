@@ -8,5 +8,8 @@ import com.google.gson.annotations.SerializedName
 data class MovieStatus(
     @PrimaryKey
     @SerializedName("id") val movieId: Int,
-    @SerializedName("favorite") var selectedStatus: Boolean
+    @SerializedName("favorite") var favourite: Boolean,
+    @SerializedName("watchlist") var watchlist: Boolean,
+    var type: String
 )
+

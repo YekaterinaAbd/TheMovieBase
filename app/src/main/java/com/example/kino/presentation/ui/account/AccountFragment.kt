@@ -17,6 +17,7 @@ import com.example.kino.presentation.ui.MainActivity
 import com.example.kino.presentation.ui.lists.favouries.FavouritesFragment
 import com.example.kino.presentation.ui.markers.GoogleMapsActivity
 import com.example.kino.presentation.ui.sign_in.SignInActivity
+import com.example.kino.presentation.utils.constants.MOVIE_TYPE
 import org.koin.android.ext.android.inject
 
 
@@ -46,14 +47,14 @@ class AccountFragment : Fragment() {
         (activity as MainActivity).setSupportActionBar(username)
         (activity as MainActivity).supportActionBar?.title = accountViewModel.username.value
         viewFavourites = view.findViewById(R.id.btnFavourites)
-        viewWatchList = view.findViewById(R.id.btnWatchList)
+        viewWatchList = view.findViewById(R.id.btnLike)
 
         viewFavourites.setOnClickListener {
             openListFragment(MoviesType.FAVOURITES)
         }
 
         viewWatchList.setOnClickListener {
-
+            openListFragment(MoviesType.WATCH_LIST)
         }
 
         val viewCinemaMap = view.findViewById<CardView>(R.id.btnCinemaMap)
@@ -69,7 +70,7 @@ class AccountFragment : Fragment() {
 
     private fun openListFragment(type: MoviesType) {
         val bundle = Bundle()
-        bundle.putSerializable("type", type)
+        bundle.putSerializable(MOVIE_TYPE, type)
 
         val movieListsFragment = FavouritesFragment()
         movieListsFragment.arguments = bundle

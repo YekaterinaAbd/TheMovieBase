@@ -26,7 +26,7 @@ import com.example.kino.presentation.ui.lists.SharedViewModel
 import com.example.kino.presentation.ui.lists.top.HorizontalFilmsAdapter
 import com.example.kino.presentation.utils.FullScreenChromeClient
 import com.example.kino.presentation.utils.constants.INTENT_KEY
-import com.example.kino.presentation.utils.constants.POSTER_INTENT_KEY
+import com.example.kino.presentation.utils.constants.POSTER_PATH
 import com.example.kino.presentation.utils.widgets.OverviewView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -45,6 +45,7 @@ class MovieDetailsFragment : Fragment() {
     private lateinit var rating: TextView
     private lateinit var votesCount: TextView
     private lateinit var like: ImageView
+    private lateinit var watchlist: ImageView
     private lateinit var webView: WebView
     private lateinit var genresChipGroup: ChipGroup
     private lateinit var trailerLayout: LinearLayout
@@ -117,6 +118,7 @@ class MovieDetailsFragment : Fragment() {
         rating = findViewById(R.id.rating)
         votesCount = findViewById(R.id.votesCount)
         like = findViewById(R.id.btnLike)
+        watchlist = findViewById(R.id.btnWatchList)
         //requireActivity().themeModeImage.visibility = View.GONE
         webView = findViewById(R.id.webView)
         genresChipGroup = findViewById(R.id.genresChipGroup)
@@ -221,28 +223,50 @@ class MovieDetailsFragment : Fragment() {
             tagline.text = getString(R.string.tagline, tagLineText)
         }
 
-        if (movie.isClicked) {
-            like.setImageResource(R.drawable.ic_turned_in_black_24dp)
-        } else {
-            like.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
-        }
+        if (movie.favourite) like.setImageResource(R.drawable.ic_favourite)
+        else like.setImageResource(R.drawable.ic_favourite_border)
+
+        if (movie.watchlist) watchlist.setImageResource(R.drawable.ic_watchlist_filled)
+        else watchlist.setImageResource(R.drawable.ic_watchlist)
 
         like.setOnClickListener {
-            if (movie.isClicked) {
-                movie.isClicked = false
-                like.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
+            if (movie.favourite) {
+                movie.favourite = false
+                like.setImageResource(R.drawable.ic_favourite_border)
             } else {
-                movie.isClicked = true
-                like.setImageResource(R.drawable.ic_turned_in_black_24dp)
+                movie.favourite = true
+                like.setImageResource(R.drawable.ic_favourite)
             }
-            movie.id?.let { it1 -> movieDetailsViewModel.updateLikeStatus(it1, movie.isClicked) }
+            movie.id?.let { it1 ->
+                movieDetailsViewModel.updateFavouriteStatus(
+                    it1,
+                    movie.favourite
+                )
+            }
+            //sharedViewModel.setMovie(movie)
+        }
+
+        watchlist.setOnClickListener {
+            if (movie.watchlist) {
+                movie.watchlist = false
+                watchlist.setImageResource(R.drawable.ic_watchlist)
+            } else {
+                movie.watchlist = true
+                watchlist.setImageResource(R.drawable.ic_watchlist_filled)
+            }
+            movie.id?.let { it1 ->
+                movieDetailsViewModel.updateWatchListStatus(
+                    it1,
+                    movie.watchlist
+                )
+            }
             //sharedViewModel.setMovie(movie)
         }
 
         poster.setOnClickListener {
             if (!movie.posterPath.isNullOrEmpty()) {
                 val bundle = Bundle()
-                bundle.putString(POSTER_INTENT_KEY, movie.posterPath)
+                bundle.putString(POSTER_PATH, movie.posterPath)
 
                 val fragmentFullScreenPoster = FullScreenPosterFragment()
                 fragmentFullScreenPoster.arguments = bundle

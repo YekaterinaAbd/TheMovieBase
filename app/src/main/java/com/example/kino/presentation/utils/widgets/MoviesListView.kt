@@ -14,6 +14,7 @@ import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.domain.model.Movie
 import com.example.kino.presentation.ui.lists.top.HorizontalFilmsAdapter
 import com.example.kino.presentation.ui.lists.top.TopFilmsFragment
+import com.example.kino.presentation.utils.constants.MOVIE_TYPE
 
 class MoviesListView : LinearLayout {
 
@@ -59,7 +60,7 @@ class MoviesListView : LinearLayout {
 
     private fun openListFragment(type: MoviesType, fm: FragmentManager) {
         val bundle = Bundle()
-        bundle.putSerializable("type", type)
+        bundle.putSerializable(MOVIE_TYPE, type)
 
         val movieListsFragment = TopFilmsFragment()
         movieListsFragment.arguments = bundle

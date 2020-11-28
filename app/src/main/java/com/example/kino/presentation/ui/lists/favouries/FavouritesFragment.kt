@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -18,35 +19,48 @@ import com.example.kino.presentation.ui.lists.MoviesListViewModel
 import com.example.kino.presentation.ui.lists.SharedViewModel
 import com.example.kino.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.kino.presentation.utils.constants.INTENT_KEY
+import com.example.kino.presentation.utils.constants.MOVIE_TYPE
 import org.koin.android.ext.android.inject
 
-class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
+class FavouritesFragment : Fragment() {
+
+    private var movieType = MoviesType.FAVOURITES
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var ivBack: ImageView
+    private lateinit var tvTitle: TextView
 
     private val moviesListViewModel: MoviesListViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    override fun itemClick(position: Int, item: Movie) {
-        val bundle = Bundle()
-        bundle.putInt(INTENT_KEY, item.id)
+    private val itemClickListener = object : ItemClickListener {
+        override fun itemClick(item: Movie) {
+            val bundle = Bundle()
+            bundle.putInt(INTENT_KEY, item.id)
 
-        val movieDetailedFragment = MovieDetailsFragment()
-        movieDetailedFragment.arguments = bundle
-        parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-            .addToBackStack(null)
-            .commit()
-    }
+            val movieDetailedFragment = MovieDetailsFragment()
+            movieDetailedFragment.arguments = bundle
+            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
+                .addToBackStack(null)
+                .commit()
+        }
 
-    override fun addToFavourites(position: Int, item: Movie) {
-        moviesListViewModel.addToFavourites(item)
-        sharedViewModel.setMovie(item)
+        override fun addToFavourites(item: Movie) {
+            moviesListViewModel.addToFavourites(item)
+            sharedViewModel.setMovie(item)
+        }
+
+        override fun addToWatchlist(item: Movie) {
+            moviesListViewModel.addToWatchlist(item)
+        }
     }
 
     private val recyclerViewAdapter: FavouritesAdapter by lazy {
-        FavouritesAdapter(itemClickListener = this)
+        FavouritesAdapter(
+            itemClickListener = itemClickListener,
+            isWatchlist = movieType == MoviesType.WATCH_LIST
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -60,6 +74,10 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        val bundle = this.arguments
+        if (bundle != null) {
+            movieType = bundle.getSerializable(MOVIE_TYPE) as MoviesType
+        }
         return inflater.inflate(R.layout.fragment_favourites, container, false)
     }
 
@@ -84,6 +102,9 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
         ivBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
+        tvTitle = view.findViewById(R.id.tvTitle)
+        tvTitle.text = MoviesType.typeToString(movieType)
     }
 
     private fun setAdapter() {
@@ -91,7 +112,7 @@ class FavouritesFragment : Fragment(), FavouritesAdapter.RecyclerViewItemClick {
     }
 
     private fun getMovies() {
-        moviesListViewModel.getMovies(MoviesType.FAVOURITES, 1)
+        moviesListViewModel.getMovies(movieType, 1)
         moviesListViewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {

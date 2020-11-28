@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName
 data class FavouriteMovie(
     @SerializedName("media_type") val mediaType: String = "movie",
     @SerializedName("media_id") val movieId: Int,
-    @SerializedName("favorite") var selectedStatus: Boolean
+    @SerializedName("favorite") var favourite: Boolean
 )
 
 data class WatchListMovie(
     @SerializedName("media_type") val mediaType: String = "movie",
     @SerializedName("media_id") val movieId: Int,
-    @SerializedName("watchlist") var selectedStatus: Boolean
+    @SerializedName("watchlist") var watchlist: Boolean
 )

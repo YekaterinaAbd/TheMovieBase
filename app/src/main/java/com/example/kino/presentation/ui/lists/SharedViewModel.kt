@@ -2,7 +2,6 @@ package com.example.kino.presentation.ui.lists
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.kino.data.model.movie.RemoteMovie
 import com.example.kino.domain.model.Movie
 
 class SharedViewModel : ViewModel() {
@@ -11,5 +10,4 @@ class SharedViewModel : ViewModel() {
     fun setMovie(movie: Movie) {
         liked.value = movie
     }
-
 }

@@ -16,7 +16,6 @@ import com.example.kino.presentation.utils.constants.SEARCH_PAGE_CLICKED
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 
-
 class MainActivity : AppCompatActivity() {
 
     // private lateinit var themeModeImage: ImageView

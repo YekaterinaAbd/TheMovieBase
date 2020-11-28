@@ -44,7 +44,7 @@ class TopFilmsFragment : Fragment() {
     private val moviesListViewModel: MoviesListViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    private val itemClickListener = object : TopAdapter.RecyclerViewItemClick {
+    private val itemClickListener = object : ItemClickListener {
         override fun itemClick(position: Int, item: Movie) {
             logEvent(MOVIE_CLICKED, item)
 
@@ -65,6 +65,11 @@ class TopFilmsFragment : Fragment() {
             moviesListViewModel.addToFavourites(item)
             sharedViewModel.setMovie(item)
         }
+
+        override fun addToWatchlist(position: Int, item: Movie) {
+            moviesListViewModel.addToWatchlist(item)
+            //sharedViewModel.setMovie(item)
+        }
     }
 
     private val adapter: TopAdapter by lazy {
@@ -77,7 +82,7 @@ class TopFilmsFragment : Fragment() {
         val bundle = this.arguments
 
         if (bundle != null) {
-            movieType = bundle.get("type") as MoviesType
+            movieType = bundle.get(MOVIE_TYPE) as MoviesType
         }
         return inflater.inflate(R.layout.fragment_films, container, false)
     }

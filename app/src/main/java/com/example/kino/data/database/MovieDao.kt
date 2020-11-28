@@ -22,8 +22,14 @@ interface MovieDao {
     @Query("SELECT * FROM movies WHERE isFavourite=1")
     fun getFavouriteMovies(): List<LocalMovie>
 
-    @Query("UPDATE movies SET isFavourite = :isClicked WHERE id = :id")
-    fun updateMovieIsCLicked(isClicked: Boolean, id: Int)
+    @Query("SELECT * FROM movies WHERE isInWatchList=1")
+    fun getMoviesInWatchList(): List<LocalMovie>
+
+    @Query("UPDATE movies SET isFavourite = :isFavourite WHERE id = :id")
+    fun updateMovieIsFavourite(isFavourite: Boolean, id: Int)
+
+    @Query("UPDATE movies SET isInWatchList = :isInWatchList WHERE id = :id")
+    fun updateMovieIsInWatchList(isInWatchList: Boolean, id: Int)
 
     @Query("DELETE FROM movies")
     fun deleteAll()
@@ -33,4 +39,7 @@ interface MovieDao {
 
     @Query("DELETE FROM movies WHERE id=:id AND type = :type")
     fun deleteFromFavourites(id: Int, type: String = MoviesType.FAVOURITES.name)
+
+    @Query("DELETE FROM movies WHERE id=:id AND type = :type")
+    fun deleteFromWatchList(id: Int, type: String = MoviesType.WATCH_LIST.name)
 }

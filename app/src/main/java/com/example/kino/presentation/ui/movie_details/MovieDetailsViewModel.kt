@@ -2,10 +2,7 @@ package com.example.kino.presentation.ui.movie_details
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import com.example.kino.data.model.movie.FavouriteMovie
-import com.example.kino.data.model.movie.KeyWord
-import com.example.kino.data.model.movie.RemoteMovieDetails
-import com.example.kino.data.model.movie.Video
+import com.example.kino.data.model.movie.*
 import com.example.kino.data.network.API_KEY
 import com.example.kino.domain.model.Movie
 import com.example.kino.domain.repository.MovieRepository
@@ -29,28 +26,19 @@ class MovieDetailsViewModel(
             val movie = withContext(Dispatchers.IO) {
                 try {
                     val movieDetails = movieRepository.getRemoteMovie(id, API_KEY)
-                    val movieState = movieRepository.getRemoteMovieStates(
-                        id,
-                        API_KEY, sessionId
+                    val movieState = movieRepository.getRemoteMovieStatuses(
+                        id, API_KEY, sessionId
                     )
                     if (movieDetails != null) {
                         if (movieState != null) {
-                            movieDetails.isClicked = movieState
+                            movieDetails.favourite = movieState.favourite
+                            movieDetails.watchlist = movieState.watchlist
                         }
-                        // setGenres(movieDetails)
-//                        movieDetails.tagLine?.let {
-//                            movieDetails.runtime?.let { it1 ->
-//                                movieDetails.id?.let { it2 ->
-//                                    movieRepository.updateLocalMovieProperties(it, it1, it2)
-//                                }
-//                            }
-//                        }
                     }
                     return@withContext movieDetails
 
                 } catch (e: Exception) {
                     RemoteMovieDetails()
-                    //movieRepository.getLocalMovie(id)
                 }
             }
             liveData.value = State.HideLoading
@@ -86,20 +74,19 @@ class MovieDetailsViewModel(
         }
     }
 
-    fun updateLikeStatus(id: Int, isClicked: Boolean) {
+    fun updateFavouriteStatus(id: Int, isClicked: Boolean) {
         val movie = FavouriteMovie(MEDIA_TYPE, id, isClicked)
         launch {
-            movieRepository.updateLikeStatus(movie, sessionId)
+            movieRepository.updateIsFavourite(movie, sessionId)
         }
     }
 
-//    private fun setGenres(movie: RemoteMovieDetails) {
-//        movie.genreNames = ""
-//        for (i in movie.genres.indices) {
-//            if (i == 0) movie.genreNames += movie.genres[i].genre.toLowerCase(Locale.ROOT)
-//            else movie.genreNames += ", " + movie.genres[i].genre.toLowerCase(Locale.ROOT)
-//        }
-//    }
+    fun updateWatchListStatus(id: Int, isClicked: Boolean) {
+        val movie = WatchListMovie(MEDIA_TYPE, id, isClicked)
+        launch {
+            movieRepository.updateIsInWatchList(movie, sessionId)
+        }
+    }
 
     sealed class State {
         object HideLoading : State()

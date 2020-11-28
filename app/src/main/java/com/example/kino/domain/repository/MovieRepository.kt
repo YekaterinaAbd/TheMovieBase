@@ -23,11 +23,14 @@ interface MovieRepository {
     suspend fun getUpcomingMovies(apiKey: String, page: Int): Pair<List<Movie>?, DataSource>
     suspend fun searchMovies(apiKey: String, query: String?, page: Int): List<Movie>?
 
-    suspend fun updateLikeStatus(movie: FavouriteMovie, sessionId: String): Boolean
-    suspend fun loadLocalLikes(sessionId: String)
+    suspend fun updateIsFavourite(movie: FavouriteMovie, sessionId: String): Boolean
+    suspend fun synchronizeLocalStatuses(sessionId: String)
+
+    suspend fun updateIsInWatchList(movie: WatchListMovie, sessionId: String): Boolean
 
     suspend fun insertLocalMovies(movies: List<Movie>)
-    suspend fun updateLocalMovieIsCLicked(isClicked: Boolean, id: Int)
+    suspend fun updateLocalMovieIsFavourite(isFavourite: Boolean, id: Int)
+    suspend fun updateLocalMovieIsInWatchList(isInWatchList: Boolean, id: Int)
 
     suspend fun deleteLocalMovies()
 
@@ -43,8 +46,13 @@ interface MovieRepository {
     suspend fun getSimilarMovies(id: Int, apiKey: String): List<Movie>?
     suspend fun getKeywords(id: Int, apiKey: String): List<KeyWord>?
 
-    suspend fun getRemoteMovieList(apiKey: String, page: Int): List<Movie>?
-    suspend fun getRemoteFavouriteMovies(apiKey: String, sessionId: String): List<Movie>?
-    suspend fun getRemoteMovieStates(movieId: Int, apiKey: String, sessionId: String): Boolean?
+    suspend fun getRemoteMovieStatuses(
+        movieId: Int,
+        apiKey: String,
+        sessionId: String
+    ): MovieStatus?
+
     suspend fun updateRemoteFavourites(apiKey: String, sessionId: String, fav: FavouriteMovie)
+
+    suspend fun updateRemoteWatchList(apiKey: String, sessionId: String, fav: WatchListMovie)
 }

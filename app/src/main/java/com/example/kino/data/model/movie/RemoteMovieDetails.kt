@@ -21,7 +21,8 @@ data class RemoteMovieDetails(
     @SerializedName("genres") var genres: List<Genre> = emptyList(),
 
     var genreNames: String = "",
-    var isClicked: Boolean = false
+    var favourite: Boolean = false,
+    var watchlist: Boolean = false
 
 ) : Serializable
 

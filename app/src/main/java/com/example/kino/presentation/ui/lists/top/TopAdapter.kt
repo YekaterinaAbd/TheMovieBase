@@ -12,8 +12,14 @@ import com.example.kino.data.network.IMAGE_URL
 import com.example.kino.domain.model.Movie
 import com.squareup.picasso.Picasso
 
+interface ItemClickListener {
+    fun itemClick(position: Int, item: Movie)
+    fun addToFavourites(position: Int, item: Movie)
+    fun addToWatchlist(position: Int, item: Movie)
+}
+
 class TopAdapter(
-    private val itemClickListener: RecyclerViewItemClick? = null,
+    private val itemClickListener: ItemClickListener? = null,
     private val searchFragment: Boolean = false
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -104,6 +110,15 @@ class TopAdapter(
 
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val tvTitle: TextView = view.findViewById(R.id.tvTitle)
+        private val tvReleaseDate: TextView = view.findViewById(R.id.tvReleaseDate)
+        private val tvGenres: TextView = view.findViewById(R.id.tvGenres)
+        private val poster: ImageView = view.findViewById(R.id.ivPoster)
+        private val tvRating: TextView = view.findViewById(R.id.tvRating)
+        private val number: TextView = view.findViewById(R.id.number)
+        private val addToFav: ImageView = view.findViewById(R.id.ivLike)
+        private val addToWatchlist: ImageView = view.findViewById(R.id.ivWatchlist)
+
         private fun setMargin() {
             val sizeInDP = 16
 
@@ -120,22 +135,16 @@ class TopAdapter(
         fun bind(movie: Movie?) {
 
             if (adapterPosition == 0 && !searchFragment) setMargin()
-
-            val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
-            val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
-            val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
-            val poster = view.findViewById<ImageView>(R.id.ivPoster)
-            val tvVotesCount = view.findViewById<TextView>(R.id.tvVotesCount)
-            val tvRating = view.findViewById<TextView>(R.id.tvRating)
-            val number = view.findViewById<TextView>(R.id.number)
-            val addToFav = view.findViewById<ImageView>(R.id.tvAddToFav)
+            addToFav.visibility = View.VISIBLE
+            addToWatchlist.visibility = View.VISIBLE
 
             if (movie != null) {
-                if (movie.isFavourite) {
-                    addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
-                } else {
-                    addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
-                }
+
+                if (movie.isFavourite) addToFav.setImageResource(R.drawable.ic_favourite)
+                else addToFav.setImageResource(R.drawable.ic_favourite_border)
+
+                if (movie.isInWatchList) addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
+                else addToWatchlist.setImageResource(R.drawable.ic_watchlist)
 
                 if (movie.position == 0) {
                     movie.position = moviePosition
@@ -145,7 +154,6 @@ class TopAdapter(
                 tvTitle.text = movie.title
                 if (!movie.releaseDate.isNullOrEmpty())
                     tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
-                tvVotesCount.text = movie.voteCount.toString()
                 tvRating.text = movie.voteAverage.toString()
                 tvGenres.text = movie.genreNames
 
@@ -162,20 +170,18 @@ class TopAdapter(
 
                 addToFav.setOnClickListener {
                     itemClickListener?.addToFavourites(adapterPosition, movie)
-                    if (movie.isFavourite) {
-                        addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
-                    } else {
-                        addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
-                    }
+                    if (movie.isFavourite) addToFav.setImageResource(R.drawable.ic_favourite)
+                    else addToFav.setImageResource(R.drawable.ic_favourite_border)
+                }
+
+                addToWatchlist.setOnClickListener {
+                    itemClickListener?.addToWatchlist(adapterPosition, movie)
+                    if (movie.isInWatchList) addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
+                    else addToWatchlist.setImageResource(R.drawable.ic_watchlist)
                 }
             }
         }
     }
 
     class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
-
-    interface RecyclerViewItemClick {
-        fun itemClick(position: Int, item: Movie)
-        fun addToFavourites(position: Int, item: Movie)
-    }
 }

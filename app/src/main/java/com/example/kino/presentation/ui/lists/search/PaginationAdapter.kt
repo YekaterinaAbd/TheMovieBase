@@ -87,10 +87,9 @@ class PaginationAdapter(
             val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
             val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
             val poster = view.findViewById<ImageView>(R.id.ivPoster)
-            val tvVotesCount = view.findViewById<TextView>(R.id.tvVotesCount)
             val tvRating = view.findViewById<TextView>(R.id.tvRating)
             val number = view.findViewById<TextView>(R.id.number)
-            val addToFav = view.findViewById<ImageView>(R.id.tvAddToFav)
+            val addToFav = view.findViewById<ImageView>(R.id.ivWatchlist)
 
             addToFav.visibility = View.GONE
 
@@ -104,7 +103,6 @@ class PaginationAdapter(
                 tvTitle.text = movie.title
                 if (!movie.releaseDate.isNullOrEmpty())
                     tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
-                tvVotesCount.text = movie.voteCount.toString()
                 tvRating.text = movie.voteAverage.toString()
                 tvGenres.text = movie.genreNames
 

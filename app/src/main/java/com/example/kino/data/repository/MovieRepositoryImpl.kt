@@ -139,34 +139,61 @@ class MovieRepositoryImpl(
         }
     }
 
-    override suspend fun updateLikeStatus(movie: FavouriteMovie, sessionId: String): Boolean {
+    override suspend fun updateIsFavourite(movie: FavouriteMovie, sessionId: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 updateRemoteFavourites(API_KEY, sessionId, movie)
-                updateLocalMovieIsCLicked(movie.selectedStatus, movie.movieId)
+                updateLocalMovieIsFavourite(movie.favourite, movie.movieId)
                 return@withContext true
 
             } catch (e: Exception) {
-                updateLocalMovieIsCLicked(movie.selectedStatus, movie.movieId)
+                updateLocalMovieIsFavourite(movie.favourite, movie.movieId)
                 insertLocalMovieStatus(
-                    MovieStatus(movie.movieId, movie.selectedStatus)
+                    MovieStatus(movie.movieId, movie.favourite, false, MoviesType.FAVOURITES.name)
                 )
-                if (!movie.selectedStatus) movieDao?.deleteFromFavourites(movie.movieId)
+                if (!movie.favourite) movieDao?.deleteFromFavourites(movie.movieId)
                 return@withContext false
             }
         }
     }
 
-    override suspend fun loadLocalLikes(sessionId: String) {
+    override suspend fun updateIsInWatchList(movie: WatchListMovie, sessionId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                updateRemoteWatchList(API_KEY, sessionId, movie)
+                updateLocalMovieIsInWatchList(movie.watchlist, movie.movieId)
+                return@withContext true
+
+            } catch (e: Exception) {
+                updateLocalMovieIsInWatchList(movie.watchlist, movie.movieId)
+                insertLocalMovieStatus(
+                    MovieStatus(movie.movieId, false, movie.watchlist, MoviesType.WATCH_LIST.name)
+                )
+                if (!movie.watchlist) movieDao?.deleteFromWatchList(movie.movieId)
+                return@withContext false
+            }
+        }
+    }
+
+    override suspend fun synchronizeLocalStatuses(sessionId: String) {
         withContext(Dispatchers.IO) {
             val moviesToUpdate = movieStatusDao?.getMovieStatuses()
+            var favouriteUpdated = false
+            var watchListUpdated = false
             if (!moviesToUpdate.isNullOrEmpty()) {
                 for (movie in moviesToUpdate) {
-                    val updated = updateLikeStatus(
-                        FavouriteMovie(MEDIA_TYPE, movie.movieId, movie.selectedStatus),
-                        sessionId
+                    if (movie.type == MoviesType.FAVOURITES.name) {
+                        favouriteUpdated = updateIsFavourite(
+                            FavouriteMovie(MEDIA_TYPE, movie.movieId, movie.favourite), sessionId
+                        )
+                    } else {
+                        watchListUpdated = updateIsInWatchList(
+                            WatchListMovie(MEDIA_TYPE, movie.movieId, movie.watchlist), sessionId
+                        )
+                    }
+                    if (favouriteUpdated && watchListUpdated) deleteLocalMovieStatus(
+                        movie.movieId
                     )
-                    if (updated) deleteLocalMovieStatus(movie.movieId)
                 }
             }
         }
@@ -184,10 +211,17 @@ class MovieRepositoryImpl(
         }
     }
 
-    override suspend fun updateLocalMovieIsCLicked(isClicked: Boolean, id: Int) {
+    override suspend fun updateLocalMovieIsFavourite(isFavourite: Boolean, id: Int) {
         withContext(Dispatchers.IO) {
-            movieDao?.updateMovieIsCLicked(isClicked, id)
-            if (!isClicked) movieDao?.deleteFromFavourites(id)
+            movieDao?.updateMovieIsFavourite(isFavourite, id)
+            if (!isFavourite) movieDao?.deleteFromFavourites(id)
+        }
+    }
+
+    override suspend fun updateLocalMovieIsInWatchList(isInWatchList: Boolean, id: Int) {
+        withContext(Dispatchers.IO) {
+            movieDao?.updateMovieIsInWatchList(isInWatchList, id)
+            if (!isInWatchList) movieDao?.deleteFromWatchList(id)
         }
     }
 
@@ -255,18 +289,6 @@ class MovieRepositoryImpl(
         return service.getMovieVideos(id, apiKey).body()?.results?.get(0)
     }
 
-    override suspend fun getRemoteMovieList(apiKey: String, page: Int): List<Movie>? {
-        return service.getTopMovies(apiKey, page)
-            .body()?.movieList?.map { remoteMovieMapper.from(it) }
-    }
-
-    override suspend fun getRemoteFavouriteMovies(
-        apiKey: String, sessionId: String
-    ): List<Movie>? {
-        return service.getFavouriteMovies(apiKey, sessionId)
-            .body()?.movieList?.map { remoteMovieMapper.from(it) }
-    }
-
     override suspend fun updateRemoteFavourites(
         apiKey: String,
         sessionId: String,
@@ -275,12 +297,20 @@ class MovieRepositoryImpl(
         service.markFavourite(apiKey, sessionId, fav)
     }
 
-    override suspend fun getRemoteMovieStates(
+    override suspend fun updateRemoteWatchList(
+        apiKey: String,
+        sessionId: String,
+        fav: WatchListMovie
+    ) {
+        service.markWatchList(apiKey, sessionId, fav)
+    }
+
+    override suspend fun getRemoteMovieStatuses(
         movieId: Int, apiKey: String, sessionId: String
-    ): Boolean? = withContext(Dispatchers.IO) {
+    ): MovieStatus? = withContext(Dispatchers.IO) {
         try {
             val response = service.getMovieStates(movieId, apiKey, sessionId)
-            if (response.isSuccessful) return@withContext response.body()?.selectedStatus
+            if (response.isSuccessful) return@withContext response.body()
             else return@withContext null
         } catch (e: Exception) {
             return@withContext null

@@ -55,7 +55,7 @@
         </FrameLayout>
 
         <ImageView
-            android:id="@+id/btnLike"
+            android:id="@+id/btnWatchList"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginTop="15dp"
@@ -63,17 +63,17 @@
             android:contentDescription="@string/like"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_turned_in_not_black_24dp" />
+            app:srcCompat="@drawable/ic_watchlist" />
 
         <ImageView
-            android:id="@+id/btnWatchList"
+            android:id="@+id/btnLike"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginEnd="8dp"
             android:contentDescription="@string/watch_list"
-            app:layout_constraintBottom_toBottomOf="@+id/btnLike"
-            app:layout_constraintEnd_toStartOf="@+id/btnLike"
-            app:srcCompat="@drawable/favourite_border" />
+            app:layout_constraintBottom_toBottomOf="@+id/btnWatchList"
+            app:layout_constraintEnd_toStartOf="@+id/btnWatchList"
+            app:srcCompat="@drawable/ic_favourite_border" />
 
         <ImageView
             android:id="@+id/ivBack"

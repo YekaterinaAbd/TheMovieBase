@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.example.kino.R
 import com.example.kino.data.network.ORIGINAL_IMAGE_URL
-import com.example.kino.presentation.utils.constants.POSTER_INTENT_KEY
+import com.example.kino.presentation.utils.constants.POSTER_PATH
 import com.squareup.picasso.Picasso
 
 class FullScreenPosterFragment : Fragment() {
@@ -27,8 +27,8 @@ class FullScreenPosterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bundle = this.arguments
-        if (bundle?.get(POSTER_INTENT_KEY) != null) {
-            posterPath = bundle.get(POSTER_INTENT_KEY) as String?
+        if (bundle?.get(POSTER_PATH) != null) {
+            posterPath = bundle.get(POSTER_PATH) as String?
         }
         bindViews(view)
     }
