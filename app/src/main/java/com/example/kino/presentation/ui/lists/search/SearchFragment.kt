@@ -34,7 +34,7 @@ class SearchFragment : Fragment() {
     private val searchViewModel: SearchViewModel by inject()
     private val moviesViewModel: MoviesListViewModel by inject()
 
-    private val itemClickListener = object : PaginationAdapter.RecyclerViewItemClick {
+    private val itemClickListener = object : PaginationAdapter.ItemClickListener {
         override fun itemClick(position: Int, item: Movie) {
             val bundle = Bundle()
             bundle.putInt(INTENT_KEY, item.id)
@@ -44,10 +44,6 @@ class SearchFragment : Fragment() {
 
             parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
                 .addToBackStack(null).commit()
-        }
-
-        override fun addToFavourites(position: Int, item: Movie) {
-            moviesViewModel.addToFavourites(item)
         }
     }
 
@@ -98,12 +94,14 @@ class SearchFragment : Fragment() {
             adapter.submitList(null)
             searchHistoryRecyclerView.visibility = View.VISIBLE
             search.setQuery("", false)
+            query = null
             search.clearFocus()
         }
 
         swipeRefreshLayout.setOnRefreshListener {
             adapter.submitList(null)
-            query?.let { searchMovies(it) }
+            if (!query.isNullOrEmpty())
+                query?.let { searchMovies(it) }
             swipeRefreshLayout.isRefreshing = false
         }
 

@@ -62,4 +62,9 @@
         <item name="minHeight">48dp</item>
     </style>
 
+    <style name="BottomNavigationViewTextStyle">
+        <item name="android:textSize">10sp</item>
+        <item name="fontFamily">@font/quicksand_semi_bold</item>
+    </style>
+
 </resources>

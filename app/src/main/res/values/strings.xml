@@ -7,7 +7,7 @@
     <string name="session_id">session_id</string>
     <string name="favourite_movie">Favourite Movies</string>
     <string name="duration_time">%1$s min</string>
-    <string name="tagline">« %1$s »</string>
+    <string name="tagline">«%1$s»</string>
     <string name="error_occurred">Error occurred</string>
     <string name="internet_error">Internet error</string>
     <string name="wrong_data">Wrong data</string>

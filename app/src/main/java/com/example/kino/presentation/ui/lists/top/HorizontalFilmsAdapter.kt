@@ -1,6 +1,5 @@
 package com.example.kino.presentation.ui.lists.top
 
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.data.network.IMAGE_URL
 import com.example.kino.domain.model.Movie
+import com.example.kino.presentation.utils.Margin
+import com.example.kino.presentation.utils.Side
 import com.squareup.picasso.Picasso
 
 class HorizontalFilmsAdapter(
@@ -48,32 +49,17 @@ class HorizontalFilmsAdapter(
 
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-        private fun setMargin() {
-            val sizeInDP = 16
-
-            val marginInDp = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, sizeInDP.toFloat(), itemView.context.resources
-                    .displayMetrics
-            ).toInt()
-
-            val params: ViewGroup.MarginLayoutParams =
-                view.layoutParams as ViewGroup.MarginLayoutParams
-            params.leftMargin = marginInDp
-        }
-
         fun bind(movie: Movie?) {
 
             val view = view.findViewById<ConstraintLayout>(R.id.layout)
             val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
-            //val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
             val ivPoster = view.findViewById<ImageView>(R.id.ivPoster)
 
             if (movie != null) {
 
-                if (adapterPosition == 0) setMargin()
+                if (adapterPosition == 0) Margin.setMargin(16, itemView.context, view, Side.LEFT)
 
                 tvTitle.text = movie.title
-                //tvReleaseDate.text = movie.releaseDate
 
                 Picasso.get()
                     .load(IMAGE_URL + movie.posterPath)

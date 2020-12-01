@@ -45,7 +45,7 @@ class TopFilmsFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val itemClickListener = object : ItemClickListener {
-        override fun itemClick(position: Int, item: Movie) {
+        override fun itemClick(item: Movie) {
             logEvent(MOVIE_CLICKED, item)
 
             val bundle = Bundle()
@@ -60,19 +60,19 @@ class TopFilmsFragment : Fragment() {
                 .commit()
         }
 
-        override fun addToFavourites(position: Int, item: Movie) {
+        override fun addToFavourites(item: Movie) {
             if (!item.isFavourite) logEvent(MOVIE_LIKED, item)
             moviesListViewModel.addToFavourites(item)
             sharedViewModel.setMovie(item)
         }
 
-        override fun addToWatchlist(position: Int, item: Movie) {
+        override fun addToWatchlist(item: Movie) {
             moviesListViewModel.addToWatchlist(item)
             //sharedViewModel.setMovie(item)
         }
     }
 
-    private val adapter: TopAdapter by lazy {
+    private val adapter by lazy {
         TopAdapter(itemClickListener = itemClickListener)
     }
 

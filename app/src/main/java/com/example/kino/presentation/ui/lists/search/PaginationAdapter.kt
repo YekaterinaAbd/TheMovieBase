@@ -16,7 +16,7 @@ import com.example.kino.presentation.utils.LoadMoreItemViewHolder
 import com.squareup.picasso.Picasso
 
 class PaginationAdapter(
-    private val itemClickListener: RecyclerViewItemClick? = null
+    private val itemClickListener: ItemClickListener? = null
 ) : PagedListAdapter<Movie, RecyclerView.ViewHolder>(DiffUtilCallBack) {
 
     private val VIEW_TYPE_LOADING = 0
@@ -88,18 +88,11 @@ class PaginationAdapter(
             val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
             val poster = view.findViewById<ImageView>(R.id.ivPoster)
             val tvRating = view.findViewById<TextView>(R.id.tvRating)
-            val number = view.findViewById<TextView>(R.id.number)
             val addToFav = view.findViewById<ImageView>(R.id.ivWatchlist)
 
             addToFav.visibility = View.GONE
 
             if (movie != null) {
-//                if (movie.isClicked) {
-//                    addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
-//                } else {
-//                    addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
-//                }
-
                 tvTitle.text = movie.title
                 if (!movie.releaseDate.isNullOrEmpty())
                     tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
@@ -114,22 +107,11 @@ class PaginationAdapter(
                 view.setOnClickListener {
                     itemClickListener?.itemClick(adapterPosition, movie)
                 }
-
-//                addToFav.setOnClickListener {
-//                    itemClickListener?.addToFavourites(adapterPosition, movie)
-//                    if (movie.isClicked) {
-//                        addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp)
-//                    } else {
-//                        addToFav.setImageResource(R.drawable.ic_turned_in_not_black_24dp)
-//                    }
-//                }
             }
         }
     }
 
-
-    interface RecyclerViewItemClick {
+    interface ItemClickListener {
         fun itemClick(position: Int, item: Movie)
-        fun addToFavourites(position: Int, item: Movie)
     }
 }

@@ -101,10 +101,10 @@ class MovieRepositoryImpl(
         }
 
     override suspend fun getFavouriteMovies(
-        apiKey: String, sessionId: String
+        apiKey: String, sessionId: String, page: Int
     ): Pair<List<Movie>?, DataSource> = withContext(Dispatchers.IO) {
         try {
-            val response = service.getFavouriteMovies(apiKey, sessionId)
+            val response = service.getFavouriteMovies(apiKey, sessionId, page)
             if (response.isSuccessful) {
                 val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
                 insertToDatabase(list, MoviesType.FAVOURITES)
@@ -120,11 +120,10 @@ class MovieRepositoryImpl(
     }
 
     override suspend fun getWatchListMovies(
-        apiKey: String,
-        sessionId: String
+        apiKey: String, sessionId: String, page: Int
     ): Pair<List<Movie>?, DataSource> = withContext(Dispatchers.IO) {
         try {
-            val response = service.getMoviesWatchList(apiKey, sessionId)
+            val response = service.getMoviesWatchList(apiKey, sessionId, page)
             if (response.isSuccessful) {
                 val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
                 insertToDatabase(list, MoviesType.WATCH_LIST)

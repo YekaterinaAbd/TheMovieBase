@@ -15,10 +15,10 @@ import com.example.kino.domain.use_case.*
 import com.example.kino.presentation.BaseViewModel
 import com.example.kino.presentation.model.GenresList
 import com.example.kino.presentation.ui.MovieState
-import com.example.kino.presentation.ui.data_source.MoviesDataSourceFactory
 import com.example.kino.presentation.ui.data_source.SearchDataSource
+import com.example.kino.presentation.ui.data_source.SearchMoviesDataSourceFactory
 import com.example.kino.presentation.utils.constants.MEDIA_TYPE
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class MoviesListViewModel(
@@ -32,7 +32,7 @@ class MoviesListViewModel(
 
     private val pagedListConfig: PagedList.Config
 
-    private lateinit var searchMoviesDataSourceFactory: MoviesDataSourceFactory
+    private lateinit var searchMoviesDataSourceFactory: SearchMoviesDataSourceFactory
     lateinit var searchPagedList: LiveData<PagedList<Movie>>
     lateinit var searchStateLiveData: LiveData<MovieState>
 
@@ -55,9 +55,9 @@ class MoviesListViewModel(
             when (type) {
                 MoviesType.TOP -> getTopMovies(page)
                 MoviesType.CURRENT -> getCurrentPlaying(page)
-                MoviesType.FAVOURITES -> getFavouriteMovies()
+                MoviesType.FAVOURITES -> getFavouriteMovies(page)
                 MoviesType.UPCOMING -> getUpcomingMovies(page)
-                MoviesType.WATCH_LIST -> getWatchListMovies()
+                MoviesType.WATCH_LIST -> getWatchListMovies(page)
             }
         }
     }
@@ -98,8 +98,8 @@ class MoviesListViewModel(
         liveData.value = State.Result(movies.first, movies.second, MoviesType.UPCOMING)
     }
 
-    private suspend fun getFavouriteMovies() {
-        val movies = moviesListsUseCase.getFavouriteMovies(sessionId)
+    private suspend fun getFavouriteMovies(page: Int) {
+        val movies = moviesListsUseCase.getFavouriteMovies(sessionId, page)
 
         if (!movies.first.isNullOrEmpty()) {
             for (movie in movies.first!!) {
@@ -111,8 +111,8 @@ class MoviesListViewModel(
         liveData.value = State.Result(movies.first)
     }
 
-    private suspend fun getWatchListMovies() {
-        val movies = moviesListsUseCase.getWatchListMovies(sessionId)
+    private suspend fun getWatchListMovies(page: Int) {
+        val movies = moviesListsUseCase.getWatchListMovies(sessionId, page)
 
         if (!movies.first.isNullOrEmpty()) {
             for (movie in movies.first!!) {
@@ -126,8 +126,8 @@ class MoviesListViewModel(
 
     fun searchMovies(query: String) {
         searchMoviesDataSourceFactory =
-            MoviesDataSourceFactory(
-                Dispatchers.IO,
+            SearchMoviesDataSourceFactory(
+                CoroutineScope(coroutineContext),
                 searchMoviesUseCase,
                 query,
                 context

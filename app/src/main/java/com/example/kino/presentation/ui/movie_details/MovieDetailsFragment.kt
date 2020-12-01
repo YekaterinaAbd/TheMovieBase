@@ -11,7 +11,6 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
@@ -24,6 +23,7 @@ import com.example.kino.data.network.VIDEO_URL
 import com.example.kino.domain.model.Movie
 import com.example.kino.presentation.ui.lists.SharedViewModel
 import com.example.kino.presentation.ui.lists.top.HorizontalFilmsAdapter
+import com.example.kino.presentation.utils.DateUtil
 import com.example.kino.presentation.utils.FullScreenChromeClient
 import com.example.kino.presentation.utils.constants.INTENT_KEY
 import com.example.kino.presentation.utils.constants.POSTER_PATH
@@ -57,7 +57,6 @@ class MovieDetailsFragment : Fragment() {
     private lateinit var rvSimilarMovies: RecyclerView
     private lateinit var keywordsChipGroup: ChipGroup
     private lateinit var ivBack: ImageView
-
 
     private val movieDetailsViewModel: MovieDetailsViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -93,8 +92,8 @@ class MovieDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //requireActivity().bottomNavigation.visibility = View.GONE
         bindViews(view)
-        getMovie(id)
         setAdapter()
+        getMovie(id)
     }
 
     override fun onPause() {
@@ -166,7 +165,7 @@ class MovieDetailsFragment : Fragment() {
             movieDetailsViewModel.getSimilarMovies(id)
             movieDetailsViewModel.getKeyWords(id)
         }
-        movieDetailsViewModel.liveData.observe(requireActivity(), Observer { result ->
+        movieDetailsViewModel.liveData.observe(requireActivity(), { result ->
             when (result) {
                 is MovieDetailsViewModel.State.HideLoading -> {
                     progressBar.visibility = View.GONE
@@ -205,9 +204,9 @@ class MovieDetailsFragment : Fragment() {
 
     private fun bindData(movie: RemoteMovieDetails) {
         title.text = movie.title
-        year.text = movie.releaseDate
+        year.text = DateUtil.convertIsoToDate(movie.releaseDate)
         rating.text = movie.voteAverage.toString()
-        votesCount.text = requireContext().getString(R.string.voted, movie.voteCount)
+        votesCount.text = context?.getString(R.string.voted, movie.voteCount)
         overviewLayout.setOverviewText(movie.overview)
 
         setGenres(movie.genres)
@@ -215,12 +214,12 @@ class MovieDetailsFragment : Fragment() {
 
         if (movie.runtime != null) {
             val runtime: String = movie.runtime.toString()
-            durationTime.text = getString(R.string.duration_time, runtime)
+            durationTime.text = context?.getString(R.string.duration_time, runtime)
         }
 
         if (!movie.tagLine.isNullOrEmpty()) {
             val tagLineText: String = movie.tagLine.toString()
-            tagline.text = getString(R.string.tagline, tagLineText)
+            tagline.text = context?.getString(R.string.tagline, tagLineText)
         }
 
         if (movie.favourite) like.setImageResource(R.drawable.ic_favourite)
@@ -299,8 +298,11 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun createChip(title: String, chipGroup: ChipGroup) {
-        val chip = this.layoutInflater.inflate(R.layout.item_chip_category, null, false) as Chip
-        chip.text = title
-        chipGroup.addView(chip)
+        if (context != null) {
+            val chip = LayoutInflater.from(context)
+                .inflate(R.layout.item_chip_category, null, false) as Chip
+            chip.text = title
+            chipGroup.addView(chip)
+        }
     }
 }

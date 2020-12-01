@@ -54,8 +54,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?attr/colorItems"
+        app:itemHorizontalTranslationEnabled="true"
+        app:itemTextAppearanceActive="@style/BottomNavigationViewTextStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:itemTextAppearanceInactive="@style/BottomNavigationViewTextStyle"
+        app:labelVisibilityMode="selected"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation" />
 

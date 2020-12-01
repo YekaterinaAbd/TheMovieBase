@@ -41,7 +41,10 @@ class MainListsFragment : Fragment() {
             movieDetailedFragment.arguments = bundle
 
             parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-                .addToBackStack(this@MainListsFragment.toString()).commit()
+                .addToBackStack(null).commit()
+
+//            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
+//                .addToBackStack(null).hide(this@MainListsFragment).commit()
         }
     }
 

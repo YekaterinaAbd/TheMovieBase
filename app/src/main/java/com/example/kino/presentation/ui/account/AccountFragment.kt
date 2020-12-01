@@ -20,7 +20,6 @@ import com.example.kino.presentation.ui.sign_in.SignInActivity
 import com.example.kino.presentation.utils.constants.MOVIE_TYPE
 import org.koin.android.ext.android.inject
 
-
 class AccountFragment : Fragment() {
 
     private lateinit var username: androidx.appcompat.widget.Toolbar
@@ -71,6 +70,11 @@ class AccountFragment : Fragment() {
     private fun openListFragment(type: MoviesType) {
         val bundle = Bundle()
         bundle.putSerializable(MOVIE_TYPE, type)
+
+//        val movieListsFragment = TopFilmsFragment()
+//        movieListsFragment.arguments = bundle
+//        parentFragmentManager.beginTransaction().add(R.id.framenav, movieListsFragment)
+//            .addToBackStack(null).commit()
 
         val movieListsFragment = FavouritesFragment()
         movieListsFragment.arguments = bundle

@@ -1,6 +1,5 @@
 package com.example.kino.presentation.ui.lists.favouries
 
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +9,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.data.network.IMAGE_URL
 import com.example.kino.domain.model.Movie
+import com.example.kino.presentation.ui.lists.top.ItemClickListener
+import com.example.kino.presentation.utils.Margin
+import com.example.kino.presentation.utils.Side
 import com.squareup.picasso.Picasso
 
-interface ItemClickListener {
-    fun itemClick(item: Movie)
-    fun addToFavourites(item: Movie)
-    fun addToWatchlist(item: Movie)
-}
+//interface ItemClickListener {
+//    fun itemClick(item: Movie)
+//    fun addToFavourites(item: Movie)
+//    fun addToWatchlist(item: Movie)
+//}
 
 class FavouritesAdapter(
     private val itemClickListener: ItemClickListener? = null,
@@ -58,29 +60,17 @@ class FavouritesAdapter(
         }
     }
 
-    fun removeItem(movie: Movie) {
+    fun removeItem(movie: Movie, position: Int) {
         val id = movie.id
         val foundMovie = movies.find { it.id == id }
         if (foundMovie != null) {
             movies.remove(foundMovie)
         }
+        notifyItemRemoved(position)
         notifyDataSetChanged()
     }
 
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-
-        private fun setMargin() {
-            val sizeInDP = 16
-
-            val marginInDp = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, sizeInDP.toFloat(), itemView.context.resources
-                    .displayMetrics
-            ).toInt()
-
-            val params: ViewGroup.MarginLayoutParams =
-                view.layoutParams as ViewGroup.MarginLayoutParams
-            params.topMargin = marginInDp
-        }
 
         fun bind(movie: Movie?) {
 
@@ -93,7 +83,7 @@ class FavouritesAdapter(
             val addToWatchlist = view.findViewById<ImageView>(R.id.ivWatchlist)
 
             if (movie != null) {
-                if (adapterPosition == 0) setMargin()
+                if (adapterPosition == 0) Margin.setMargin(16, itemView.context, view, Side.TOP)
 
                 tvTitle.text = movie.title
                 tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
@@ -114,8 +104,8 @@ class FavouritesAdapter(
 
                     addToWatchlist.setOnClickListener {
                         itemClickListener?.addToWatchlist(movie)
-                        if (movie.isInWatchList) addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
-                        else removeItem(movie)
+//                        if (movie.isInWatchList) addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
+                        removeItem(movie, adapterPosition)
                     }
 
                 } else {
@@ -124,8 +114,8 @@ class FavouritesAdapter(
 
                     addToFav.setOnClickListener {
                         itemClickListener?.addToFavourites(movie)
-                        if (movie.isFavourite) addToFav.setImageResource(R.drawable.ic_favourite)
-                        else removeItem(movie)
+//                        if (movie.isFavourite) addToFav.setImageResource(R.drawable.ic_favourite)
+                        removeItem(movie, adapterPosition)
                     }
                 }
             }

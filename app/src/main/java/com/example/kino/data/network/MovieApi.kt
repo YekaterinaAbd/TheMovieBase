@@ -63,13 +63,15 @@ interface MovieApi {
     @GET("account/{account_id}/favorite/movies")
     suspend fun getFavouriteMovies(
         @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String
+        @Query("session_id") sessionId: String,
+        @Query("page") page: Int
     ): Response<Movies>
 
     @GET("account/{account_id}/watchlist/movies")
     suspend fun getMoviesWatchList(
         @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String
+        @Query("session_id") sessionId: String,
+        @Query("page") page: Int
     ): Response<Movies>
 
     @POST("account/{account_id}/favorite")

@@ -56,7 +56,6 @@ class OverviewView : LinearLayout {
 
             } else {
                 tvExpandCollapse.visibility = View.GONE
-
             }
         }
     }

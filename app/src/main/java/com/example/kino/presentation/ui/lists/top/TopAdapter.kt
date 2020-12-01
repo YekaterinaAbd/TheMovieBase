@@ -1,6 +1,5 @@
 package com.example.kino.presentation.ui.lists.top
 
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,17 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.data.network.IMAGE_URL
 import com.example.kino.domain.model.Movie
+import com.example.kino.presentation.utils.Margin
+import com.example.kino.presentation.utils.Side
 import com.squareup.picasso.Picasso
 
 interface ItemClickListener {
-    fun itemClick(position: Int, item: Movie)
-    fun addToFavourites(position: Int, item: Movie)
-    fun addToWatchlist(position: Int, item: Movie)
+    fun itemClick(item: Movie)
+    fun addToFavourites(item: Movie)
+    fun addToWatchlist(item: Movie)
 }
 
 class TopAdapter(
-    private val itemClickListener: ItemClickListener? = null,
-    private val searchFragment: Boolean = false
+    private val itemClickListener: ItemClickListener? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_LOADING = 0
@@ -33,9 +33,11 @@ class TopAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            VIEW_TYPE_NORMAL -> MovieViewHolder(
-                inflater.inflate(R.layout.film_object_view, parent, false)
-            )
+            VIEW_TYPE_NORMAL -> {
+                MovieViewHolder(
+                    inflater.inflate(R.layout.film_object_view, parent, false)
+                )
+            }
             VIEW_TYPE_LOADING -> LoaderViewHolder(
                 inflater.inflate(R.layout.loader, parent, false)
             )
@@ -108,6 +110,16 @@ class TopAdapter(
         notifyDataSetChanged()
     }
 
+    fun removeItem(movie: Movie, position: Int) {
+        val id = movie.id
+        val foundMovie = movies.find { it.id == id }
+        if (foundMovie != null) {
+            movies.remove(foundMovie)
+        }
+        notifyItemRemoved(position)
+        notifyDataSetChanged()
+    }
+
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         private val tvTitle: TextView = view.findViewById(R.id.tvTitle)
@@ -119,24 +131,12 @@ class TopAdapter(
         private val addToFav: ImageView = view.findViewById(R.id.ivLike)
         private val addToWatchlist: ImageView = view.findViewById(R.id.ivWatchlist)
 
-        private fun setMargin() {
-            val sizeInDP = 16
-
-            val marginInDp = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, sizeInDP.toFloat(), itemView.context.resources
-                    .displayMetrics
-            ).toInt()
-
-            val params: ViewGroup.MarginLayoutParams =
-                view.layoutParams as ViewGroup.MarginLayoutParams
-            params.topMargin = marginInDp
-        }
-
         fun bind(movie: Movie?) {
 
-            if (adapterPosition == 0 && !searchFragment) setMargin()
             addToFav.visibility = View.VISIBLE
             addToWatchlist.visibility = View.VISIBLE
+
+            if (adapterPosition == 0) Margin.setMargin(16, itemView.context, view, Side.TOP)
 
             if (movie != null) {
 
@@ -157,7 +157,7 @@ class TopAdapter(
                 tvRating.text = movie.voteAverage.toString()
                 tvGenres.text = movie.genreNames
 
-                if (!searchFragment) number.text = movie.position.toString()
+                number.text = movie.position.toString()
 
                 if (!movie.posterPath.isNullOrEmpty())
                     Picasso.get()
@@ -165,17 +165,17 @@ class TopAdapter(
                         .into(poster)
 
                 view.setOnClickListener {
-                    itemClickListener?.itemClick(adapterPosition, movie)
+                    itemClickListener?.itemClick(movie)
                 }
 
                 addToFav.setOnClickListener {
-                    itemClickListener?.addToFavourites(adapterPosition, movie)
+                    itemClickListener?.addToFavourites(movie)
                     if (movie.isFavourite) addToFav.setImageResource(R.drawable.ic_favourite)
                     else addToFav.setImageResource(R.drawable.ic_favourite_border)
                 }
 
                 addToWatchlist.setOnClickListener {
-                    itemClickListener?.addToWatchlist(adapterPosition, movie)
+                    itemClickListener?.addToWatchlist(movie)
                     if (movie.isInWatchList) addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
                     else addToWatchlist.setImageResource(R.drawable.ic_watchlist)
                 }

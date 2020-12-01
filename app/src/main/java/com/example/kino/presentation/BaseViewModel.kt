@@ -1,5 +1,6 @@
 package com.example.kino.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,5 +16,6 @@ abstract class BaseViewModel : ViewModel(), CoroutineScope {
     override fun onCleared() {
         super.onCleared()
         job.cancel()
+        Log.d("testt", "view model cleared")
     }
 }

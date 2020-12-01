@@ -8,12 +8,11 @@ import com.example.kino.domain.use_case.SearchMoviesUseCase
 import com.example.kino.presentation.model.GenresList
 import com.example.kino.presentation.ui.MovieState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 class SearchDataSource(
-    coroutineContext: CoroutineContext,
+    private val scope: CoroutineScope,
     private val searchUseCase: SearchMoviesUseCase,
     private val query: String? = null,
     private val context: Context
@@ -30,8 +29,8 @@ class SearchDataSource(
 
     private var _state = MutableLiveData<MovieState>()
 
-    private val job = Job()
-    private val scope = CoroutineScope(coroutineContext + job)
+//    private val job = Job()
+//    private val scope = CoroutineScope(coroutineContext + job)
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
@@ -80,4 +79,9 @@ class SearchDataSource(
     }
 
     fun getState() = _state
+
+    override fun invalidate() {
+        super.invalidate()
+        scope.cancel()
+    }
 }

@@ -11,12 +11,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
 import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.domain.model.Movie
 import com.example.kino.presentation.ui.lists.MoviesListViewModel
 import com.example.kino.presentation.ui.lists.SharedViewModel
+import com.example.kino.presentation.ui.lists.top.ItemClickListener
 import com.example.kino.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.kino.presentation.utils.constants.INTENT_KEY
 import com.example.kino.presentation.utils.constants.MOVIE_TYPE
@@ -65,10 +67,10 @@ class FavouritesFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
-            if (item.isFavourite) recyclerViewAdapter.addItem(item)
-            else recyclerViewAdapter.removeItem(item)
-        })
+//        sharedViewModel.liked.observe(viewLifecycleOwner, Observer { item ->
+//            if (item.isFavourite) recyclerViewAdapter.addItem(item)
+//            else recyclerViewAdapter.removeItem(item)
+//        })
     }
 
     override fun onCreateView(
@@ -108,6 +110,8 @@ class FavouritesFragment : Fragment() {
     }
 
     private fun setAdapter() {
+        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        recyclerViewAdapter.setHasStableIds(true)
         recyclerView.adapter = recyclerViewAdapter
     }
 
@@ -125,7 +129,7 @@ class FavouritesFragment : Fragment() {
                     result.moviesList?.let { recyclerViewAdapter.addItems(it) }
                 }
                 is MoviesListViewModel.State.Update -> {
-                    recyclerViewAdapter.notifyDataSetChanged()
+                    //recyclerViewAdapter.notifyDataSetChanged()
                 }
             }
         })

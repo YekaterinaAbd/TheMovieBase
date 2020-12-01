@@ -11,13 +11,11 @@ interface MovieRepository {
     suspend fun getTopMovies(apiKey: String, page: Int): Pair<List<Movie>?, DataSource>
     suspend fun getCurrentMovies(apiKey: String, page: Int): Pair<List<Movie>?, DataSource>
     suspend fun getFavouriteMovies(
-        apiKey: String,
-        sessionId: String
+        apiKey: String, sessionId: String, page: Int
     ): Pair<List<Movie>?, DataSource>
 
     suspend fun getWatchListMovies(
-        apiKey: String,
-        sessionId: String
+        apiKey: String, sessionId: String, page: Int
     ): Pair<List<Movie>?, DataSource>
 
     suspend fun getUpcomingMovies(apiKey: String, page: Int): Pair<List<Movie>?, DataSource>
