@@ -13,7 +13,7 @@ class MarkersViewModel(private val markerRepository: MarkerRepository) :
     BaseViewModel() {
 
     fun fillDatabase() {
-        launch {
+        uiScope.launch {
             withContext(Dispatchers.IO) {
                 markerRepository.deleteMarkers()
                 markerRepository.insertMarkers(generateMarkers())

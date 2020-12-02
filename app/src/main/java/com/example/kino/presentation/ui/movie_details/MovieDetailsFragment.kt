@@ -22,7 +22,7 @@ import com.example.kino.data.network.IMAGE_URL
 import com.example.kino.data.network.VIDEO_URL
 import com.example.kino.domain.model.Movie
 import com.example.kino.presentation.ui.lists.SharedViewModel
-import com.example.kino.presentation.ui.lists.top.HorizontalFilmsAdapter
+import com.example.kino.presentation.ui.lists.movies.HorizontalFilmsAdapter
 import com.example.kino.presentation.utils.DateUtil
 import com.example.kino.presentation.utils.FullScreenChromeClient
 import com.example.kino.presentation.utils.constants.INTENT_KEY
@@ -90,7 +90,6 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //requireActivity().bottomNavigation.visibility = View.GONE
         bindViews(view)
         setAdapter()
         getMovie(id)

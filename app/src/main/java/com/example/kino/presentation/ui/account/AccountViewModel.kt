@@ -2,14 +2,13 @@ package com.example.kino.presentation.ui.account
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import com.example.kino.data.network.API_KEY
-import com.example.kino.domain.repository.AccountRepository
+import com.example.kino.domain.use_case.AccountUseCase
 import com.example.kino.presentation.BaseViewModel
 import kotlinx.coroutines.launch
 
 class AccountViewModel(
     private val context: Context,
-    private val accountRepository: AccountRepository
+    private val accountUseCase: AccountUseCase
 ) : BaseViewModel() {
 
     val username = MutableLiveData<String>()
@@ -20,29 +19,23 @@ class AccountViewModel(
     }
 
     private fun getUsername() {
-        username.value = accountRepository.getLocalUsername(context)
+        username.value = accountUseCase.getUsername(context)
     }
 
     fun logOut() {
-        launch {
-            try {
-                val logOutSuccessful = accountRepository.logOut(API_KEY, context)
-                if (logOutSuccessful != null) {
-                    if (logOutSuccessful) {
-                        deleteLogInData()
-                        liveData.value = State.LogOutSuccessful
-                    } else {
-                        liveData.value = State.LogOutFailed
-                    }
-                }
-            } catch (e: Exception) {
+        uiScope.launch {
+            val logOutSuccessful = accountUseCase.logOut(context)
+            if (logOutSuccessful == true) {
+                deleteLogInData()
+                liveData.value = State.LogOutSuccessful
+            } else {
                 liveData.value = State.LogOutFailed
             }
         }
     }
 
     private fun deleteLogInData() {
-        accountRepository.deleteLoginData(context)
+        accountUseCase.deleteLoginData(context)
     }
 
     sealed class State {

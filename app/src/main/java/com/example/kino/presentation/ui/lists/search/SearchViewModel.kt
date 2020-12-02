@@ -18,14 +18,14 @@ class SearchViewModel(
     val historyLiveData: LiveData<HistoryState> = _historyLiveData
 
     fun getAllQueries() {
-        launch {
+        uiScope.launch {
             val queries = searchUseCase.getAllQueries()
             _historyLiveData.value = HistoryState.Result(queries)
         }
     }
 
     fun getLastQueries() {
-        launch {
+        uiScope.launch {
             val queries = searchUseCase.getLastQueries()
             Log.d("test22", queries.toString())
             _historyLiveData.value = HistoryState.Result(queries)
@@ -33,7 +33,7 @@ class SearchViewModel(
     }
 
     fun insertQuery(query: String) {
-        launch {
+        uiScope.launch {
             val searchQuery = SearchQuery(query = query)
             val response = searchUseCase.insertQuery(searchQuery)
             if (response == null) _historyLiveData.value =
@@ -43,7 +43,7 @@ class SearchViewModel(
     }
 
     fun deleteQuery(id: Int?) {
-        launch {
+        uiScope.launch {
             if (id != null) {
                 val response = searchUseCase.deleteQuery(id)
                 if (response == null) _historyLiveData.value =
@@ -54,7 +54,7 @@ class SearchViewModel(
     }
 
     fun deleteAllQueries() {
-        launch {
+        uiScope.launch {
             val response = searchUseCase.deleteAllQueries()
             if (response == null) _historyLiveData.value = HistoryState.Deleted
             else _historyLiveData.value = HistoryState.Error(response)

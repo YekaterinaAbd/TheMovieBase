@@ -54,14 +54,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-
                 <com.example.kino.presentation.utils.widgets.MoviesListView
-                    android:id="@+id/topMovies"
+                    android:id="@+id/currentMovies"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <com.example.kino.presentation.utils.widgets.MoviesListView
-                    android:id="@+id/currentMovies"
+                    android:id="@+id/popularMovies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.example.kino.presentation.utils.widgets.MoviesListView
+                    android:id="@+id/topMovies"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

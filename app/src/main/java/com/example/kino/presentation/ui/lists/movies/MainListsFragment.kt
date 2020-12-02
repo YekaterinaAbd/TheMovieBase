@@ -1,11 +1,10 @@
-package com.example.kino.presentation.ui.lists.top
+package com.example.kino.presentation.ui.lists.movies
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
 import com.example.kino.data.model.movie.MoviesType
@@ -28,6 +27,7 @@ class MainListsFragment : Fragment() {
     private lateinit var topMoviesView: MoviesListView
     private lateinit var currentMoviesView: MoviesListView
     private lateinit var upcomingMoviesView: MoviesListView
+    private lateinit var popularMoviesView: MoviesListView
 
     private val moviesListViewModel: MoviesListViewModel by inject()
 
@@ -42,9 +42,6 @@ class MainListsFragment : Fragment() {
 
             parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
                 .addToBackStack(null).commit()
-
-//            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-//                .addToBackStack(null).hide(this@MainListsFragment).commit()
         }
     }
 
@@ -68,6 +65,7 @@ class MainListsFragment : Fragment() {
         topMoviesView = view.findViewById(R.id.topMovies)
         currentMoviesView = view.findViewById(R.id.currentMovies)
         upcomingMoviesView = view.findViewById(R.id.upcomingMovies)
+        popularMoviesView = view.findViewById(R.id.popularMovies)
 
         topMoviesView.apply {
             setData(MoviesType.TOP)
@@ -83,6 +81,12 @@ class MainListsFragment : Fragment() {
 
         upcomingMoviesView.apply {
             setData(MoviesType.UPCOMING)
+            setListeners(parentFragmentManager)
+            setAdapter(itemClickListener)
+        }
+
+        popularMoviesView.apply {
+            setData(MoviesType.POPULAR)
             setListeners(parentFragmentManager)
             setAdapter(itemClickListener)
         }
@@ -104,6 +108,7 @@ class MainListsFragment : Fragment() {
         getMovies(MoviesType.TOP)
         getMovies(MoviesType.CURRENT)
         getMovies(MoviesType.UPCOMING)
+        getMovies(MoviesType.POPULAR)
     }
 
     private fun getMovies(type: MoviesType) {
@@ -114,10 +119,11 @@ class MainListsFragment : Fragment() {
         topMoviesView.clearAdapter()
         currentMoviesView.clearAdapter()
         upcomingMoviesView.clearAdapter()
+        popularMoviesView.clearAdapter()
     }
 
     private fun observe() {
-        moviesListViewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
+        moviesListViewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
                     swipeRefreshLayout.isRefreshing = true
@@ -135,6 +141,9 @@ class MainListsFragment : Fragment() {
                     if (result.type == MoviesType.UPCOMING) {
                         addToAdapter(upcomingMoviesView, result.moviesList)
                     }
+                    if (result.type == MoviesType.POPULAR) {
+                        addToAdapter(popularMoviesView, result.moviesList)
+                    }
                 }
             }
         })
@@ -145,6 +154,5 @@ class MainListsFragment : Fragment() {
             if (list.size > 10) view.addItems(list.subList(0, 10))
             else view.addItems(list)
         }
-
     }
 }

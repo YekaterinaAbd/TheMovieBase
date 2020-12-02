@@ -1,24 +1,20 @@
 package com.example.kino.domain.repository
 
 import android.content.Context
-import com.example.kino.data.mapper.DataSource
+import com.example.kino.data.mapper.MoviesAnswer
 import com.example.kino.data.model.entities.MovieStatus
 import com.example.kino.data.model.movie.*
 import com.example.kino.domain.model.Movie
 
 interface MovieRepository {
 
-    suspend fun getTopMovies(apiKey: String, page: Int): Pair<List<Movie>?, DataSource>
-    suspend fun getCurrentMovies(apiKey: String, page: Int): Pair<List<Movie>?, DataSource>
-    suspend fun getFavouriteMovies(
-        apiKey: String, sessionId: String, page: Int
-    ): Pair<List<Movie>?, DataSource>
+    suspend fun getTopMovies(apiKey: String, page: Int): MoviesAnswer
+    suspend fun getCurrentMovies(apiKey: String, page: Int): MoviesAnswer
+    suspend fun getUpcomingMovies(apiKey: String, page: Int): MoviesAnswer
+    suspend fun getPopularMovies(apiKey: String, page: Int): MoviesAnswer
+    suspend fun getFavouriteMovies(apiKey: String, sessionId: String, page: Int): MoviesAnswer
+    suspend fun getWatchListMovies(apiKey: String, sessionId: String, page: Int): MoviesAnswer
 
-    suspend fun getWatchListMovies(
-        apiKey: String, sessionId: String, page: Int
-    ): Pair<List<Movie>?, DataSource>
-
-    suspend fun getUpcomingMovies(apiKey: String, page: Int): Pair<List<Movie>?, DataSource>
     suspend fun searchMovies(apiKey: String, query: String?, page: Int): List<Movie>?
 
     suspend fun updateIsFavourite(movie: FavouriteMovie, sessionId: String): Boolean

@@ -10,26 +10,51 @@ import com.example.kino.data.network.MovieApi
 import com.example.kino.domain.repository.AccountRepository
 import com.example.kino.presentation.utils.constants.DEFAULT_VALUE
 import com.example.kino.presentation.utils.constants.NULLABLE_VALUE
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AccountRepositoryImpl(
     private var service: MovieApi,
     private var sharedPreferences: SharedPreferences
 ) : AccountRepository {
-    override suspend fun getSessionId(apiKey: String, token: Token): String? {
-        return service.createSession(apiKey, token).body()?.sessionId
+
+    override suspend fun getSessionId(apiKey: String, token: Token): String? =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = service.createSession(apiKey, token)
+                if (response.isSuccessful) return@withContext response.body()?.sessionId
+                else return@withContext null
+            } catch (e: Exception) {
+                return@withContext null
+            }
+        }
+
+    override suspend fun createToken(apiKey: String): Token? = withContext(Dispatchers.IO) {
+        try {
+            val response = service.createRequestToken(apiKey)
+            if (response.isSuccessful) return@withContext response.body()
+            else return@withContext null
+        } catch (e: java.lang.Exception) {
+            return@withContext null
+        }
     }
 
-    override suspend fun createToken(apiKey: String): Token? {
-        return service.createRequestToken(apiKey).body()
-    }
-
-    override suspend fun validateWithLogin(apiKey: String, data: LoginValidationData): Boolean {
-        return service.validateWithLogin(apiKey, data).isSuccessful
-    }
+    override suspend fun validateWithLogin(apiKey: String, data: LoginValidationData): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                return@withContext service.validateWithLogin(apiKey, data).isSuccessful
+            } catch (e: Exception) {
+                return@withContext false
+            }
+        }
 
     override suspend fun logOut(apiKey: String, context: Context): Boolean? {
-        val session = Session(getLocalSessionId(context))
-        return service.deleteSession(apiKey, session).body()?.success
+        return try {
+            val session = Session(getLocalSessionId(context))
+            service.deleteSession(apiKey, session).body()?.success
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun getLocalPassword(context: Context): String {

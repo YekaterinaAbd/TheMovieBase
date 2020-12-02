@@ -22,9 +22,22 @@ val viewModelModule = module {
         )
     }
     viewModel { SearchViewModel(context = get(), searchUseCase = get()) }
-    viewModel { MovieDetailsViewModel(context = get(), movieRepository = get()) }
-    viewModel { AccountViewModel(context = get(), accountRepository = get()) }
+    viewModel {
+        MovieDetailsViewModel(
+            context = get(),
+            movieDetailsUseCase = get(),
+            sessionIdUseCase = get(),
+            likesUseCase = get()
+        )
+    }
+    viewModel { AccountViewModel(context = get(), accountUseCase = get()) }
     viewModel { MarkersViewModel(markerRepository = get()) }
-    viewModel { SignInViewModel(context = get(), accountRepository = get()) }
+    viewModel {
+        SignInViewModel(
+            context = get(),
+            loginUseCase = get(),
+            localLoginDataUseCase = get()
+        )
+    }
     viewModel { ThemeViewModel(context = get(), accountRepository = get()) }
 }

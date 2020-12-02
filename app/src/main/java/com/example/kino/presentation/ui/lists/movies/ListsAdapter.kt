@@ -1,4 +1,4 @@
-package com.example.kino.presentation.ui.lists.top
+package com.example.kino.presentation.ui.lists.movies
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
+import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.data.network.IMAGE_URL
 import com.example.kino.domain.model.Movie
 import com.example.kino.presentation.utils.Margin
@@ -19,24 +20,27 @@ interface ItemClickListener {
     fun addToWatchlist(item: Movie)
 }
 
+private const val VIEW_TYPE_LOADING = 0
+private const val VIEW_TYPE_NORMAL = 1
+
 class TopAdapter(
-    private val itemClickListener: ItemClickListener? = null
+    private val itemClickListener: ItemClickListener? = null,
+    private val moviesType: MoviesType
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val VIEW_TYPE_LOADING = 0
-    private val VIEW_TYPE_NORMAL = 1
     private var isLoaderVisible = false
 
     private var moviePosition = 1
-    private var movies = mutableListOf<Movie>()
+    private var movies = ArrayList<Movie>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
+        val view = inflater.inflate(R.layout.film_object_view, parent, false)
         return when (viewType) {
             VIEW_TYPE_NORMAL -> {
-                MovieViewHolder(
-                    inflater.inflate(R.layout.film_object_view, parent, false)
-                )
+                if (moviesType == MoviesType.WATCH_LIST || moviesType == MoviesType.FAVOURITES)
+                    MyMovieViewHolder(view)
+                else MovieViewHolder(view)
             }
             VIEW_TYPE_LOADING -> LoaderViewHolder(
                 inflater.inflate(R.layout.loader, parent, false)
@@ -56,6 +60,7 @@ class TopAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is MovieViewHolder) holder.bind(movies[position])
+        if (holder is MyMovieViewHolder) holder.bind(movies[position])
     }
 
     fun clearAll() {
@@ -67,12 +72,12 @@ class TopAdapter(
     fun addLoading() {
         isLoaderVisible = true
         movies.add(Movie(id = -1))
-        notifyItemInserted(movies.size.minus(1))
+        notifyItemInserted(movies.size - 1)
     }
 
     fun removeLoading() {
         isLoaderVisible = false
-        val position = movies.size.minus(1)
+        val position = movies.size - 1
         if (movies.isNotEmpty()) {
             val item = getItem(position)
             if (item != null) {
@@ -87,17 +92,13 @@ class TopAdapter(
     }
 
     fun addItems(moviesList: List<Movie>) {
-        if (movies.size == 0) movies = moviesList as MutableList<Movie>
-        else {
-            if (movies[movies.size - 1] != moviesList[moviesList.size - 1])
-                movies.addAll(moviesList)
-        }
+        movies.addAll(moviesList)
         notifyDataSetChanged()
     }
 
     fun replaceItems(moviesList: List<Movie>) {
         isLoaderVisible = false
-        movies = moviesList as MutableList<Movie>
+        movies = moviesList as ArrayList<Movie>
         moviePosition = 1
         notifyDataSetChanged()
     }
@@ -136,7 +137,7 @@ class TopAdapter(
             addToFav.visibility = View.VISIBLE
             addToWatchlist.visibility = View.VISIBLE
 
-            if (adapterPosition == 0) Margin.setMargin(16, itemView.context, view, Side.TOP)
+            if (movies[0] == movie) Margin.setMargin(16, itemView.context, view, Side.TOP)
 
             if (movie != null) {
 
@@ -183,5 +184,57 @@ class TopAdapter(
         }
     }
 
-    class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    inner class MyMovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+
+        fun bind(movie: Movie?) {
+
+            val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
+            val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
+            val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
+            val poster = view.findViewById<ImageView>(R.id.ivPoster)
+            val tvRating = view.findViewById<TextView>(R.id.tvRating)
+            val addToFav = view.findViewById<ImageView>(R.id.ivLike)
+            val addToWatchlist = view.findViewById<ImageView>(R.id.ivWatchlist)
+
+            if (movie != null) {
+                if (movies[0] == movie) Margin.setMargin(16, itemView.context, view, Side.TOP)
+
+                tvTitle.text = movie.title
+                tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
+                tvRating.text = movie.voteAverage.toString()
+                tvGenres.text = movie.genreNames
+
+                Picasso.get()
+                    .load(IMAGE_URL + movie.posterPath)
+                    .into(poster)
+
+                view.setOnClickListener {
+                    itemClickListener?.itemClick(movie)
+                }
+
+                if (moviesType == MoviesType.WATCH_LIST) {
+                    addToWatchlist.visibility = View.VISIBLE
+                    addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
+
+                    addToWatchlist.setOnClickListener {
+                        itemClickListener?.addToWatchlist(movie)
+                        removeItem(movie, adapterPosition)
+                    }
+
+                } else {
+                    addToFav.visibility = View.VISIBLE
+                    addToFav.setImageResource(R.drawable.ic_favourite)
+
+                    addToFav.setOnClickListener {
+                        itemClickListener?.addToFavourites(movie)
+                        removeItem(movie, adapterPosition)
+                    }
+                }
+            }
+        }
+    }
+
+    inner class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    }
 }

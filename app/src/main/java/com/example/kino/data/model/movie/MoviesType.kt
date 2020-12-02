@@ -4,6 +4,7 @@ enum class MoviesType {
     TOP,
     CURRENT,
     UPCOMING,
+    POPULAR,
     FAVOURITES,
     WATCH_LIST;
 
@@ -13,6 +14,7 @@ enum class MoviesType {
                 TOP -> "Top Rated"
                 CURRENT -> "Current Playing"
                 UPCOMING -> "Upcoming"
+                POPULAR -> "Popular"
                 FAVOURITES -> "Favourite"
                 WATCH_LIST -> "Watch List"
             }

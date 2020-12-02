@@ -10,4 +10,8 @@ val useCaseModule = module {
     factory { LocalMoviesUseCase(movieRepository = get()) }
     factory { SearchUseCase(searchRepository = get()) }
     factory { SearchMoviesUseCase(movieRepository = get()) }
+    factory { AccountUseCase(accountRepository = get()) }
+    factory { MovieDetailsUseCase(movieRepository = get()) }
+    factory { LoginUseCase(accountRepository = get()) }
+    factory { LocalLoginDataUseCase(accountRepository = get()) }
 }

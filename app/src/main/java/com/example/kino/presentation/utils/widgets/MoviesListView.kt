@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.domain.model.Movie
-import com.example.kino.presentation.ui.lists.top.HorizontalFilmsAdapter
-import com.example.kino.presentation.ui.lists.top.TopFilmsFragment
+import com.example.kino.presentation.ui.lists.movies.HorizontalFilmsAdapter
+import com.example.kino.presentation.ui.lists.movies.MoviesFragment
 import com.example.kino.presentation.utils.constants.MOVIE_TYPE
 
 class MoviesListView : LinearLayout {
@@ -62,7 +62,7 @@ class MoviesListView : LinearLayout {
         val bundle = Bundle()
         bundle.putSerializable(MOVIE_TYPE, type)
 
-        val movieListsFragment = TopFilmsFragment()
+        val movieListsFragment = MoviesFragment()
         movieListsFragment.arguments = bundle
         fm.beginTransaction().add(R.id.framenav, movieListsFragment)
             .addToBackStack(null).hide(this.findFragment()).commit()

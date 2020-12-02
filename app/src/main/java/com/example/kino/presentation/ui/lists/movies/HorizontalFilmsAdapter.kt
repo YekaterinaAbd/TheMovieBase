@@ -1,4 +1,4 @@
-package com.example.kino.presentation.ui.lists.top
+package com.example.kino.presentation.ui.lists.movies
 
 import android.view.LayoutInflater
 import android.view.View

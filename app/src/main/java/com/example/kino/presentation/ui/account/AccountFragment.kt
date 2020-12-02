@@ -10,11 +10,10 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.example.kino.R
 import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.presentation.ui.MainActivity
-import com.example.kino.presentation.ui.lists.favouries.FavouritesFragment
+import com.example.kino.presentation.ui.lists.movies.MoviesFragment
 import com.example.kino.presentation.ui.markers.GoogleMapsActivity
 import com.example.kino.presentation.ui.sign_in.SignInActivity
 import com.example.kino.presentation.utils.constants.MOVIE_TYPE
@@ -42,11 +41,11 @@ class AccountFragment : Fragment() {
     private fun bindViews(view: View) = with(view) {
         username = view.findViewById(R.id.toolbar)
         logOutButton = view.findViewById(R.id.btnLogOut)
-        //username.text = accountViewModel.username.value
-        (activity as MainActivity).setSupportActionBar(username)
-        (activity as MainActivity).supportActionBar?.title = accountViewModel.username.value
         viewFavourites = view.findViewById(R.id.btnFavourites)
         viewWatchList = view.findViewById(R.id.btnLike)
+
+        (activity as MainActivity).setSupportActionBar(username)
+        (activity as MainActivity).supportActionBar?.title = accountViewModel.username.value
 
         viewFavourites.setOnClickListener {
             openListFragment(MoviesType.FAVOURITES)
@@ -71,12 +70,7 @@ class AccountFragment : Fragment() {
         val bundle = Bundle()
         bundle.putSerializable(MOVIE_TYPE, type)
 
-//        val movieListsFragment = TopFilmsFragment()
-//        movieListsFragment.arguments = bundle
-//        parentFragmentManager.beginTransaction().add(R.id.framenav, movieListsFragment)
-//            .addToBackStack(null).commit()
-
-        val movieListsFragment = FavouritesFragment()
+        val movieListsFragment = MoviesFragment()
         movieListsFragment.arguments = bundle
         parentFragmentManager.beginTransaction().add(R.id.framenav, movieListsFragment)
             .addToBackStack(null).commit()
@@ -84,7 +78,7 @@ class AccountFragment : Fragment() {
 
     private fun logOut() {
         accountViewModel.logOut()
-        accountViewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
+        accountViewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is AccountViewModel.State.LogOutSuccessful -> {
                     val intent = Intent(requireContext(), SignInActivity::class.java)

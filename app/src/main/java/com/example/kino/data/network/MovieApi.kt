@@ -29,6 +29,12 @@ interface MovieApi {
         @Query("page") page: Int
     ): Response<Movies>
 
+    @GET("movie/popular")
+    suspend fun getPopularMovies(
+        @Query("api_key") apiKey: String,
+        @Query("page") page: Int
+    ): Response<Movies>
+
     @GET("movie/{id}")
     suspend fun getMovieById(
         @Path("id") id: Int,

@@ -3,12 +3,12 @@ package com.example.kino.presentation.utils.pagination
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-
-abstract class PaginationScrollListener(var layoutManager: LinearLayoutManager) :
-    RecyclerView.OnScrollListener() {
+abstract class PaginationListener(
+    private val layoutManager: LinearLayoutManager
+) : RecyclerView.OnScrollListener() {
 
     companion object {
-        const val PAGE_START = 1
+        val PAGE_START = 1
         private const val PAGE_SIZE = 20
     }
 
@@ -19,9 +19,9 @@ abstract class PaginationScrollListener(var layoutManager: LinearLayoutManager) 
         val totalItemCount = layoutManager.itemCount
         val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-        if (!isLocal() && !isLoading() && !isLastPage()) {
-            if ((visibleItemCount + firstVisibleItemPosition) >=
-                totalItemCount && firstVisibleItemPosition >= 0 &&
+        if (!isLoading() && !isLastPage()) {
+            if (visibleItemCount + firstVisibleItemPosition >= totalItemCount &&
+                firstVisibleItemPosition >= 0 &&
                 totalItemCount >= PAGE_SIZE
             ) {
                 loadMoreItems()
@@ -30,8 +30,10 @@ abstract class PaginationScrollListener(var layoutManager: LinearLayoutManager) 
     }
 
     protected abstract fun loadMoreItems()
+
     abstract fun isLastPage(): Boolean
+
     abstract fun isLoading(): Boolean
+
     abstract fun isLocal(): Boolean
 }
-

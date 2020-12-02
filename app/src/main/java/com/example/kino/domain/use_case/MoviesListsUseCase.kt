@@ -13,6 +13,7 @@ class MoviesListsUseCase(
             MoviesType.TOP -> getTopMovies(page)
             MoviesType.CURRENT -> getCurrentPlaying(page)
             MoviesType.UPCOMING -> getUpcomingMovies(page)
+            MoviesType.POPULAR -> getPopularMovies(page)
             MoviesType.FAVOURITES -> getFavouriteMovies(sessionId, page)
             MoviesType.WATCH_LIST -> getWatchListMovies(sessionId, page)
         }
@@ -22,6 +23,8 @@ class MoviesListsUseCase(
     suspend fun getCurrentPlaying(page: Int) = movieRepository.getCurrentMovies(API_KEY, page)
 
     suspend fun getUpcomingMovies(page: Int) = movieRepository.getUpcomingMovies(API_KEY, page)
+
+    suspend fun getPopularMovies(page: Int) = movieRepository.getPopularMovies(API_KEY, page)
 
     suspend fun getFavouriteMovies(sessionId: String, page: Int) =
         movieRepository.getFavouriteMovies(API_KEY, sessionId, page)

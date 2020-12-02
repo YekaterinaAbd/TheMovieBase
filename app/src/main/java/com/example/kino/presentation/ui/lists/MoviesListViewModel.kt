@@ -18,12 +18,11 @@ import com.example.kino.presentation.ui.MovieState
 import com.example.kino.presentation.ui.data_source.SearchDataSource
 import com.example.kino.presentation.ui.data_source.SearchMoviesDataSourceFactory
 import com.example.kino.presentation.utils.constants.MEDIA_TYPE
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class MoviesListViewModel(
     private val context: Context,
-    private val sessionIdUseCase: SessionIdUseCase,
+    sessionIdUseCase: SessionIdUseCase,
     private val likesUseCase: LikesUseCase,
     private val moviesListsUseCase: MoviesListsUseCase,
     private val localMoviesUseCase: LocalMoviesUseCase,
@@ -49,13 +48,14 @@ class MoviesListViewModel(
     }
 
     fun getMovies(type: MoviesType, page: Int = 1) {
-        launch {
+        uiScope.launch {
             if (page == 1) liveData.value = State.ShowLoading
             likesUseCase.synchronizeLocalLikes(sessionId)
             when (type) {
                 MoviesType.TOP -> getTopMovies(page)
                 MoviesType.CURRENT -> getCurrentPlaying(page)
                 MoviesType.FAVOURITES -> getFavouriteMovies(page)
+                MoviesType.POPULAR -> getPopularMovies(page)
                 MoviesType.UPCOMING -> getUpcomingMovies(page)
                 MoviesType.WATCH_LIST -> getWatchListMovies(page)
             }
@@ -63,75 +63,115 @@ class MoviesListViewModel(
     }
 
     private suspend fun getTopMovies(page: Int) {
-        val movies = moviesListsUseCase.getTopMovies(page)
-        if (!movies.first.isNullOrEmpty()) {
-            for (movie in movies.first!!) {
+
+        val response = moviesListsUseCase.getTopMovies(page)
+        if (!response.movies.isNullOrEmpty()) {
+            for (movie in response.movies) {
                 GenresList.setMovieGenres(movie, context)
                 getMovieStatuses(movie)
             }
         }
         liveData.value = State.HideLoading
-        liveData.value = State.Result(movies.first, movies.second, MoviesType.TOP)
+        liveData.value =
+            State.Result(
+                moviesList = response.movies ?: emptyList(),
+                dataSource = response.dataSource,
+                type = MoviesType.TOP,
+                totalPages = response.totalPages
+            )
     }
 
     private suspend fun getCurrentPlaying(page: Int) {
-        val movies = moviesListsUseCase.getCurrentPlaying(page)
-        if (!movies.first.isNullOrEmpty()) {
-            for (movie in movies.first!!) {
+        val response = moviesListsUseCase.getCurrentPlaying(page)
+        if (!response.movies.isNullOrEmpty()) {
+            for (movie in response.movies) {
                 GenresList.setMovieGenres(movie, context)
                 getMovieStatuses(movie)
             }
         }
         liveData.value = State.HideLoading
-        liveData.value = State.Result(movies.first, movies.second, MoviesType.CURRENT)
+        liveData.value =
+            State.Result(
+                response.movies ?: emptyList(),
+                response.dataSource,
+                MoviesType.CURRENT,
+                response.totalPages
+            )
     }
 
     private suspend fun getUpcomingMovies(page: Int) {
-        val movies = moviesListsUseCase.getUpcomingMovies(page)
-        if (!movies.first.isNullOrEmpty()) {
-            for (movie in movies.first!!) {
+        val response = moviesListsUseCase.getUpcomingMovies(page)
+        if (!response.movies.isNullOrEmpty()) {
+            for (movie in response.movies) {
                 GenresList.setMovieGenres(movie, context)
                 getMovieStatuses(movie)
             }
         }
         liveData.value = State.HideLoading
-        liveData.value = State.Result(movies.first, movies.second, MoviesType.UPCOMING)
+        liveData.value =
+            State.Result(
+                response.movies ?: emptyList(),
+                response.dataSource,
+                MoviesType.UPCOMING,
+                response.totalPages
+            )
+    }
+
+    private suspend fun getPopularMovies(page: Int) {
+        val response = moviesListsUseCase.getPopularMovies(page)
+        if (!response.movies.isNullOrEmpty()) {
+            for (movie in response.movies) {
+                GenresList.setMovieGenres(movie, context)
+                getMovieStatuses(movie)
+            }
+        }
+        liveData.value = State.HideLoading
+        liveData.value =
+            State.Result(
+                response.movies ?: emptyList(),
+                response.dataSource,
+                MoviesType.POPULAR,
+                response.totalPages
+            )
     }
 
     private suspend fun getFavouriteMovies(page: Int) {
-        val movies = moviesListsUseCase.getFavouriteMovies(sessionId, page)
-
-        if (!movies.first.isNullOrEmpty()) {
-            for (movie in movies.first!!) {
+        val response = moviesListsUseCase.getFavouriteMovies(sessionId, page)
+        if (!response.movies.isNullOrEmpty()) {
+            for (movie in response.movies) {
                 GenresList.setMovieGenres(movie, context)
                 movie.isFavourite = true
             }
         }
         liveData.value = State.HideLoading
-        liveData.value = State.Result(movies.first)
+        liveData.value = State.Result(
+            response.movies ?: emptyList(),
+            response.dataSource,
+            MoviesType.FAVOURITES,
+            response.totalPages
+        )
     }
 
     private suspend fun getWatchListMovies(page: Int) {
-        val movies = moviesListsUseCase.getWatchListMovies(sessionId, page)
-
-        if (!movies.first.isNullOrEmpty()) {
-            for (movie in movies.first!!) {
+        val response = moviesListsUseCase.getWatchListMovies(sessionId, page)
+        if (!response.movies.isNullOrEmpty()) {
+            for (movie in response.movies) {
                 GenresList.setMovieGenres(movie, context)
                 movie.isInWatchList = true
             }
         }
         liveData.value = State.HideLoading
-        liveData.value = State.Result(movies.first)
+        liveData.value = State.Result(
+            response.movies ?: emptyList(),
+            response.dataSource,
+            MoviesType.WATCH_LIST,
+            response.totalPages
+        )
     }
 
     fun searchMovies(query: String) {
         searchMoviesDataSourceFactory =
-            SearchMoviesDataSourceFactory(
-                CoroutineScope(coroutineContext),
-                searchMoviesUseCase,
-                query,
-                context
-            )
+            SearchMoviesDataSourceFactory(uiScope, searchMoviesUseCase, query, context)
         searchPagedList =
             LivePagedListBuilder(searchMoviesDataSourceFactory, pagedListConfig).build()
 
@@ -142,13 +182,13 @@ class MoviesListViewModel(
     }
 
     private fun updateIsFavourite(movie: FavouriteMovie) {
-        launch {
+        uiScope.launch {
             likesUseCase.updateIsFavourite(movie, sessionId)
         }
     }
 
     private fun updateIsInWatchList(movie: WatchListMovie) {
-        launch {
+        uiScope.launch {
             likesUseCase.updateIsInWatchList(movie, sessionId)
         }
     }
@@ -166,16 +206,13 @@ class MoviesListViewModel(
     }
 
     private fun getMovieStatuses(movie: Movie) {
-        launch {
-            try {
-                val movieStatus = likesUseCase.getRemoteMovieStatuses(movie.id, sessionId)
-                if (movieStatus != null) {
-                    movie.isFavourite = movieStatus.favourite
-                    movie.isInWatchList = movieStatus.watchlist
-                    localMoviesUseCase.updateLocalMovieIsFavourite(movie.isFavourite, movie.id)
-                    liveData.value = State.Update
-                }
-            } catch (e: Exception) {
+        uiScope.launch {
+            val movieStatus = likesUseCase.getRemoteMovieStatuses(movie.id, sessionId)
+            if (movieStatus != null) {
+                movie.isFavourite = movieStatus.favourite
+                movie.isInWatchList = movieStatus.watchlist
+                localMoviesUseCase.updateLocalMovieIsFavourite(movie.isFavourite, movie.id)
+                liveData.value = State.Update
             }
         }
     }
@@ -185,9 +222,10 @@ class MoviesListViewModel(
         object ShowLoading : State()
         object HideLoading : State()
         data class Result(
-            val moviesList: List<Movie>?,
+            val moviesList: List<Movie>,
             val dataSource: DataSource? = null,
-            val type: MoviesType? = null
+            val type: MoviesType? = null,
+            val totalPages: Int = 1
         ) : State()
     }
 }

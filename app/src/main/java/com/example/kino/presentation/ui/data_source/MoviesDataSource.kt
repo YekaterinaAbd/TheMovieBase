@@ -3,7 +3,6 @@ package com.example.kino.presentation.ui.data_source
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.example.kino.data.mapper.DataSource
 import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.domain.model.Movie
 import com.example.kino.domain.use_case.MoviesListsUseCase
@@ -38,15 +37,16 @@ class MoviesDataSource(
     ) {
         updateState(MovieState.ShowLoading)
         scope.launch {
-            val response = moviesListsUseCase.getMovies(FIRST_PAGE, sessionId, movieType)
-            val movies = response.first ?: emptyList()
-            val remote = response.second == DataSource.REMOTE
-            for (movie in movies) {
-                GenresList.setMovieGenres(movie, context)
-            }
-            val key = if (movies.isNotEmpty() && remote) FIRST_PAGE + 1 else null
-            callback.onResult(movies, null, key)
-            updateState(MovieState.HideLoading)
+//            val response = moviesListsUseCase.getMovies(FIRST_PAGE, sessionId, movieType)
+//            val movies = response.first ?: emptyList()
+//            val remote = response.second == DataSource.REMOTE
+//            for (movie in movies) {
+//                GenresList.setMovieGenres(movie, context)
+//            }
+//            val key = if (movies.isNotEmpty() && remote) FIRST_PAGE + 1 else null
+//            callback.onResult(movies, null, key)
+//            updateState(MovieState.HideLoading)
+
         }
     }
 
@@ -55,18 +55,18 @@ class MoviesDataSource(
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
         updateState(MovieState.ShowLoading)
         scope.launch {
-            if (params.key != FIRST_PAGE) updateState(MovieState.ShowPageLoading)
-            else updateState(MovieState.HideLoading)
-
-            val response = moviesListsUseCase.getMovies(params.key, sessionId, movieType)
-            val movies = response.first ?: emptyList()
-            val remote = response.second == DataSource.REMOTE
-            for (movie in movies) {
-                GenresList.setMovieGenres(movie, context)
-            }
-            val key = if (movies.isNotEmpty() && remote) params.key + 1 else null
-            callback.onResult(movies, key)
-            updateState(MovieState.HideLoading)
+//            if (params.key != FIRST_PAGE) updateState(MovieState.ShowPageLoading)
+//            else updateState(MovieState.HideLoading)
+//
+//            val response = moviesListsUseCase.getMovies(params.key, sessionId, movieType)
+//            val movies = response.first ?: emptyList()
+//            val remote = response.second == DataSource.REMOTE
+//            for (movie in movies) {
+//                GenresList.setMovieGenres(movie, context)
+//            }
+//            val key = if (movies.isNotEmpty() && remote) params.key + 1 else null
+//            callback.onResult(movies, key)
+//            updateState(MovieState.HideLoading)
         }
     }
 

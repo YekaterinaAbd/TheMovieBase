@@ -1,4 +1,4 @@
-package com.example.kino.presentation.ui.lists.top
+package com.example.kino.presentation.ui.lists.movies
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,23 +8,21 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kino.R
-import com.example.kino.data.mapper.DataSource
 import com.example.kino.data.model.movie.MoviesType
 import com.example.kino.domain.model.Movie
 import com.example.kino.presentation.ui.lists.MoviesListViewModel
 import com.example.kino.presentation.ui.lists.SharedViewModel
 import com.example.kino.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.kino.presentation.utils.constants.*
-import com.example.kino.presentation.utils.pagination.PaginationScrollListener
+import com.example.kino.presentation.utils.pagination.PaginationListener
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.android.inject
 
-class TopFilmsFragment : Fragment() {
+class MoviesFragment : Fragment() {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var recyclerView: RecyclerView
@@ -35,7 +33,7 @@ class TopFilmsFragment : Fragment() {
 
     private var movieType: MoviesType = MoviesType.TOP
 
-    private var currentPage = PaginationScrollListener.PAGE_START
+    private var currentPage = PaginationListener.PAGE_START
     private var isLocal = false
     private var isLastPage = false
     private var isLoading = false
@@ -56,7 +54,7 @@ class TopFilmsFragment : Fragment() {
 
             parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
                 .addToBackStack(null)
-                .hide(this@TopFilmsFragment)
+                .hide(this@MoviesFragment)
                 .commit()
         }
 
@@ -73,7 +71,7 @@ class TopFilmsFragment : Fragment() {
     }
 
     private val adapter by lazy {
-        TopAdapter(itemClickListener = itemClickListener)
+        TopAdapter(itemClickListener = itemClickListener, movieType)
     }
 
     override fun onCreateView(
@@ -90,13 +88,13 @@ class TopFilmsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedViewModel.liked.observe(requireActivity(), Observer { item ->
+        sharedViewModel.liked.observe(requireActivity(), { item ->
             adapter.updateItem(item)
         })
-
         firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity())
         bindViews(view)
         setAdapter()
+        setData()
         getMovies(currentPage)
     }
 
@@ -117,20 +115,17 @@ class TopFilmsFragment : Fragment() {
         swipeRefreshLayout.setOnRefreshListener {
             adapter.clearAll()
             itemCount = 0
-            currentPage = PaginationScrollListener.PAGE_START
+            currentPage = PaginationListener.PAGE_START
             isLastPage = false
-            getMovies(currentPage)
+            getMovies(page = currentPage)
         }
-    }
 
-    private fun setAdapter() {
-        recyclerView.adapter = adapter
+        recyclerView.addOnScrollListener(object : PaginationListener(layoutManager) {
 
-        recyclerView.addOnScrollListener(object : PaginationScrollListener(layoutManager) {
             override fun loadMoreItems() {
                 isLoading = true
                 currentPage++
-                getMovies(currentPage)
+                getMovies(page = currentPage)
             }
 
             override fun isLastPage(): Boolean = isLastPage
@@ -138,6 +133,10 @@ class TopFilmsFragment : Fragment() {
             override fun isLocal(): Boolean = isLocal
 
         })
+    }
+
+    private fun setAdapter() {
+        recyclerView.adapter = adapter
     }
 
     private fun logEvent(logMessage: String, item: Movie) {
@@ -149,7 +148,11 @@ class TopFilmsFragment : Fragment() {
 
     private fun getMovies(page: Int) {
         moviesListViewModel.getMovies(movieType, page)
-        moviesListViewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
+    }
+
+    private fun setData() {
+
+        moviesListViewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
                     swipeRefreshLayout.isRefreshing = true
@@ -158,14 +161,25 @@ class TopFilmsFragment : Fragment() {
                     swipeRefreshLayout.isRefreshing = false
                 }
                 is MoviesListViewModel.State.Result -> {
-                    if (result.dataSource == DataSource.LOCAL) {
-                        adapter.replaceItems(result.moviesList ?: emptyList())
-                    } else {
+//                    if (result.dataSource == DataSource.LOCAL) {
+//                        adapter.replaceItems(result.moviesList ?: emptyList())
+//                    } else {
+//                        adapter.removeLoading()
+//                        adapter.addItems(result.moviesList ?: emptyList())
+//                        adapter.addLoading()
+//                        isLoading = false
+//                    }
+                    itemCount = result.moviesList.size
+                    if (currentPage != PaginationListener.PAGE_START) {
                         adapter.removeLoading()
-                        adapter.addItems(result.moviesList ?: emptyList())
-                        adapter.addLoading()
-                        isLoading = false
                     }
+                    adapter.addItems(result.moviesList)
+                    if (currentPage < result.totalPages) {
+                        adapter.addLoading()
+                    } else {
+                        isLastPage = true
+                    }
+                    isLoading = false
                 }
                 is MoviesListViewModel.State.Update -> {
                     adapter.notifyDataSetChanged()

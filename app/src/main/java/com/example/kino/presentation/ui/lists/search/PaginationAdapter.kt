@@ -76,7 +76,7 @@ class PaginationAdapter(
     }
 
     private fun hasExtraRow(): Boolean {
-        return state != null && state !== MovieState.HidePageLoading
+        return state !== MovieState.HidePageLoading
     }
 
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
