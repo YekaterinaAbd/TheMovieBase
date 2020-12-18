@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="24dp"
     android:background="@color/lightColorBackground"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@drawable/gradient_background">
+        android:background="@color/lightColorBackground">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -34,24 +36,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/toolbar"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:background="@color/lightColorItems"-->
-    <!--        android:fontFamily="@font/quicksand_bold"-->
-    <!--        android:paddingLeft="20dp"-->
-    <!--        android:paddingTop="20dp"-->
-    <!--        android:paddingBottom="16dp"-->
-    <!--        android:text="@string/search"-->
-    <!--        android:textColor="?attr/colorPrimaryText"-->
-    <!--        android:textSize="20sp"-->
-    <!--        android:textStyle="bold"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,11 +56,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_history_recycler_view"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/search_history_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/query_object_view" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="1dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_history_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                tools:listitem="@layout/query_object_view" />
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"

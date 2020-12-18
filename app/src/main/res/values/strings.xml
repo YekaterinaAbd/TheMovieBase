@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MovieBase</string>
+    <string name="app_name">TheMovieDB</string>
     <string name="todo">TODO</string>
     <string name="preference_file">shared_preferences</string>
     <string name="username">username</string>
@@ -37,4 +37,14 @@
     <string name="like">Like</string>
     <string name="all">All</string>
     <string name="movie_watch_list">Movie Watch List</string>
+    <string name="director">Director</string>
+    <string name="overview">Overview</string>
+    <string name="production_countries">Production Countries</string>
+    <string name="rated">Rated</string>
+    <string name="no_rating">---</string>
+    <string name="no_info">It seems to be no info :(</string>
+    <string name="rating">%.1f/10</string>
+    <string name="update_rating">Update Rating</string>
+    <string name="movie_rated">Movie Rated</string>
+    <string name="rating_failed">Rating failed</string>
 </resources>

@@ -4,5 +4,5 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.kino.presentation.ui.markers.GoogleMapsActivity"
+    tools:context="com.example.movies.presentation.ui.markers.GoogleMapsActivity"
     tools:layout="@layout/activity_google_maps" />

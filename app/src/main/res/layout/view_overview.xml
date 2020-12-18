@@ -21,20 +21,20 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8sp"
         android:fontFamily="@font/quicksand_semi_bold"
-        android:text="Overview"
         android:textColor="@color/lightColorPrimaryText"
+        android:text="@string/overview"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="overview"
         android:textColor="?attr/colorPrimaryText"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line" />
+        app:layout_constraintTop_toBottomOf="@+id/line"
+        tools:text="overview" />
 
     <TextView
         android:id="@+id/tvExpandCollapse"

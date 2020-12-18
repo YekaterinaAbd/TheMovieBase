@@ -1,52 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightColorBackground"
-    android:orientation="vertical">
+    android:background="@color/lightColorBackground">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
+        android:id="@+id/main.appbar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@drawable/gradient_background">
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_background"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/main.collapsing"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:collapsedTitleGravity="center_vertical"
-            app:collapsedTitleTextAppearance="@style/collapsedToolbarStyle"
-            app:expandedTitleGravity="center_vertical|center_horizontal"
-            app:expandedTitleMargin="16dp"
-            app:expandedTitleMarginBottom="16dp"
-            app:expandedTitleTextAppearance="@style/expandedToolbarStyleSmall"
+            android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="0dp"
-                app:title="@string/account">
+            <ImageView
+                android:id="@+id/btnLogOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="16dp"
+                android:elevation="1dp"
+                android:src="@drawable/ic_logout"
+                app:tint="@color/darkColorPrimary" />
 
-            </androidx.appcompat.widget.Toolbar>
+            <ImageView
+                android:id="@+id/main.imageview.placeholder"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/dark_gradient_background"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.9" />
+
+            <FrameLayout
+                android:id="@+id/main.framelayout.title"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@color/lightColorBackground"
+                android:orientation="vertical"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.3">
+
+
+                <LinearLayout
+                    android:id="@+id/main.linearlayout.title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="24dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:gravity="bottom"
+                        android:singleLine="true"
+                        android:text="Monkey D.Luffy"
+                        android:textColor="@color/darkColorPrimary"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginTop="4dp"
+                        android:gravity="start"
+                        android:text="TheMovieDB"
+                        android:textColor="@color/darkColorPrimary" />
+
+                </LinearLayout>
+
+            </FrameLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
-
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/toolbar"-->
-    <!--        style="@style/expandedToolbarStyleSmall"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="80dp"-->
-    <!--        android:gravity="center_vertical|center_horizontal"-->
-    <!--        android:padding="20dp"-->
-    <!--        android:text="@string/account"-->
-    <!--        app:elevation="1dp" />-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,248 +97,137 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardCornerRadius="6dp">
 
-
-                <TextView
-                    android:id="@+id/tvUsernameData"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="36dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="Username"
-                    android:textAlignment="center"
-                    android:textColor="?attr/colorPrimaryText"
-                    android:textSize="26sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
-                <Button
-                    android:id="@+id/map"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="16dp"
-                    android:background="@drawable/button_background"
-                    android:text="cinemas map"
-                    android:textColor="#FFFFFF"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:layout_editor_absoluteY="271dp" />
+                    <TextView
+                        android:id="@+id/btnFavourites"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="@string/favourite_movies"
+                        app:drawableTopCompat="@drawable/ic_favourite" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btnFavourites"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvUsernameData">
-
-                    <LinearLayout
-                        android:id="@+id/linearLayout2"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/dark_gradient_background"
-                        android:gravity="center"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <ImageView
-                            android:id="@+id/imageView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_favourite_border"
-                            app:tint="@color/lightColorItems"
-                            tools:layout_editor_absoluteX="173dp"
-                            tools:layout_editor_absoluteY="34dp" />
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/btnWatchList"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:text="@string/watch_list"
+                        app:drawableTopCompat="@drawable/ic_watchlist_filled" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:fontFamily="@font/quicksand_semi_bold"
-                        android:text="@string/favourite_movie"
-                        android:textColor="@color/darkColorPrimary"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="@string/favourite_movie" />
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:text="@string/rated"
+                        app:drawableTopCompat="@drawable/ic_star" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btnLike"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintEnd_toEndOf="@+id/btnFavourites"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/btnFavourites"
-                    app:layout_constraintTop_toBottomOf="@+id/btnFavourites">
 
-                    <LinearLayout
-                        android:id="@+id/linearLayout"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/dark_gradient_background"
-                        android:gravity="center"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+            </androidx.cardview.widget.CardView>
 
-                        <ImageView
-                            android:id="@+id/imageView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_watchlist"
-                            app:tint="@color/lightColorItems"
-                            tools:layout_editor_absoluteX="173dp"
-                            tools:layout_editor_absoluteY="34dp" />
+            <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:paddingBottom="24dp">-->
 
-                    </LinearLayout>
+            <!--                <Button-->
+            <!--                    android:id="@+id/map"-->
+            <!--                    android:layout_width="0dp"-->
+            <!--                    android:layout_height="match_parent"-->
+            <!--                    android:layout_marginStart="16dp"-->
+            <!--                    android:background="@drawable/button_background"-->
+            <!--                    android:text="cinemas map"-->
+            <!--                    android:textColor="#FFFFFF"-->
+            <!--                    android:visibility="gone"-->
+            <!--                    app:layout_constraintStart_toStartOf="parent"-->
+            <!--                    tools:layout_editor_absoluteY="271dp" />-->
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:fontFamily="@font/quicksand_semi_bold"
-                        android:text="@string/movie_watch_list"
-                        android:textColor="@color/darkColorPrimary"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/linearLayout"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Movie WatchList" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/btnCinemaMap"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:paddingTop="16dp"
-                    android:visibility="gone"
-                    app:cardCornerRadius="4dp"
-                    app:contentPadding="16dp"
-                    app:layout_constraintEnd_toEndOf="@+id/btnLike"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/btnLike"
-                    app:layout_constraintTop_toBottomOf="@+id/btnLike">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:id="@+id/imageView3"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_marginStart="4dp"
-                            android:src="@drawable/googleg_standard_color_18"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:text="Cinema Map"
-                            android:textColor="@color/darkColorPrimary"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-                            app:layout_constraintStart_toEndOf="@+id/imageView3"
-                            app:layout_constraintTop_toTopOf="@+id/imageView3"
-                            tools:text="Cinema Map" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!--        <androidx.cardview.widget.CardView-->
-                <!--            android:id="@+id/btnSettings"-->
-                <!--            android:layout_width="0dp"-->
-                <!--            android:layout_height="wrap_content"-->
-                <!--            android:layout_marginTop="16dp"-->
-                <!--            android:paddingTop="16dp"-->
-                <!--            android:visibility="gone"-->
-                <!--            app:cardCornerRadius="4dp"-->
-                <!--            app:contentPadding="16dp"-->
-                <!--            app:layout_constraintEnd_toEndOf="@+id/btnCinemaMap"-->
-                <!--            app:layout_constraintHorizontal_bias="0.0"-->
-                <!--            app:layout_constraintStart_toStartOf="@+id/btnCinemaMap"-->
-                <!--            app:layout_constraintTop_toBottomOf="@+id/btnCinemaMap">-->
-
-                <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-                <!--                android:layout_width="match_parent"-->
-                <!--                android:layout_height="match_parent">-->
-
-                <!--                <ImageView-->
-                <!--                    android:id="@+id/imageView4"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginStart="4dp"-->
-                <!--                    android:src="@drawable/ic_settings"-->
-                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent"-->
-                <!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-                <!--                <TextView-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginStart="16dp"-->
-                <!--                    android:text="Settings"-->
-                <!--                    android:textColor="@color/darkColorPrimary"-->
-                <!--                    android:textSize="16sp"-->
-                <!--                    app:layout_constraintBottom_toBottomOf="@+id/imageView4"-->
-                <!--                    app:layout_constraintStart_toEndOf="@+id/imageView4"-->
-                <!--                    app:layout_constraintTop_toTopOf="@+id/imageView4"-->
-                <!--                    tools:text="Settings" />-->
-                <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-                <!--        </androidx.cardview.widget.CardView>-->
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
-        <android.widget.Button
+        <!--        <android.widget.Button-->
 
-            android:id="@+id/btnLogOut"
-            style="@style/ButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="48dp"
-            android:layout_marginEnd="48dp"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/button_background"
-            android:text="@string/log_out"
-            android:textColor="@color/darkColorBackground"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            tools:layout_editor_absoluteX="48dp" />
+        <!--            android:id="@+id/btnLogOut"-->
+        <!--            style="@style/ButtonStyle"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="40dp"-->
+        <!--            android:layout_gravity="bottom"-->
+        <!--            android:layout_marginStart="48dp"-->
+        <!--            android:layout_marginEnd="48dp"-->
+        <!--            android:layout_marginBottom="24dp"-->
+        <!--            android:background="@drawable/button_background"-->
+        <!--            android:text="@string/log_out"-->
+        <!--            android:textColor="@color/darkColorBackground"-->
+        <!--            android:textSize="12sp"-->
+        <!--            android:textStyle="bold"-->
+        <!--            tools:layout_editor_absoluteX="48dp" />-->
 
     </LinearLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/main.toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#00F1F6FB"
+        android:visibility="gone"
+        app:layout_anchor="@id/main.framelayout.title"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:title="">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="32dp"
+                android:layout_height="32dp" />
+
+            <TextView
+                android:id="@+id/main.textview.title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Name"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="24dp"
+        android:elevation="8dp"
+        android:src="@drawable/killua"
+        app:layout_anchor="@id/main.linearlayout.title"
+        app:layout_anchorGravity="start"
+        app:layout_scrollFlags="scroll" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

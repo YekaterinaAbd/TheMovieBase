@@ -20,29 +20,51 @@
 
         <ImageView
             android:id="@+id/ivPoster"
-            android:layout_width="115dp"
+            android:layout_width="110dp"
             android:layout_height="160dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/poster" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="110dp"
+                android:layout_height="40dp"
+                android:background="#BEE6E6E6"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_semi_bold"
+                android:gravity="center_vertical|center_horizontal"
+                android:maxLines="2"
+                android:padding="4dp"
+                android:textAlignment="center"
+                android:textColor="@color/darkColorBackground"
+                android:textSize="12sp"
+                tools:text="Gabriel's Inferno Part II" />
+
+        </RelativeLayout>
+
     </androidx.cardview.widget.CardView>
 
-    <TextView
+    <!--    <TextView-->
 
-        android:id="@+id/tvTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ellipsize="end"
-        android:fontFamily="@font/quicksand_semi_bold"
-        android:maxLines="2"
-        android:textAlignment="center"
-        android:textColor="@color/darkColorBackground"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/cardView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        tools:text="Gabriel's Inferno Part II" />
+    <!--        android:id="@+id/tvTitle"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:ellipsize="end"-->
+    <!--        android:fontFamily="@font/quicksand_semi_bold"-->
+    <!--        android:maxLines="2"-->
+    <!--        android:textAlignment="center"-->
+    <!--        android:textColor="@color/darkColorBackground"-->
+    <!--        android:textSize="12sp"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/cardView"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/cardView"-->
+    <!--        tools:text="Gabriel's Inferno Part II" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
