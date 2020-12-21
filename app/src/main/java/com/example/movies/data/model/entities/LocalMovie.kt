@@ -9,7 +9,7 @@ data class LocalMovie(
     @PrimaryKey(autoGenerate = true)
     var primaryId: Int = 0,
     var id: Int = 0,
-    var type: String? = MoviesType.typeToString(MoviesType.TOP),
+    var type: String? = MoviesType.TOP.type,
     var title: String? = null,
     var voteAverage: Double? = null,
     var posterPath: String? = null,

@@ -34,7 +34,7 @@ class MoviesListView : LinearLayout {
 
     fun setData(movieType: MoviesType) {
         type = movieType
-        title.text = MoviesType.typeToString(type)
+        title.text = movieType.type
     }
 
     fun setListeners(fm: FragmentManager) {

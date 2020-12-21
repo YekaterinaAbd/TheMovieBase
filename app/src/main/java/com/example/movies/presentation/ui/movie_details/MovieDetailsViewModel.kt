@@ -9,6 +9,7 @@ import com.example.movies.domain.use_case.MovieDetailsUseCase
 import com.example.movies.domain.use_case.SessionIdUseCase
 import com.example.movies.presentation.BaseViewModel
 import com.example.movies.presentation.utils.constants.MEDIA_TYPE
+import com.google.gson.internal.LinkedTreeMap
 import kotlinx.coroutines.launch
 
 class MovieDetailsViewModel(
@@ -31,8 +32,10 @@ class MovieDetailsViewModel(
                 if (movieState != null) {
                     movieDetails.favourite = movieState.favourite
                     movieDetails.watchlist = movieState.watchlist
-                    if (movieState.rated != false)
-                        movieDetails.userRating = movieState.rated as Double?
+                    if (movieState.rated != false) {
+                        val rating = movieState.rated as LinkedTreeMap<String, Double>
+                        movieDetails.userRating = rating["value"]
+                    }
                 }
                 liveData.value = State.Result(movieDetails)
             } else liveData.value = State.Error

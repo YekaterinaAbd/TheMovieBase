@@ -8,12 +8,17 @@ import com.example.movies.domain.model.Movie
 
 interface MovieRepository {
 
-    suspend fun getTopMovies(apiKey: String, page: Int): MoviesAnswer
-    suspend fun getCurrentMovies(apiKey: String, page: Int): MoviesAnswer
-    suspend fun getUpcomingMovies(apiKey: String, page: Int): MoviesAnswer
-    suspend fun getPopularMovies(apiKey: String, page: Int): MoviesAnswer
-    suspend fun getFavouriteMovies(apiKey: String, sessionId: String, page: Int): MoviesAnswer
-    suspend fun getWatchListMovies(apiKey: String, sessionId: String, page: Int): MoviesAnswer
+//    suspend fun getTopMovies(apiKey: String, page: Int): MoviesAnswer
+//    suspend fun getCurrentMovies(apiKey: String, page: Int): MoviesAnswer
+//    suspend fun getUpcomingMovies(apiKey: String, page: Int): MoviesAnswer
+//    suspend fun getPopularMovies(apiKey: String, page: Int): MoviesAnswer
+//    suspend fun getFavouriteMovies(apiKey: String, sessionId: String, page: Int): MoviesAnswer
+//    suspend fun getWatchListMovies(apiKey: String, sessionId: String, page: Int): MoviesAnswer
+
+    suspend fun getMovies(
+        type: MoviesType, apiKey: String, page: Int, context: Context
+    ): MoviesAnswer
+
     suspend fun getRecommendedMovies(apiKey: String, sessionId: String, page: Int): MoviesAnswer?
 
     suspend fun searchMovies(apiKey: String, query: String?, page: Int): List<Movie>?
@@ -53,4 +58,5 @@ interface MovieRepository {
     suspend fun getCredits(id: Int, apiKey: String): Credits?
 
     suspend fun rateMovie(id: Int, apiKey: String, sessionId: String, rating: Double): Boolean
+
 }

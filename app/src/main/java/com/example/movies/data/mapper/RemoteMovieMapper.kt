@@ -36,7 +36,8 @@ class RemoteMovieMapper : Mapper<RemoteMovie, Movie> {
             releaseDate = releaseDate,
             popularity = popularity,
             overview = overview,
-            genreIds = genreIds
+            genreIds = genreIds,
+            rating = rating
         )
     }
 }

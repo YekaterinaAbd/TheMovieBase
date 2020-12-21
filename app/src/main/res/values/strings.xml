@@ -47,4 +47,5 @@
     <string name="update_rating">Update Rating</string>
     <string name="movie_rated">Movie Rated</string>
     <string name="rating_failed">Rating failed</string>
+    <string name="my_rating">| %.1f</string>
 </resources>

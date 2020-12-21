@@ -14,3 +14,4 @@ data class WatchListMovie(
     @SerializedName("watchlist") var watchlist: Boolean
 )
 
+

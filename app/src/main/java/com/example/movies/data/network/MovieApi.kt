@@ -87,6 +87,13 @@ interface MovieApi {
         @Query("page") page: Int
     ): Response<Movies>
 
+    @GET("account/{account_id}/rated/movies")
+    suspend fun getRatedMovies(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String,
+        @Query("page") page: Int
+    ): Response<Movies>
+
     @GET("account/{account_id}/movie/recommendations")
     suspend fun getMoviesRecommendations(
         @Query("api_key") apiKey: String,

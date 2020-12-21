@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
 import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.domain.model.Movie
-import com.example.movies.presentation.utils.Margin
-import com.example.movies.presentation.utils.Side
+import com.example.movies.presentation.utils.extensions.Side
+import com.example.movies.presentation.utils.extensions.setMargin
 import com.squareup.picasso.Picasso
 
 class HorizontalFilmsAdapter(
@@ -57,7 +57,7 @@ class HorizontalFilmsAdapter(
 
             if (movie != null) {
 
-                if (adapterPosition == 0) Margin.setMargin(16, itemView.context, view, Side.LEFT)
+                if (adapterPosition == 0) itemView.setMargin(16, Side.END)
 
                 tvTitle.text = movie.title
 

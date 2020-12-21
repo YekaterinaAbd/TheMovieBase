@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.lists.SharedViewModel
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.movies.presentation.utils.constants.*
+import com.example.movies.presentation.utils.extensions.replaceFragments
 import com.example.movies.presentation.utils.pagination.PaginationListener
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.android.inject
@@ -47,16 +49,22 @@ class MoviesFragment : Fragment() {
         override fun itemClick(item: Movie) {
             logEvent(MOVIE_CLICKED, item)
 
-            val bundle = Bundle()
-            bundle.putInt(INTENT_KEY, item.id)
+            parentFragmentManager.replaceFragments<MovieDetailsFragment>(
+                container = R.id.framenav,
+                hideTag = this@MoviesFragment,
+                bundle = bundleOf(INTENT_KEY to item.id)
+            )
 
-            val movieDetailedFragment = MovieDetailsFragment()
-            movieDetailedFragment.arguments = bundle
-
-            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-                .addToBackStack(null)
-                .hide(this@MoviesFragment)
-                .commit()
+//            val bundle = Bundle()
+//            bundle.putInt(INTENT_KEY, item.id)
+//
+//            val movieDetailedFragment = MovieDetailsFragment()
+//            movieDetailedFragment.arguments = bundle
+//
+//            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
+//                .addToBackStack(this@MoviesFragment.tag)
+//
+//                .commit()
         }
 
         override fun addToFavourites(item: Movie) {
@@ -72,7 +80,7 @@ class MoviesFragment : Fragment() {
     }
 
     private val adapter by lazy {
-        TopAdapter(itemClickListener = itemClickListener, movieType)
+        ListsAdapter(itemClickListener = itemClickListener, movieType)
     }
 
     override fun onCreateView(
@@ -105,7 +113,7 @@ class MoviesFragment : Fragment() {
         layoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = layoutManager
 
-        tvTitle.text = MoviesType.typeToString(movieType)
+        tvTitle.text = movieType.type
 
         ivBack = view.findViewById(R.id.ivBack)
         ivBack.setOnClickListener {

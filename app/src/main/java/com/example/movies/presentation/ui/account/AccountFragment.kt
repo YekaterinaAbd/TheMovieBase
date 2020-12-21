@@ -11,12 +11,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.example.movies.R
 import com.example.movies.data.model.movie.MoviesType
 import com.example.movies.presentation.ui.lists.movies.MoviesFragment
 import com.example.movies.presentation.ui.sign_in.SignInActivity
 import com.example.movies.presentation.utils.constants.MOVIE_TYPE
+import com.example.movies.presentation.utils.extensions.replaceFragments
 import com.google.android.material.appbar.AppBarLayout
 import de.hdodenhof.circleimageview.CircleImageView
 import org.koin.android.ext.android.inject
@@ -41,6 +43,7 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
     private lateinit var toolbar: Toolbar
     private lateinit var viewFavourites: TextView
     private lateinit var viewWatchList: TextView
+    private lateinit var viewRated: TextView
     private lateinit var logOutButton: ImageView
     private lateinit var profileImage: CircleImageView
 
@@ -67,6 +70,7 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
         logOutButton = view.findViewById(R.id.btnLogOut)
         viewFavourites = view.findViewById(R.id.btnFavourites)
         viewWatchList = view.findViewById(R.id.btnWatchList)
+        viewRated = view.findViewById(R.id.btnRated)
 
         title.text = accountViewModel.username.value
         mMaxScrollSize = appBarLayout.totalScrollRange
@@ -80,19 +84,26 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
             openListFragment(MoviesType.WATCH_LIST)
         }
 
+        viewRated.setOnClickListener {
+            openListFragment(MoviesType.RATED)
+        }
+
         logOutButton.setOnClickListener {
             logOut()
         }
     }
 
     private fun openListFragment(type: MoviesType) {
-        val bundle = Bundle()
-        bundle.putSerializable(MOVIE_TYPE, type)
+        val bundle = bundleOf(MOVIE_TYPE to type)
+        parentFragmentManager.replaceFragments<MoviesFragment>(
+            container = R.id.framenav,
+            bundle = bundle
+        )
 
-        val movieListsFragment = MoviesFragment()
-        movieListsFragment.arguments = bundle
-        parentFragmentManager.beginTransaction().add(R.id.framenav, movieListsFragment)
-            .addToBackStack(null).commit()
+//        val movieListsFragment = MoviesFragment()
+//        movieListsFragment.arguments = bundle
+//        parentFragmentManager.beginTransaction().add(R.id.framenav, movieListsFragment)
+//            .addToBackStack(null).commit()
     }
 
     private fun logOut() {

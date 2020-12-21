@@ -11,6 +11,7 @@ import com.example.movies.data.mapper.MoviesAnswer
 import com.example.movies.data.mapper.RemoteMovieMapper
 import com.example.movies.data.model.entities.MovieStatus
 import com.example.movies.data.model.movie.*
+import com.example.movies.data.model.movie.MoviesType.*
 import com.example.movies.data.network.API_KEY
 import com.example.movies.data.network.MovieApi
 import com.example.movies.domain.model.Movie
@@ -20,6 +21,7 @@ import com.example.movies.presentation.utils.constants.NULLABLE_VALUE
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 class MovieRepositoryImpl(
     private var movieDao: MovieDao? = null,
@@ -41,127 +43,36 @@ class MovieRepositoryImpl(
     private fun getFromDatabase(type: MoviesType) =
         movieDao?.getMovies(type.name)?.map { localMovieMapper.from(it) }
 
-
-    override suspend fun getTopMovies(
-        apiKey: String, page: Int
-    ): MoviesAnswer =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = service.getTopMovies(apiKey, page)
-                if (response.isSuccessful) {
-                    val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                    val totalPages = response.body()?.totalPages ?: 0
-                    insertToDatabase(list, MoviesType.TOP)
-                    return@withContext MoviesAnswer(list, DataSource.REMOTE, totalPages)
-                } else {
-                    val list = getFromDatabase(MoviesType.TOP)
-                    return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
-                }
-            } catch (e: Exception) {
-                val list = getFromDatabase(MoviesType.TOP)
-                return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
-            }
-        }
-
-    override suspend fun getCurrentMovies(
-        apiKey: String,
-        page: Int
-    ): MoviesAnswer =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = service.getCurrentMovies(apiKey, page)
-                if (response.isSuccessful) {
-                    val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                    val totalPages = response.body()?.totalPages ?: 0
-                    insertToDatabase(list, MoviesType.CURRENT)
-                    return@withContext MoviesAnswer(list, DataSource.REMOTE, totalPages)
-                } else {
-                    val list = getFromDatabase(MoviesType.CURRENT)
-                    return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
-                }
-            } catch (e: Exception) {
-                val list = getFromDatabase(MoviesType.CURRENT)
-                return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
-            }
-        }
-
-    override suspend fun getUpcomingMovies(
-        apiKey: String,
-        page: Int
-    ): MoviesAnswer =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = service.getUpcomingMovies(apiKey, page)
-                if (response.isSuccessful) {
-                    val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                    val totalPages = response.body()?.totalPages ?: 0
-                    insertToDatabase(list, MoviesType.UPCOMING)
-                    return@withContext MoviesAnswer(list, DataSource.REMOTE, totalPages)
-                } else {
-                    val list = getFromDatabase(MoviesType.UPCOMING)
-                    return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
-                }
-            } catch (e: Exception) {
-                val list = getFromDatabase(MoviesType.UPCOMING)
-                return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
-            }
-        }
-
-    override suspend fun getPopularMovies(apiKey: String, page: Int): MoviesAnswer =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = service.getPopularMovies(apiKey, page)
-                if (response.isSuccessful) {
-                    val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                    val totalPages = response.body()?.totalPages ?: 0
-                    insertToDatabase(list, MoviesType.POPULAR)
-                    return@withContext MoviesAnswer(list, DataSource.REMOTE, totalPages)
-                } else {
-                    val list = getFromDatabase(MoviesType.POPULAR)
-                    return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
-                }
-            } catch (e: Exception) {
-                val list = getFromDatabase(MoviesType.POPULAR)
-                return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
-            }
-        }
-
-    override suspend fun getFavouriteMovies(
-        apiKey: String, sessionId: String, page: Int
-    ): MoviesAnswer = withContext(Dispatchers.IO) {
-        try {
-            val response = service.getFavouriteMovies(apiKey, sessionId, page)
-            if (response.isSuccessful) {
-                val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                val totalPages = response.body()?.totalPages ?: 0
-                insertToDatabase(list, MoviesType.FAVOURITES)
-                return@withContext MoviesAnswer(list, DataSource.REMOTE, totalPages)
-            } else {
-                val list = getFromDatabase(MoviesType.FAVOURITES)
-                return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
-            }
-        } catch (e: Exception) {
-            val list = getFromDatabase(MoviesType.FAVOURITES)
-            return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
+    private suspend fun getMoviesByType(
+        type: MoviesType, apiKey: String, page: Int, sessionId: String
+    ): Response<Movies> {
+        return when (type) {
+            TOP -> service.getTopMovies(apiKey, page)
+            CURRENT -> service.getCurrentMovies(apiKey, page)
+            FAVOURITES -> service.getFavouriteMovies(apiKey, sessionId, page)
+            POPULAR -> service.getPopularMovies(apiKey, page)
+            UPCOMING -> service.getUpcomingMovies(apiKey, page)
+            WATCH_LIST -> service.getMoviesWatchList(apiKey, sessionId, page)
+            RATED -> service.getRatedMovies(apiKey, sessionId, page)
         }
     }
 
-    override suspend fun getWatchListMovies(
-        apiKey: String, sessionId: String, page: Int
+    override suspend fun getMovies(
+        type: MoviesType, apiKey: String, page: Int, context: Context
     ): MoviesAnswer = withContext(Dispatchers.IO) {
         try {
-            val response = service.getMoviesWatchList(apiKey, sessionId, page)
+            val response = getMoviesByType(type, apiKey, page, getLocalSessionId(context))
             if (response.isSuccessful) {
                 val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
                 val totalPages = response.body()?.totalPages ?: 0
-                insertToDatabase(list, MoviesType.WATCH_LIST)
+                insertToDatabase(list, type)
                 return@withContext MoviesAnswer(list, DataSource.REMOTE, totalPages)
             } else {
-                val list = getFromDatabase(MoviesType.WATCH_LIST)
+                val list = getFromDatabase(type)
                 return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
             }
         } catch (e: Exception) {
-            val list = getFromDatabase(MoviesType.WATCH_LIST)
+            val list = getFromDatabase(type)
             return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
         }
     }
@@ -228,15 +139,15 @@ class MovieRepositoryImpl(
                 for (movie in moviesToUpdate) {
                     if (movie.type == MoviesType.FAVOURITES.name) {
                         favouriteUpdated = updateIsFavourite(
-                            FavouriteMovie(MEDIA_TYPE, movie.movieId, movie.favourite), sessionId
+                            FavouriteMovie(MEDIA_TYPE, movie.id, movie.favourite), sessionId
                         )
                     } else {
                         watchListUpdated = updateIsInWatchList(
-                            WatchListMovie(MEDIA_TYPE, movie.movieId, movie.watchlist), sessionId
+                            WatchListMovie(MEDIA_TYPE, movie.id, movie.watchlist), sessionId
                         )
                     }
                     if (favouriteUpdated && watchListUpdated) deleteLocalMovieStatus(
-                        movie.movieId
+                        movie.id
                     )
                 }
             }
@@ -358,17 +269,13 @@ class MovieRepositoryImpl(
         }
 
     override suspend fun updateRemoteFavourites(
-        apiKey: String,
-        sessionId: String,
-        fav: FavouriteMovie
+        apiKey: String, sessionId: String, fav: FavouriteMovie
     ) {
         service.markFavourite(apiKey, sessionId, fav)
     }
 
     override suspend fun updateRemoteWatchList(
-        apiKey: String,
-        sessionId: String,
-        fav: WatchListMovie
+        apiKey: String, sessionId: String, fav: WatchListMovie
     ) {
         service.markWatchList(apiKey, sessionId, fav)
     }
@@ -399,10 +306,7 @@ class MovieRepositoryImpl(
     }
 
     override suspend fun rateMovie(
-        id: Int,
-        apiKey: String,
-        sessionId: String,
-        rating: Double
+        id: Int, apiKey: String, sessionId: String, rating: Double
     ): Boolean {
         val body = JsonObject().apply {
             addProperty("value", rating)

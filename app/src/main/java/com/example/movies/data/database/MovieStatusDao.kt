@@ -15,7 +15,7 @@ interface MovieStatusDao {
     @Query("SELECT * FROM movies_statuses")
     fun getMovieStatuses(): List<MovieStatus>
 
-    @Query("DELETE FROM movies_statuses WHERE movieId=:id")
+    @Query("DELETE FROM movies_statuses WHERE id=:id")
     fun deleteMovieStatus(id: Int)
 
     @Query("DELETE FROM movies_statuses")

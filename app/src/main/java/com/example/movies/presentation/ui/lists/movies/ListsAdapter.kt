@@ -8,10 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
 import com.example.movies.data.model.movie.MoviesType
+import com.example.movies.data.model.movie.MoviesType.*
 import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.domain.model.Movie
-import com.example.movies.presentation.utils.Margin
-import com.example.movies.presentation.utils.Side
+import com.example.movies.presentation.utils.extensions.Side
+import com.example.movies.presentation.utils.extensions.setMargin
 import com.squareup.picasso.Picasso
 
 interface ItemClickListener {
@@ -23,14 +24,14 @@ interface ItemClickListener {
 private const val VIEW_TYPE_LOADING = 0
 private const val VIEW_TYPE_NORMAL = 1
 
-class TopAdapter(
+class ListsAdapter(
     private val itemClickListener: ItemClickListener? = null,
     private val moviesType: MoviesType
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var isLoaderVisible = false
 
-    private var moviePosition = 1
+    // private var moviePosition = 1
     private var movies = ArrayList<Movie>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -38,9 +39,10 @@ class TopAdapter(
         val view = inflater.inflate(R.layout.film_object_view, parent, false)
         return when (viewType) {
             VIEW_TYPE_NORMAL -> {
-                if (moviesType == MoviesType.WATCH_LIST || moviesType == MoviesType.FAVOURITES)
+                if (moviesType == WATCH_LIST || moviesType == FAVOURITES || moviesType == RATED)
                     MyMovieViewHolder(view)
-                else MovieViewHolder(view)
+                else
+                    MovieViewHolder(view)
             }
             VIEW_TYPE_LOADING -> LoaderViewHolder(
                 inflater.inflate(R.layout.loader, parent, false)
@@ -65,7 +67,7 @@ class TopAdapter(
 
     fun clearAll() {
         movies.clear()
-        moviePosition = 1
+        //  moviePosition = 1
         notifyDataSetChanged()
     }
 
@@ -99,7 +101,7 @@ class TopAdapter(
     fun replaceItems(moviesList: List<Movie>) {
         isLoaderVisible = false
         movies = moviesList as ArrayList<Movie>
-        moviePosition = 1
+        //  moviePosition = 1
         notifyDataSetChanged()
     }
 
@@ -137,7 +139,7 @@ class TopAdapter(
             addToFav.visibility = View.VISIBLE
             addToWatchlist.visibility = View.VISIBLE
 
-            if (movies[0] == movie) Margin.setMargin(16, itemView.context, view, Side.TOP)
+            if (movies[0] == movie) itemView.setMargin(16, Side.TOP)
 
             if (movie != null) {
 
@@ -147,10 +149,10 @@ class TopAdapter(
                 if (movie.isInWatchList) addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
                 else addToWatchlist.setImageResource(R.drawable.ic_watchlist)
 
-                if (movie.position == 0) {
-                    movie.position = moviePosition
-                    moviePosition++
-                }
+//                if (movie.position == 0) {
+//                    movie.position = moviePosition
+//                    moviePosition++
+//                }
 
                 tvTitle.text = movie.title
                 if (!movie.releaseDate.isNullOrEmpty())
@@ -195,9 +197,10 @@ class TopAdapter(
             val tvRating = view.findViewById<TextView>(R.id.tvRating)
             val addToFav = view.findViewById<ImageView>(R.id.ivLike)
             val addToWatchlist = view.findViewById<ImageView>(R.id.ivWatchlist)
+            val tvMyRating = view.findViewById<TextView>(R.id.tvRated)
 
             if (movie != null) {
-                if (movies[0] == movie) Margin.setMargin(16, itemView.context, view, Side.TOP)
+                if (movies[0] == movie) itemView.setMargin(16, Side.TOP)
 
                 tvTitle.text = movie.title
                 tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
@@ -212,7 +215,7 @@ class TopAdapter(
                     itemClickListener?.itemClick(movie)
                 }
 
-                if (moviesType == MoviesType.WATCH_LIST) {
+                if (moviesType == WATCH_LIST) {
                     addToWatchlist.visibility = View.VISIBLE
                     addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
 
@@ -221,7 +224,7 @@ class TopAdapter(
                         removeItem(movie, adapterPosition)
                     }
 
-                } else {
+                } else if (moviesType == FAVOURITES) {
                     addToFav.visibility = View.VISIBLE
                     addToFav.setImageResource(R.drawable.ic_favourite)
 
@@ -229,6 +232,10 @@ class TopAdapter(
                         itemClickListener?.addToFavourites(movie)
                         removeItem(movie, adapterPosition)
                     }
+                } else {
+                    tvMyRating.visibility = View.VISIBLE
+                    tvMyRating.text =
+                        itemView.context.getString(R.string.my_rating, movie.rating?.toFloat())
                 }
             }
         }
