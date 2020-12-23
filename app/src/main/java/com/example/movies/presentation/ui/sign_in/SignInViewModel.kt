@@ -1,19 +1,18 @@
 package com.example.movies.presentation.ui.sign_in
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import com.example.movies.core.base.BaseViewModel
 import com.example.movies.data.model.account.LoginValidationData
 import com.example.movies.data.model.account.Token
 import com.example.movies.domain.use_case.LocalLoginDataUseCase
 import com.example.movies.domain.use_case.LoginUseCase
-import com.example.movies.presentation.BaseViewModel
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
-    private val context: Context,
     private val loginUseCase: LoginUseCase,
     private val localLoginDataUseCase: LocalLoginDataUseCase
 ) : BaseViewModel() {
+
     private lateinit var loginValidationData: LoginValidationData
     private var token: Token? = null
     private var sessionId: String? = ""
@@ -23,7 +22,11 @@ class SignInViewModel(
     val liveData = MutableLiveData<State>()
 
     init {
-        if (localLoginDataUseCase.hasSessionId(context)) liveData.value = State.Result
+        if (localLoginDataUseCase.hasSessionId()) liveData.value = State.Result
+    }
+
+    fun isLoggedIn(): Boolean {
+        return localLoginDataUseCase.hasSessionId()
     }
 
     fun createTokenRequest(receivedUsername: String, receivedPassword: String) {
@@ -71,15 +74,15 @@ class SignInViewModel(
     }
 
     private fun saveLoginData() {
-        sessionId?.let { localLoginDataUseCase.saveLoginData(context, username, password, it) }
+        sessionId?.let { localLoginDataUseCase.saveLoginData(username, password, it) }
     }
 
     fun getSavedUsername(): String {
-        return localLoginDataUseCase.getLocalUsername(context)
+        return localLoginDataUseCase.getLocalUsername()
     }
 
     fun getSavedPassword(): String {
-        return localLoginDataUseCase.getLocalPassword(context)
+        return localLoginDataUseCase.getLocalPassword()
     }
 
     sealed class State {

@@ -23,3 +23,4 @@ interface SearchHistoryDao {
     @Query("DELETE FROM search_history")
     fun deleteAll()
 }
+

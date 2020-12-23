@@ -1,13 +1,10 @@
 package com.example.movies.data.repository
 
-import android.util.Log
 import com.example.movies.data.database.SearchHistoryDao
 import com.example.movies.data.model.entities.SearchQuery
 import com.example.movies.domain.repository.SearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
-const val KEY = "search_repository"
 
 class SearchRepositoryImpl(
     private val searchHistoryDao: SearchHistoryDao
@@ -17,7 +14,6 @@ class SearchRepositoryImpl(
         try {
             return@withContext searchHistoryDao.getAll()
         } catch (e: Exception) {
-            Log.d(KEY, e.message.toString())
             return@withContext emptyList()
         }
     }
@@ -26,7 +22,6 @@ class SearchRepositoryImpl(
         try {
             return@withContext searchHistoryDao.getQueries()
         } catch (e: Exception) {
-            Log.d(KEY, e.message.toString())
             return@withContext emptyList()
         }
     }
@@ -37,7 +32,6 @@ class SearchRepositoryImpl(
             return@withContext null
 
         } catch (e: Exception) {
-            Log.d(KEY, e.message.toString())
             return@withContext e.message
         }
     }
@@ -47,7 +41,6 @@ class SearchRepositoryImpl(
             searchHistoryDao.deleteQuery(id)
             return@withContext null
         } catch (e: Exception) {
-            Log.d(KEY, e.message.toString())
             return@withContext e.message
         }
     }
@@ -57,7 +50,6 @@ class SearchRepositoryImpl(
             searchHistoryDao.deleteAll()
             return@withContext null
         } catch (e: Exception) {
-            Log.d(KEY, e.message.toString())
             return@withContext e.message
         }
     }

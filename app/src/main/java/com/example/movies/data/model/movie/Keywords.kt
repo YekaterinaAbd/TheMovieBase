@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class Keywords(
-    @SerializedName("id") var movieId: Int? = null,
-    @SerializedName("keywords") var keywordsList: List<KeyWord>? = emptyList()
+    @SerializedName("id") var movieId: Int?,
+    @SerializedName("keywords") var keywordsList: List<KeyWord>?
 ) : Serializable
 
 data class KeyWord(
-    @SerializedName("id") var id: Int? = null,
-    @SerializedName("name") var keyword: String? = null
+    @SerializedName("id") var id: Int?,
+    @SerializedName("name") var keyword: String?
 ) : Serializable
 

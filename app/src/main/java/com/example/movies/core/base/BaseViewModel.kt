@@ -1,4 +1,4 @@
-package com.example.movies.presentation
+package com.example.movies.core.base
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope

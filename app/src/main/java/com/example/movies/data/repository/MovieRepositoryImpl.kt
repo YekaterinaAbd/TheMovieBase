@@ -5,16 +5,18 @@ import android.content.SharedPreferences
 import com.example.movies.R
 import com.example.movies.data.database.MovieDao
 import com.example.movies.data.database.MovieStatusDao
-import com.example.movies.data.mapper.DataSource
 import com.example.movies.data.mapper.LocalMovieMapper
-import com.example.movies.data.mapper.MoviesAnswer
 import com.example.movies.data.mapper.RemoteMovieMapper
 import com.example.movies.data.model.entities.MovieStatus
 import com.example.movies.data.model.movie.*
-import com.example.movies.data.model.movie.MoviesType.*
+import com.example.movies.data.model.movie.response.Movies
 import com.example.movies.data.network.API_KEY
 import com.example.movies.data.network.MovieApi
+import com.example.movies.domain.model.DataSource
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MoviesAnswer
+import com.example.movies.domain.model.MoviesType
+import com.example.movies.domain.model.MoviesType.*
 import com.example.movies.domain.repository.MovieRepository
 import com.example.movies.presentation.utils.constants.MEDIA_TYPE
 import com.example.movies.presentation.utils.constants.NULLABLE_VALUE
@@ -74,23 +76,6 @@ class MovieRepositoryImpl(
         } catch (e: Exception) {
             val list = getFromDatabase(type)
             return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
-        }
-    }
-
-    override suspend fun getRecommendedMovies(
-        apiKey: String, sessionId: String, page: Int
-    ): MoviesAnswer? = withContext(Dispatchers.IO) {
-        try {
-            val response = service.getMoviesRecommendations(apiKey, sessionId, page)
-            if (response.isSuccessful) {
-                val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                val totalPages = response.body()?.totalPages ?: 0
-                return@withContext MoviesAnswer(list, DataSource.REMOTE, totalPages)
-            } else {
-                return@withContext null
-            }
-        } catch (e: Exception) {
-            return@withContext null
         }
     }
 
@@ -235,7 +220,7 @@ class MovieRepositoryImpl(
     override suspend fun getKeywords(id: Int, apiKey: String): List<KeyWord>? =
         withContext(Dispatchers.IO) {
             try {
-                val response = service.getKeywords(id, apiKey)
+                val response = service.getMovieKeywords(id, apiKey)
                 if (response.isSuccessful) {
                     return@withContext response.body()?.keywordsList
                 } else {
@@ -271,13 +256,13 @@ class MovieRepositoryImpl(
     override suspend fun updateRemoteFavourites(
         apiKey: String, sessionId: String, fav: FavouriteMovie
     ) {
-        service.markFavourite(apiKey, sessionId, fav)
+        service.markMovieFavourite(apiKey, sessionId, fav)
     }
 
     override suspend fun updateRemoteWatchList(
         apiKey: String, sessionId: String, fav: WatchListMovie
     ) {
-        service.markWatchList(apiKey, sessionId, fav)
+        service.markMovieInWatchList(apiKey, sessionId, fav)
     }
 
     override suspend fun getMovieStates(

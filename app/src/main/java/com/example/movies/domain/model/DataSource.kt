@@ -1,4 +1,4 @@
-package com.example.movies.data.mapper
+package com.example.movies.domain.model
 
 enum class DataSource {
     LOCAL,

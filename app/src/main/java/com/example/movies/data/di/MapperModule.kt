@@ -1,4 +1,4 @@
-package com.example.movies.data.module
+package com.example.movies.data.di
 
 import com.example.movies.data.mapper.LocalMovieMapper
 import com.example.movies.data.mapper.RemoteMovieMapper

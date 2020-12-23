@@ -6,15 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.example.movies.data.mapper.DataSource
-import com.example.movies.data.mapper.MoviesAnswer
+import com.example.movies.core.base.BaseViewModel
 import com.example.movies.data.model.movie.FavouriteMovie
-import com.example.movies.data.model.movie.MoviesType
-import com.example.movies.data.model.movie.MoviesType.*
 import com.example.movies.data.model.movie.WatchListMovie
+import com.example.movies.domain.model.DataSource
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MoviesAnswer
+import com.example.movies.domain.model.MoviesType
+import com.example.movies.domain.model.MoviesType.*
 import com.example.movies.domain.use_case.*
-import com.example.movies.presentation.BaseViewModel
 import com.example.movies.presentation.model.GenresList
 import com.example.movies.presentation.ui.MovieState
 import com.example.movies.presentation.ui.data_source.SearchDataSource
@@ -71,7 +71,7 @@ class MoviesListViewModel(
         processUserLists(response, type) {
             if (!response.movies.isNullOrEmpty()) {
                 for (movie in response.movies) {
-                    GenresList.setMovieGenres(movie, context)
+                    GenresList.setMovieGenres(context, movie)
                     movie.isFavourite = true
                 }
             }
@@ -82,7 +82,7 @@ class MoviesListViewModel(
         processUserLists(response, type) {
             if (!response.movies.isNullOrEmpty()) {
                 for (movie in response.movies) {
-                    GenresList.setMovieGenres(movie, context)
+                    GenresList.setMovieGenres(context, movie)
                     movie.isInWatchList = true
                 }
             }
@@ -92,8 +92,8 @@ class MoviesListViewModel(
     private fun processLists(response: MoviesAnswer, type: MoviesType) {
         if (!response.movies.isNullOrEmpty()) {
             for (movie in response.movies) {
-                GenresList.setMovieGenres(movie, context)
-                getMovieStatuses(movie)
+                GenresList.setMovieGenres(context, movie)
+                //getMovieStatuses(movie)
             }
         }
         liveData.value = State.HideLoading
@@ -143,18 +143,21 @@ class MoviesListViewModel(
     }
 
     fun addToFavourites(item: Movie) {
+        if (item.id == null) return
         item.isFavourite = !item.isFavourite
         val selectedMovie = FavouriteMovie(MEDIA_TYPE, item.id, item.isFavourite)
         updateIsFavourite(selectedMovie)
     }
 
     fun addToWatchlist(item: Movie) {
+        if (item.id == null) return
         item.isInWatchList = !item.isInWatchList
         val selectedMovie = WatchListMovie(MEDIA_TYPE, item.id, item.isInWatchList)
         updateIsInWatchList(selectedMovie)
     }
 
-    private fun getMovieStatuses(movie: Movie) {
+    fun getMovieStatuses(movie: Movie) {
+        if (movie.id == null) return
         uiScope.launch {
             val movieStatus = likesUseCase.getMovieStates(movie.id, sessionId)
             if (movieStatus != null) {

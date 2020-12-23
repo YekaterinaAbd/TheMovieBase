@@ -8,75 +8,48 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.webkit.WebView
-import android.widget.*
+import android.widget.RatingBar
 import android.widget.RatingBar.OnRatingBarChangeListener
-import androidx.cardview.widget.CardView
+import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
+import com.example.movies.core.extensions.replaceFragments
+import com.example.movies.core.extensions.showToast
 import com.example.movies.data.model.movie.*
 import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.data.network.VIDEO_URL
 import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.ui.lists.SharedViewModel
 import com.example.movies.presentation.ui.lists.movies.HorizontalFilmsAdapter
+import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
 import com.example.movies.presentation.utils.DateUtil
 import com.example.movies.presentation.utils.FullScreenChromeClient
 import com.example.movies.presentation.utils.constants.INTENT_KEY
 import com.example.movies.presentation.utils.constants.POSTER_PATH
-import com.example.movies.presentation.utils.extensions.showToast
-import com.example.movies.presentation.utils.widgets.OverviewView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_movie_detail.*
 import org.koin.android.ext.android.inject
 
 
 class MovieDetailsFragment : Fragment() {
 
     private var id: Int? = null
-    private lateinit var progressBar: ProgressBar
-    private lateinit var poster: ImageView
-    private lateinit var title: TextView
-    private lateinit var year: TextView
-    private lateinit var durationTime: TextView
-    private lateinit var tagline: TextView
-    private lateinit var director: TextView
-    private lateinit var rating: TextView
-    private lateinit var countries: TextView
-    private lateinit var votesCount: TextView
-    private lateinit var like: ImageView
-    private lateinit var watchlist: ImageView
-    private lateinit var webView: WebView
-    private lateinit var genresChipGroup: ChipGroup
-    private lateinit var trailerLayout: LinearLayout
-    private lateinit var similarMoviesLayout: LinearLayout
-    private lateinit var keywordsLayout: LinearLayout
-    private lateinit var loadingLayout: FrameLayout
-    private lateinit var overviewLayout: OverviewView
-    private lateinit var errorLayout: CardView
-    private lateinit var rvSimilarMovies: RecyclerView
-    private lateinit var keywordsChipGroup: ChipGroup
-    private lateinit var ivBack: ImageView
-    private lateinit var rateMovie: TextView
-    private lateinit var userRating: TextView
 
     private val viewModel: MovieDetailsViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    private val itemClickListener = object : HorizontalFilmsAdapter.ItemClickListener {
+    private val itemClickListener = object : SimpleItemClickListener {
         override fun itemClick(position: Int, item: Movie) {
-            val bundle = Bundle()
-            bundle.putInt(INTENT_KEY, item.id)
-
-            val movieDetailedFragment = MovieDetailsFragment()
-            movieDetailedFragment.arguments = bundle
-
-            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-                .addToBackStack(this@MovieDetailsFragment.toString()).commit()
+            if (item.id == null) return
+            parentFragmentManager.replaceFragments<MovieDetailsFragment>(
+                container = R.id.framenav,
+                bundle = bundleOf(INTENT_KEY to item.id)
+            )
         }
     }
 
@@ -88,9 +61,7 @@ class MovieDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val bundle = this.arguments
-        if (bundle != null) {
-            id = bundle.getInt(INTENT_KEY)
-        }
+        if (bundle != null) id = bundle.getInt(INTENT_KEY)
         return inflater.inflate(R.layout.fragment_movie_detail, container, false)
     }
 
@@ -114,32 +85,6 @@ class MovieDetailsFragment : Fragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun bindViews(view: View) = with(view) {
-        progressBar = findViewById(R.id.progressBar)
-        poster = findViewById(R.id.ivPoster)
-        title = findViewById(R.id.tvName)
-        year = findViewById(R.id.tvYear)
-        director = findViewById(R.id.director)
-        durationTime = findViewById(R.id.duration)
-        tagline = findViewById(R.id.tvTagline)
-        rating = findViewById(R.id.rating)
-        countries = findViewById(R.id.countries)
-        votesCount = findViewById(R.id.votesCount)
-        like = findViewById(R.id.btnLike)
-        watchlist = findViewById(R.id.btnWatchList)
-        //requireActivity().themeModeImage.visibility = View.GONE
-        webView = findViewById(R.id.webView)
-        genresChipGroup = findViewById(R.id.genresChipGroup)
-        trailerLayout = findViewById(R.id.trailerLayout)
-        overviewLayout = findViewById(R.id.overviewLayout)
-        similarMoviesLayout = findViewById(R.id.similarMoviesLayout)
-        keywordsLayout = findViewById(R.id.keywordsLayout)
-        rvSimilarMovies = findViewById(R.id.rvSimilarMovies)
-        loadingLayout = findViewById(R.id.loadingLayout)
-        errorLayout = findViewById(R.id.errorLayout)
-        keywordsChipGroup = findViewById(R.id.chipGroup)
-        rateMovie = findViewById(R.id.rateMovie)
-        userRating = findViewById(R.id.myRating)
-        ivBack = view.findViewById(R.id.ivBack)
 
         ivBack.setOnClickListener {
             requireActivity().onBackPressed()
@@ -233,7 +178,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun bindData(movie: MovieDetails) {
-        title.text = movie.title
+        name.text = movie.title
         year.text = DateUtil.convertIsoToDate(movie.releaseDate)
         rating.text = movie.voteAverage.toString()
         votesCount.text = context?.getString(R.string.voted, movie.voteCount)
@@ -249,7 +194,7 @@ class MovieDetailsFragment : Fragment() {
 
         if (movie.runtime != null) {
             val runtime: String = movie.runtime.toString()
-            durationTime.text = context?.getString(R.string.duration_time, runtime)
+            duration.text = context?.getString(R.string.duration_time, runtime)
         }
 
         if (!movie.tagLine.isNullOrEmpty()) {
@@ -320,7 +265,7 @@ class MovieDetailsFragment : Fragment() {
         countries.forEach { country ->
             countriesString += context?.getString(R.string.genre_name, country.country)
         }
-        if (countries.size > 1)
+        if (countries.isNotEmpty())
             countriesString = countriesString.substring(0, countriesString.length - 2)
 
         return countriesString
@@ -331,36 +276,33 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun setGenres(genres: List<Genre>?) {
-        if (!genres.isNullOrEmpty()) {
-            for (genre in genres) {
-                createChip(genre.genre, genresChipGroup)
-            }
+        if (genres.isNullOrEmpty()) return
+        for (genre in genres) {
+            if (genre.genre == null) continue
+            createChip(genre.genre, genresChipGroup)
         }
     }
 
     private fun setKeywords(keywords: List<KeyWord>) {
-//        val list = keywords.sortedWith(compareBy { it.keyword?.length })
-        if (!keywords.isNullOrEmpty()) {
-            for (keyword in keywords) {
-                keyword.keyword?.let { createChip(it, keywordsChipGroup) }
-            }
+        if (keywords.isNullOrEmpty()) return
+        for (keyword in keywords) {
+            keyword.keyword?.let { createChip(it, chipGroup) }
         }
     }
 
     private fun setCredits(credits: Credits) {
-        if (!credits.crew.isNullOrEmpty()) {
-            val directorName = credits.crew.find { crew -> crew.job == "Director" }?.name
-            director.text = directorName ?: "-"
-        }
+        if (credits.crew.isNullOrEmpty()) return
+        val directorName = credits.crew.find { crew -> crew.job == "Director" }?.name
+        director.text = directorName
     }
 
     private fun createChip(title: String, chipGroup: ChipGroup) {
-        if (context != null) {
-            val chip = LayoutInflater.from(context)
-                .inflate(R.layout.item_chip_category, null, false) as Chip
-            chip.text = title
-            chipGroup.addView(chip)
-        }
+        if (context == null) return
+        val chip = LayoutInflater.from(context)
+            .inflate(R.layout.item_chip_category, null, false) as Chip
+        chip.text = title
+        chipGroup.addView(chip)
+
     }
 
     private fun showRatingDialog() {

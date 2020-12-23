@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/lightColorBackground">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -61,14 +62,14 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/title"
+                        android:id="@+id/username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:ellipsize="end"
                         android:gravity="bottom"
                         android:singleLine="true"
-                        android:text="Monkey D.Luffy"
+                        tools:text="Monkey D. Luffy"
                         android:textColor="@color/darkColorPrimary"
                         android:textSize="24sp" />
 
@@ -128,7 +129,7 @@
                         app:drawableTopCompat="@drawable/ic_favourite" />
 
                     <TextView
-                        android:id="@+id/btnWatchList"
+                        android:id="@+id/watchlist"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

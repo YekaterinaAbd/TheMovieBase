@@ -1,4 +1,4 @@
-package com.example.movies.data.model.movie
+package com.example.movies.domain.model
 
 enum class MoviesType(val type: String) {
     TOP("Top Rated"),

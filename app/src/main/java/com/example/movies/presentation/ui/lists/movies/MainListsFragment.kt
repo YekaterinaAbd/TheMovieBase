@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.movies.R
-import com.example.movies.data.model.movie.MoviesType
+import com.example.movies.core.NavigationAnimation
+import com.example.movies.core.extensions.replaceFragments
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MoviesType
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.movies.presentation.utils.constants.INTENT_KEY
@@ -31,17 +34,15 @@ class MainListsFragment : Fragment() {
 
     private val moviesListViewModel: MoviesListViewModel by inject()
 
-    private val itemClickListener = object : HorizontalFilmsAdapter.ItemClickListener {
+    private val itemClickListener = object : SimpleItemClickListener {
         override fun itemClick(position: Int, item: Movie) {
+            if (item.id == null) return
             logEvent(MOVIE_CLICKED, item)
-            val bundle = Bundle()
-            bundle.putInt(INTENT_KEY, item.id)
-
-            val movieDetailedFragment = MovieDetailsFragment()
-            movieDetailedFragment.arguments = bundle
-
-            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-                .addToBackStack(null).commit()
+            parentFragmentManager.replaceFragments<MovieDetailsFragment>(
+                container = R.id.framenav,
+                bundle = bundleOf(INTENT_KEY to item.id),
+                animation = NavigationAnimation.CENTER
+            )
         }
     }
 
@@ -53,7 +54,6 @@ class MainListsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity())
         bindViews(view)
         getMovies()
@@ -69,25 +69,25 @@ class MainListsFragment : Fragment() {
 
         topMoviesView.apply {
             setData(MoviesType.TOP)
-            setListeners(parentFragmentManager)
+            setListener(parentFragmentManager)
             setAdapter(itemClickListener)
         }
 
         currentMoviesView.apply {
             setData(MoviesType.CURRENT)
-            setListeners(parentFragmentManager)
+            setListener(parentFragmentManager)
             setAdapter(itemClickListener)
         }
 
         upcomingMoviesView.apply {
             setData(MoviesType.UPCOMING)
-            setListeners(parentFragmentManager)
+            setListener(parentFragmentManager)
             setAdapter(itemClickListener)
         }
 
         popularMoviesView.apply {
             setData(MoviesType.POPULAR)
-            setListeners(parentFragmentManager)
+            setListener(parentFragmentManager)
             setAdapter(itemClickListener)
         }
 
@@ -95,13 +95,6 @@ class MainListsFragment : Fragment() {
             clear()
             getMovies()
         }
-    }
-
-    private fun logEvent(logMessage: String, item: Movie) {
-        val bundle = Bundle()
-        bundle.putString(MOVIE_ID, item.id.toString())
-        bundle.putString(MOVIE_TITLE, item.title)
-        firebaseAnalytics.logEvent(logMessage, bundle)
     }
 
     private fun getMovies() {
@@ -154,5 +147,13 @@ class MainListsFragment : Fragment() {
             if (list.size > 10) view.addItems(list.subList(0, 10))
             else view.addItems(list)
         }
+    }
+
+    private fun logEvent(logMessage: String, item: Movie) {
+        val bundle = bundleOf(
+            MOVIE_ID to item.id.toString(),
+            MOVIE_TITLE to item.title
+        )
+        firebaseAnalytics.logEvent(logMessage, bundle)
     }
 }

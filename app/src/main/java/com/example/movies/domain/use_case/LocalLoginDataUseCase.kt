@@ -1,16 +1,15 @@
 package com.example.movies.domain.use_case
 
-import android.content.Context
 import com.example.movies.domain.repository.AccountRepository
 
 class LocalLoginDataUseCase(private val accountRepository: AccountRepository) {
 
-    fun hasSessionId(context: Context) = accountRepository.hasSessionId(context)
+    fun hasSessionId() = accountRepository.hasSessionId()
 
-    fun saveLoginData(context: Context, username: String, password: String, sessionId: String) =
-        accountRepository.saveLoginData(context, username, password, sessionId)
+    fun saveLoginData(username: String, password: String, sessionId: String) =
+        accountRepository.saveLoginData(username, password, sessionId)
 
-    fun getLocalUsername(context: Context) = accountRepository.getLocalUsername(context)
+    fun getLocalUsername() = accountRepository.getLocalUsername()
 
-    fun getLocalPassword(context: Context) = accountRepository.getLocalPassword(context)
+    fun getLocalPassword() = accountRepository.getLocalPassword()
 }

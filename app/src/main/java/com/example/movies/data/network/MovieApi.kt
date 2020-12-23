@@ -1,11 +1,9 @@
 package com.example.movies.data.network
 
-import com.example.movies.data.model.account.LoginValidationData
-import com.example.movies.data.model.account.Session
-import com.example.movies.data.model.account.Success
-import com.example.movies.data.model.account.Token
 import com.example.movies.data.model.entities.MovieStatus
 import com.example.movies.data.model.movie.*
+import com.example.movies.data.model.movie.response.Movies
+import com.example.movies.data.model.movie.response.StatusResponse
 import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.*
@@ -36,20 +34,36 @@ interface MovieApi {
         @Query("page") page: Int
     ): Response<Movies>
 
+
+    @GET("account/{account_id}/favorite/movies")
+    suspend fun getFavouriteMovies(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String,
+        @Query("page") page: Int
+    ): Response<Movies>
+
+    @GET("account/{account_id}/watchlist/movies")
+    suspend fun getMoviesWatchList(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String,
+        @Query("page") page: Int
+    ): Response<Movies>
+
+    @GET("account/{account_id}/rated/movies")
+    suspend fun getRatedMovies(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String,
+        @Query("page") page: Int
+    ): Response<Movies>
+
     @GET("movie/{id}")
     suspend fun getMovieById(
         @Path("id") id: Int,
         @Query("api_key") apiKey: String
     ): Response<MovieDetails>
 
-    @GET("movie/{movie_id}/similar")
-    suspend fun getSimilarMovies(
-        @Path("movie_id") id: Int,
-        @Query("api_key") apiKey: String
-    ): Response<Movies>
-
     @GET("movie/{movie_id}/keywords")
-    suspend fun getKeywords(
+    suspend fun getMovieKeywords(
         @Path("movie_id") id: Int,
         @Query("api_key") apiKey: String
     ): Response<Keywords>
@@ -73,47 +87,33 @@ interface MovieApi {
         @Query("session_id") sessionId: String
     ): Response<MovieStatus>
 
-    @GET("account/{account_id}/favorite/movies")
-    suspend fun getFavouriteMovies(
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String,
-        @Query("page") page: Int
-    ): Response<Movies>
-
-    @GET("account/{account_id}/watchlist/movies")
-    suspend fun getMoviesWatchList(
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String,
-        @Query("page") page: Int
-    ): Response<Movies>
-
-    @GET("account/{account_id}/rated/movies")
-    suspend fun getRatedMovies(
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String,
-        @Query("page") page: Int
-    ): Response<Movies>
-
-    @GET("account/{account_id}/movie/recommendations")
-    suspend fun getMoviesRecommendations(
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String,
-        @Query("page") page: Int
+    @GET("movie/{movie_id}/similar")
+    suspend fun getSimilarMovies(
+        @Path("movie_id") id: Int,
+        @Query("api_key") apiKey: String
     ): Response<Movies>
 
     @POST("account/{account_id}/favorite")
-    suspend fun markFavourite(
+    suspend fun markMovieFavourite(
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String,
         @Body fav: FavouriteMovie
     ): Response<StatusResponse>
 
     @POST("account/{account_id}/watchlist")
-    suspend fun markWatchList(
+    suspend fun markMovieInWatchList(
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String,
         @Body fav: WatchListMovie
     ): Response<StatusResponse>
+
+    @POST("movie/{movie_id}/rating")
+    suspend fun rateMovie(
+        @Path("movie_id") id: Int,
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String,
+        @Body rating: JsonObject
+    ): Response<JsonObject>
 
     @GET("genre/movie/list")
     suspend fun getGenres(@Query("api_key") apiKey: String): Response<Genres>
@@ -124,34 +124,4 @@ interface MovieApi {
         @Query("query") query: String?,
         @Query("page") page: Int
     ): Response<Movies>
-
-    @GET("authentication/token/new")
-    suspend fun createRequestToken(@Query("api_key") apiKey: String): Response<Token>
-
-    @POST("authentication/token/validate_with_login")
-    suspend fun validateWithLogin(
-        @Query("api_key") apiKey: String,
-        @Body data: LoginValidationData
-    ): Response<Token>
-
-    @POST("authentication/session/new")
-    suspend fun createSession(
-        @Query("api_key") apiKey: String,
-        @Body token: Token
-    ): Response<Session>
-
-    @POST("movie/{movie_id}/rating")
-    suspend fun rateMovie(
-        @Path("movie_id") id: Int,
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String,
-        @Body rating: JsonObject
-    ): Response<JsonObject>
-
-    @HTTP(method = "DELETE", path = "authentication/session", hasBody = true)
-    suspend fun deleteSession(
-        @Query("api_key") apiKey: String,
-        @Body session: Session
-    ): Response<Success>
-
 }

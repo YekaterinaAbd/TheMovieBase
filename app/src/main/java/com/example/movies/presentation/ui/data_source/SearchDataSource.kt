@@ -29,9 +29,6 @@ class SearchDataSource(
 
     private var _state = MutableLiveData<MovieState>()
 
-//    private val job = Job()
-//    private val scope = CoroutineScope(coroutineContext + job)
-
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Movie>
@@ -41,7 +38,7 @@ class SearchDataSource(
             try {
                 val response = searchUseCase.searchMovies(query, FIRST_PAGE) ?: emptyList()
                 for (movie in response) {
-                    GenresList.setMovieGenres(movie, context)
+                    GenresList.setMovieGenres(context, movie)
                 }
                 callback.onResult(response, null, FIRST_PAGE + 1)
             } catch (e: Exception) {
@@ -61,7 +58,7 @@ class SearchDataSource(
             try {
                 val response = searchUseCase.searchMovies(query, params.key) ?: emptyList()
                 for (movie in response) {
-                    GenresList.setMovieGenres(movie, context)
+                    GenresList.setMovieGenres(context, movie)
                 }
                 val key = if (response.isNotEmpty()) params.key + 1 else null
                 callback.onResult(response, key)

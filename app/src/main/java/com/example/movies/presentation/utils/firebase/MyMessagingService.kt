@@ -1,4 +1,4 @@
-package com.example.movies.data.network
+package com.example.movies.presentation.utils.firebase
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -12,6 +12,7 @@ import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.example.movies.R
+import com.example.movies.data.network.MOVIES_URL
 import com.example.movies.presentation.ui.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

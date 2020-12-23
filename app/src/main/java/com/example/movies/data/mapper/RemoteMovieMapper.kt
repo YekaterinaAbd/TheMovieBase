@@ -1,6 +1,7 @@
 package com.example.movies.data.mapper
 
 import com.example.movies.data.model.movie.RemoteMovie
+import com.example.movies.domain.Mapper
 import com.example.movies.domain.model.Movie
 
 class RemoteMovieMapper : Mapper<RemoteMovie, Movie> {

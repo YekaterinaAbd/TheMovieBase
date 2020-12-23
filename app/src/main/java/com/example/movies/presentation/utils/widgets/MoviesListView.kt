@@ -1,19 +1,22 @@
 package com.example.movies.presentation.utils.widgets
 
 import android.content.Context
-import android.os.Bundle
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.findFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
-import com.example.movies.data.model.movie.MoviesType
+import com.example.movies.core.NavigationAnimation
+import com.example.movies.core.extensions.replaceFragments
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MoviesType
 import com.example.movies.presentation.ui.lists.movies.HorizontalFilmsAdapter
 import com.example.movies.presentation.ui.lists.movies.MoviesFragment
+import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
 import com.example.movies.presentation.utils.constants.MOVIE_TYPE
 
 class MoviesListView : LinearLayout {
@@ -37,13 +40,13 @@ class MoviesListView : LinearLayout {
         title.text = movieType.type
     }
 
-    fun setListeners(fm: FragmentManager) {
+    fun setListener(fm: FragmentManager) {
         llTitle.setOnClickListener {
-            openListFragment(type, fm)
+            openListFragment(fm, type)
         }
     }
 
-    fun setAdapter(clickListener: HorizontalFilmsAdapter.ItemClickListener) {
+    fun setAdapter(clickListener: SimpleItemClickListener) {
         adapter = HorizontalFilmsAdapter(clickListener)
         recyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -58,14 +61,15 @@ class MoviesListView : LinearLayout {
         adapter.addItems(moviesList)
     }
 
-    private fun openListFragment(type: MoviesType, fm: FragmentManager) {
-        val bundle = Bundle()
-        bundle.putSerializable(MOVIE_TYPE, type)
-
-        val movieListsFragment = MoviesFragment()
-        movieListsFragment.arguments = bundle
-        fm.beginTransaction().add(R.id.framenav, movieListsFragment)
-            .addToBackStack(null).hide(this.findFragment()).commit()
+    private fun openListFragment(fm: FragmentManager, movieType: MoviesType) {
+        fm.replaceFragments<MoviesFragment>(
+            container = R.id.framenav,
+            hideFragment = this.findFragment(),
+            bundle = bundleOf(
+                MOVIE_TYPE to movieType
+            ),
+            animation = NavigationAnimation.SLIDE_RIGHT
+        )
     }
 
     private fun init(context: Context) {

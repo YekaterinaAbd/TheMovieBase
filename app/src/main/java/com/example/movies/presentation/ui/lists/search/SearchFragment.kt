@@ -7,15 +7,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.movies.R
+import com.example.movies.core.NavigationAnimation
+import com.example.movies.core.extensions.replaceFragments
 import com.example.movies.data.model.entities.SearchQuery
 import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.ui.MovieState
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
+import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.movies.presentation.utils.constants.INTENT_KEY
 import com.google.android.material.appbar.AppBarLayout
@@ -33,16 +37,14 @@ class SearchFragment : Fragment() {
     private val searchViewModel: SearchViewModel by inject()
     private val moviesViewModel: MoviesListViewModel by inject()
 
-    private val itemClickListener = object : PaginationAdapter.ItemClickListener {
+    private val itemClickListener = object : SimpleItemClickListener {
         override fun itemClick(position: Int, item: Movie) {
-            val bundle = Bundle()
-            bundle.putInt(INTENT_KEY, item.id)
-
-            val movieDetailedFragment = MovieDetailsFragment()
-            movieDetailedFragment.arguments = bundle
-
-            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-                .addToBackStack(null).commit()
+            if (item.id == null) return
+            parentFragmentManager.replaceFragments<MovieDetailsFragment>(
+                container = R.id.framenav,
+                bundle = bundleOf(INTENT_KEY to item.id),
+                animation = NavigationAnimation.CENTER
+            )
         }
     }
 

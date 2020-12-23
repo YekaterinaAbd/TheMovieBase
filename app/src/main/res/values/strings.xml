@@ -48,4 +48,6 @@
     <string name="movie_rated">Movie Rated</string>
     <string name="rating_failed">Rating failed</string>
     <string name="my_rating">| %.1f</string>
+    <string name="my_rating_text">My Rating</string>
+    <string name="rate_movie">Rate Movie</string>
 </resources>

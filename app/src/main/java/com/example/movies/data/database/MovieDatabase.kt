@@ -21,7 +21,7 @@ abstract class MovieDatabase : RoomDatabase() {
 
     companion object {
         private var database: MovieDatabase? = null
-        private const val databaseName: String = "movie_database5.db"
+        private const val databaseName: String = "database.db"
         fun getDatabase(context: Context): MovieDatabase {
             if (database == null) {
                 database = Room.databaseBuilder(

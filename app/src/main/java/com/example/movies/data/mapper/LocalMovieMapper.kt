@@ -1,6 +1,7 @@
 package com.example.movies.data.mapper
 
 import com.example.movies.data.model.entities.LocalMovie
+import com.example.movies.domain.Mapper
 import com.example.movies.domain.model.Movie
 
 class LocalMovieMapper : Mapper<LocalMovie, Movie> {

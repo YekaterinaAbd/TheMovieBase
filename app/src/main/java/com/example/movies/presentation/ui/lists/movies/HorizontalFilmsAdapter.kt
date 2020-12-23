@@ -14,8 +14,12 @@ import com.example.movies.presentation.utils.extensions.Side
 import com.example.movies.presentation.utils.extensions.setMargin
 import com.squareup.picasso.Picasso
 
+interface SimpleItemClickListener {
+    fun itemClick(position: Int, item: Movie)
+}
+
 class HorizontalFilmsAdapter(
-    private val itemClickListener: ItemClickListener? = null
+    private val simpleItemClickListener: SimpleItemClickListener? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var movies = mutableListOf<Movie>()
@@ -53,7 +57,7 @@ class HorizontalFilmsAdapter(
 
             val view = view.findViewById<ConstraintLayout>(R.id.layout)
             val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
-            val ivPoster = view.findViewById<ImageView>(R.id.ivPoster)
+            val ivPoster = view.findViewById<ImageView>(R.id.poster)
 
             if (movie != null) {
 
@@ -66,13 +70,9 @@ class HorizontalFilmsAdapter(
                     .into(ivPoster)
 
                 view.setOnClickListener {
-                    itemClickListener?.itemClick(adapterPosition, movie)
+                    simpleItemClickListener?.itemClick(adapterPosition, movie)
                 }
             }
         }
-    }
-
-    interface ItemClickListener {
-        fun itemClick(position: Int, item: Movie)
     }
 }

@@ -58,7 +58,7 @@
         </activity>
 
         <service
-            android:name="com.example.movies.data.network.MyMessagingService"
+            android:name="com.example.movies.presentation.utils.firebase.MyMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

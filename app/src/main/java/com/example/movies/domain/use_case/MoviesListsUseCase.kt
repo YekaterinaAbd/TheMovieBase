@@ -1,8 +1,8 @@
 package com.example.movies.domain.use_case
 
 import android.content.Context
-import com.example.movies.data.model.movie.MoviesType
 import com.example.movies.data.network.API_KEY
+import com.example.movies.domain.model.MoviesType
 import com.example.movies.domain.repository.MovieRepository
 
 class MoviesListsUseCase(

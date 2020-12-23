@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/ivPoster"
+            android:id="@+id/poster"
             android:layout_width="110dp"
             android:layout_height="160dp"
             android:adjustViewBounds="true"

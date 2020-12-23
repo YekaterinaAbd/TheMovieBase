@@ -4,7 +4,7 @@ import com.example.movies.data.model.movie.Genre
 import java.io.Serializable
 
 data class Movie(
-    val id: Int,
+    val id: Int?,
     val voteCount: Int? = null,
     val title: String? = null,
     val voteAverage: Double? = null,

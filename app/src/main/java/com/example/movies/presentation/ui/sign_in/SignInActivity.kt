@@ -39,7 +39,7 @@ class SignInActivity : AppCompatActivity() {
         subscribeToTopic()
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         markersViewModel.fillDatabase()
-        signInProcessing()
+        processSignIn()
         bindViews()
     }
 
@@ -67,7 +67,7 @@ class SignInActivity : AppCompatActivity() {
         }
 
         signInButton.setOnClickListener {
-            signInProcessing()
+            processSignIn()
             signInViewModel.createTokenRequest(username.text.toString(), password.text.toString())
 
             val bundle = Bundle()
@@ -75,7 +75,7 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    private fun signInProcessing() {
+    private fun processSignIn() {
         signInViewModel.liveData.observe(this, Observer { result ->
             when (result) {
                 is SignInViewModel.State.ShowLoading -> {

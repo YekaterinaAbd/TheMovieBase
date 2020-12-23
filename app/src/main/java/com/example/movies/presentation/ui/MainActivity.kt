@@ -2,9 +2,7 @@ package com.example.movies.presentation.ui
 
 //import com.example.kino.presentation.ThemeViewModel
 
-import android.app.Activity
 import android.os.Bundle
-import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -18,7 +16,6 @@ import com.example.movies.presentation.utils.constants.PROFILE_PAGE_CLICKED
 import com.example.movies.presentation.utils.constants.SEARCH_PAGE_CLICKED
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,36 +42,22 @@ class MainActivity : AppCompatActivity() {
 //        }
 //        super.setTheme(themeMode)
         super.onCreate(savedInstanceState)
-
-
         setContentView(R.layout.activity_main)
-        val w = window // in Activity's onCreate() for instance
 
-        w.setFlags(
+        window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
-
-//        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
         createFragments()
         bindViews()
     }
 
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//        toolbar.visibility = View.VISIBLE
-//        bottomNavigation.visibility = View.VISIBLE
-//        //themeModeImage.visibility = View.VISIBLE
-//    }
 
     private fun bindViews() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.setOnNavigationItemSelectedListener(navListener)
-
 
         //toolbar = findViewById(R.id.toolbar)
         //themeModeImage = findViewById(R.id.themeModeImage)
@@ -97,25 +80,6 @@ class MainActivity : AppCompatActivity() {
 //        startActivity(intent)
 //    }
 
-//     fun getStatusBarHeight(): Int {
-////        var result = 0
-//////        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-//////        if (resourceId > 0) {
-//////            result = resources.getDimensionPixelSize(resourceId)
-//////        }
-////        return result
-//    }
-
-    private fun setWindowFlag(activity: Activity, bits: Int, on: Boolean) {
-        val win: Window = activity.window
-        val winParams: WindowManager.LayoutParams = win.attributes
-        if (on) {
-            winParams.flags = winParams.flags or bits
-        } else {
-            winParams.flags = winParams.flags and bits.inv()
-        }
-        win.attributes = winParams
-    }
 
     private fun logEvent(logMessage: String) {
         val bundle = Bundle()

@@ -1,6 +1,4 @@
-package com.example.movies.data.mapper
-
-import com.example.movies.domain.model.Movie
+package com.example.movies.domain.model
 
 data class MoviesAnswer(
     val movies: List<Movie>?,

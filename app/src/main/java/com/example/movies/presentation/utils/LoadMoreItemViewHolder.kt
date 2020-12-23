@@ -21,3 +21,4 @@ class LoadMoreItemViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
         }
     }
 }
+

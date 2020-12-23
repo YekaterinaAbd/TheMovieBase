@@ -1,4 +1,4 @@
-package com.example.movies.domain.module
+package com.example.movies.domain.di
 
 import com.example.movies.domain.use_case.*
 import org.koin.dsl.module

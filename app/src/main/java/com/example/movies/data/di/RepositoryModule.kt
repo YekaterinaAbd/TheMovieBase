@@ -1,4 +1,4 @@
-package com.example.movies.data.module
+package com.example.movies.data.di
 
 import com.example.movies.data.repository.AccountRepositoryImpl
 import com.example.movies.data.repository.MarkerRepositoryImpl
@@ -21,7 +21,13 @@ val repositoryModule = module {
             localMovieMapper = get()
         )
     }
-    single<AccountRepository> { AccountRepositoryImpl(service = get(), sharedPreferences = get()) }
+    single<AccountRepository> {
+        AccountRepositoryImpl(
+            api = get(),
+            context = get(),
+            sharedPreferences = get()
+        )
+    }
     single<MarkerRepository> { MarkerRepositoryImpl(markerDao = get()) }
     single<SearchRepository> { SearchRepositoryImpl(searchHistoryDao = get()) }
 }

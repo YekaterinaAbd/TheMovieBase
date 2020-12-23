@@ -2,12 +2,12 @@ package com.example.movies.presentation.ui.movie_details
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import com.example.movies.core.base.BaseViewModel
 import com.example.movies.data.model.movie.*
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.use_case.LikesUseCase
 import com.example.movies.domain.use_case.MovieDetailsUseCase
 import com.example.movies.domain.use_case.SessionIdUseCase
-import com.example.movies.presentation.BaseViewModel
 import com.example.movies.presentation.utils.constants.MEDIA_TYPE
 import com.google.gson.internal.LinkedTreeMap
 import kotlinx.coroutines.launch

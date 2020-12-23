@@ -16,8 +16,6 @@ fun View.setMargin(dpMargin: Int, side: Side) {
     }
 }
 
-//extension properties
-
 val Int.dp: Int
     get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 

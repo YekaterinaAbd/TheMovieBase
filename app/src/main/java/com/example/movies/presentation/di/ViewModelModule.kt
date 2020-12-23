@@ -1,4 +1,4 @@
-package com.example.movies.presentation.module
+package com.example.movies.presentation.di
 
 import com.example.movies.presentation.ThemeViewModel
 import com.example.movies.presentation.ui.account.AccountViewModel
@@ -30,11 +30,10 @@ val viewModelModule = module {
             likesUseCase = get()
         )
     }
-    viewModel { AccountViewModel(context = get(), accountUseCase = get()) }
+    viewModel { AccountViewModel(accountUseCase = get()) }
     viewModel { MarkersViewModel(markerRepository = get()) }
     viewModel {
         SignInViewModel(
-            context = get(),
             loginUseCase = get(),
             localLoginDataUseCase = get()
         )

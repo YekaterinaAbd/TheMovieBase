@@ -1,4 +1,4 @@
-package com.example.movies.data.mapper
+package com.example.movies.domain
 
 interface Mapper<N, M> {
     fun from(model: N): M

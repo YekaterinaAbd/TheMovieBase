@@ -12,19 +12,21 @@ import com.example.movies.R
 import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.ui.MovieState
+import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
 import com.example.movies.presentation.utils.LoadMoreItemViewHolder
 import com.squareup.picasso.Picasso
 
 class PaginationAdapter(
-    private val itemClickListener: ItemClickListener? = null
+    private val itemClickListener: SimpleItemClickListener? = null
 ) : PagedListAdapter<Movie, RecyclerView.ViewHolder>(DiffUtilCallBack) {
-
-    private val VIEW_TYPE_LOADING = 0
-    private val VIEW_TYPE_DATA = 1
 
     private var state: MovieState = MovieState.ShowPageLoading
 
     companion object {
+
+        private const val VIEW_TYPE_LOADING = 0
+        private const val VIEW_TYPE_DATA = 1
+
         val DiffUtilCallBack = object : DiffUtil.ItemCallback<Movie>() {
             override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
                 return oldItem.id == newItem.id
@@ -82,36 +84,31 @@ class PaginationAdapter(
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(movie: Movie?) {
+            if (movie == null) return
 
             val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
             val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
             val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
-            val poster = view.findViewById<ImageView>(R.id.ivPoster)
+            val poster = view.findViewById<ImageView>(R.id.poster)
             val tvRating = view.findViewById<TextView>(R.id.tvRating)
             val addToFav = view.findViewById<ImageView>(R.id.ivWatchlist)
 
             addToFav.visibility = View.GONE
 
-            if (movie != null) {
-                tvTitle.text = movie.title
-                if (!movie.releaseDate.isNullOrEmpty())
-                    tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
-                tvRating.text = movie.voteAverage.toString()
-                tvGenres.text = movie.genreNames
+            tvTitle.text = movie.title
+            if (!movie.releaseDate.isNullOrEmpty())
+                tvReleaseDate.text = movie.releaseDate.substring(0, 4)
+            tvRating.text = movie.voteAverage.toString()
+            tvGenres.text = movie.genreNames
 
-                if (!movie.posterPath.isNullOrEmpty())
-                    Picasso.get()
-                        .load(IMAGE_URL + movie.posterPath)
-                        .into(poster)
+            if (!movie.posterPath.isNullOrEmpty())
+                Picasso.get()
+                    .load(IMAGE_URL + movie.posterPath)
+                    .into(poster)
 
-                view.setOnClickListener {
-                    itemClickListener?.itemClick(adapterPosition, movie)
-                }
+            view.setOnClickListener {
+                itemClickListener?.itemClick(adapterPosition, movie)
             }
         }
-    }
-
-    interface ItemClickListener {
-        fun itemClick(position: Int, item: Movie)
     }
 }

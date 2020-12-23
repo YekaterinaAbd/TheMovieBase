@@ -1,4 +1,4 @@
-package com.example.movies.data.network
+package com.example.movies.presentation.utils.firebase
 
 const val TITLE = "title"
 const val CONTENT = "content"

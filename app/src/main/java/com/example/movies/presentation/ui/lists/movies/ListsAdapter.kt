@@ -7,10 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
-import com.example.movies.data.model.movie.MoviesType
-import com.example.movies.data.model.movie.MoviesType.*
 import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MoviesType
+import com.example.movies.domain.model.MoviesType.*
 import com.example.movies.presentation.utils.extensions.Side
 import com.example.movies.presentation.utils.extensions.setMargin
 import com.squareup.picasso.Picasso
@@ -31,7 +31,6 @@ class ListsAdapter(
 
     private var isLoaderVisible = false
 
-    // private var moviePosition = 1
     private var movies = ArrayList<Movie>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -67,7 +66,6 @@ class ListsAdapter(
 
     fun clearAll() {
         movies.clear()
-        //  moviePosition = 1
         notifyDataSetChanged()
     }
 
@@ -101,7 +99,6 @@ class ListsAdapter(
     fun replaceItems(moviesList: List<Movie>) {
         isLoaderVisible = false
         movies = moviesList as ArrayList<Movie>
-        //  moviePosition = 1
         notifyDataSetChanged()
     }
 
@@ -128,7 +125,7 @@ class ListsAdapter(
         private val tvTitle: TextView = view.findViewById(R.id.tvTitle)
         private val tvReleaseDate: TextView = view.findViewById(R.id.tvReleaseDate)
         private val tvGenres: TextView = view.findViewById(R.id.tvGenres)
-        private val poster: ImageView = view.findViewById(R.id.ivPoster)
+        private val poster: ImageView = view.findViewById(R.id.poster)
         private val tvRating: TextView = view.findViewById(R.id.tvRating)
         private val number: TextView = view.findViewById(R.id.number)
         private val addToFav: ImageView = view.findViewById(R.id.ivLike)
@@ -148,11 +145,6 @@ class ListsAdapter(
 
                 if (movie.isInWatchList) addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
                 else addToWatchlist.setImageResource(R.drawable.ic_watchlist)
-
-//                if (movie.position == 0) {
-//                    movie.position = moviePosition
-//                    moviePosition++
-//                }
 
                 tvTitle.text = movie.title
                 if (!movie.releaseDate.isNullOrEmpty())
@@ -193,7 +185,7 @@ class ListsAdapter(
             val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
             val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
             val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
-            val poster = view.findViewById<ImageView>(R.id.ivPoster)
+            val poster = view.findViewById<ImageView>(R.id.poster)
             val tvRating = view.findViewById<TextView>(R.id.tvRating)
             val addToFav = view.findViewById<ImageView>(R.id.ivLike)
             val addToWatchlist = view.findViewById<ImageView>(R.id.ivWatchlist)
@@ -241,7 +233,5 @@ class ListsAdapter(
         }
     }
 
-    inner class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-    }
+    inner class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
 }

@@ -1,4 +1,4 @@
-package com.example.movies.data.module
+package com.example.movies.data.di
 
 import android.content.Context
 import android.content.SharedPreferences

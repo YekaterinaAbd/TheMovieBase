@@ -12,11 +12,10 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
 
 object GenresList : CoroutineScope, KoinComponent {
-    var genres: MutableMap<Int, String>? = HashMap()
+    var genres: MutableMap<Int, String> = mutableMapOf()
     private var job = Job()
     private val movieRepository: MovieRepository by inject()
     override val coroutineContext: CoroutineContext
@@ -25,22 +24,22 @@ object GenresList : CoroutineScope, KoinComponent {
     fun getGenres() {
         launch {
             try {
-                val genresList = movieRepository.getRemoteGenres(API_KEY)
-                if (genresList != null) {
-                    val genresBunch = genresList.genres
-                    for (genre in genresBunch) {
-                        genres?.set(genre.genreId, genre.genre)
-                    }
+                val genresList = movieRepository.getRemoteGenres(API_KEY) ?: return@launch
+                val genresBunch = genresList.genres ?: return@launch
+                for (genre in genresBunch) {
+                    if (genre.genreId == null || genre.genre == null) continue
+                    genres[genre.genreId] = genre.genre
                 }
+
             } catch (e: Exception) {
             }
         }
     }
 
-    fun setMovieGenres(movie: Movie, context: Context) {
+    fun setMovieGenres(context: Context, movie: Movie) {
         movie.genreNames = ""
         movie.genreIds?.forEach { genreId ->
-            val genreName = genres?.get(genreId)
+            val genreName = genres[genreId]
                 .toString().toLowerCase(Locale.ROOT)
             movie.genreNames += context.getString(R.string.genre_name, genreName)
         }

@@ -21,7 +21,6 @@ data class MovieDetails(
     @SerializedName("genres") val genres: List<Genre>?,
     @SerializedName("production_countries") val countries: List<Country>?,
 
-    var genreNames: String = "",
     var favourite: Boolean = false,
     var watchlist: Boolean = false,
     var userRating: Double? = null

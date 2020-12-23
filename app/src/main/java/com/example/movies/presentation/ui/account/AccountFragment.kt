@@ -14,11 +14,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.example.movies.R
-import com.example.movies.data.model.movie.MoviesType
+import com.example.movies.core.NavigationAnimation
+import com.example.movies.core.extensions.replaceFragments
+import com.example.movies.data.model.account.Account
+import com.example.movies.domain.model.MoviesType
 import com.example.movies.presentation.ui.lists.movies.MoviesFragment
 import com.example.movies.presentation.ui.sign_in.SignInActivity
 import com.example.movies.presentation.utils.constants.MOVIE_TYPE
-import com.example.movies.presentation.utils.extensions.replaceFragments
 import com.google.android.material.appbar.AppBarLayout
 import de.hdodenhof.circleimageview.CircleImageView
 import org.koin.android.ext.android.inject
@@ -38,7 +40,7 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
     private var mMaxScrollSize: Int = 0
 
     private lateinit var titleContainer: LinearLayout
-    private lateinit var title: TextView
+    private lateinit var username: TextView
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var toolbar: Toolbar
     private lateinit var viewFavourites: TextView
@@ -58,21 +60,21 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        observeData()
     }
 
     private fun bindViews(view: View) = with(view) {
 
         toolbar = findViewById(R.id.main_toolbar)
-        title = findViewById(R.id.title)
+        username = findViewById(R.id.username)
         titleContainer = findViewById(R.id.main_linearlayout_title)
         appBarLayout = findViewById(R.id.main_appbar)
         profileImage = findViewById(R.id.profile_image)
         logOutButton = view.findViewById(R.id.btnLogOut)
         viewFavourites = view.findViewById(R.id.btnFavourites)
-        viewWatchList = view.findViewById(R.id.btnWatchList)
+        viewWatchList = view.findViewById(R.id.watchlist)
         viewRated = view.findViewById(R.id.btnRated)
 
-        title.text = accountViewModel.username.value
         mMaxScrollSize = appBarLayout.totalScrollRange
         appBarLayout.addOnOffsetChangedListener(this@AccountFragment)
 
@@ -97,7 +99,8 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
         val bundle = bundleOf(MOVIE_TYPE to type)
         parentFragmentManager.replaceFragments<MoviesFragment>(
             container = R.id.framenav,
-            bundle = bundle
+            bundle = bundle,
+            animation = NavigationAnimation.SLIDE_LEFT
         )
 
 //        val movieListsFragment = MoviesFragment()
@@ -106,10 +109,15 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
 //            .addToBackStack(null).commit()
     }
 
-    private fun logOut() {
-        accountViewModel.logOut()
+    private fun observeData() {
         accountViewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
+                is AccountViewModel.State.AccountResult -> {
+                    setUserData(result.data)
+                }
+                is AccountViewModel.State.AccountLocalResult -> {
+                    username.text = result.username
+                }
                 is AccountViewModel.State.LogOutSuccessful -> {
                     val intent = Intent(requireContext(), SignInActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -121,6 +129,19 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
                 }
             }
         })
+    }
+
+    private fun setUserData(account: Account) {
+        username.text = account.name
+//        if (account.avatar?.gravatar != null) {
+//            Picasso.get()
+//                .load(GRAVATAR_URL + account.avatar.gravatar + ".jpg")
+//                .into(profileImage)
+//        }
+    }
+
+    private fun logOut() {
+        accountViewModel.logOut()
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, offset: Int) {
@@ -155,21 +176,21 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
     private fun handleAlphaOnTitle(percentage: Float) {
         if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
             if (isTheTitleContainerVisible) {
-                startAlphaAnimation(titleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE)
+                startAlphaAnimation(titleContainer, View.INVISIBLE)
                 isTheTitleContainerVisible = false
             }
         } else {
             if (!isTheTitleContainerVisible) {
-                startAlphaAnimation(titleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE)
+                startAlphaAnimation(titleContainer, View.VISIBLE)
                 isTheTitleContainerVisible = true
             }
         }
     }
 
-    private fun startAlphaAnimation(v: View, duration: Long, visibility: Int) {
+    private fun startAlphaAnimation(v: View, visibility: Int) {
         val alphaAnimation =
             if (visibility == View.VISIBLE) AlphaAnimation(0f, 1f) else AlphaAnimation(1f, 0f)
-        alphaAnimation.duration = duration
+        alphaAnimation.duration = ALPHA_ANIMATIONS_DURATION
         alphaAnimation.fillAfter = true
         v.startAnimation(alphaAnimation)
     }

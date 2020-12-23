@@ -1,12 +1,12 @@
 package com.example.movies
 
 import android.app.Application
-import com.example.movies.data.module.mapperModule
-import com.example.movies.data.module.networkModule
-import com.example.movies.data.module.repositoryModule
-import com.example.movies.data.module.storageModule
-import com.example.movies.domain.module.useCaseModule
-import com.example.movies.presentation.module.viewModelModule
+import com.example.movies.data.di.mapperModule
+import com.example.movies.data.di.networkModule
+import com.example.movies.data.di.repositoryModule
+import com.example.movies.data.di.storageModule
+import com.example.movies.domain.di.useCaseModule
+import com.example.movies.presentation.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 

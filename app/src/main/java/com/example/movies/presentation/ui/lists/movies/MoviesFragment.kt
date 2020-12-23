@@ -13,14 +13,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.movies.R
-import com.example.movies.data.mapper.DataSource
-import com.example.movies.data.model.movie.MoviesType
+import com.example.movies.core.NavigationAnimation
+import com.example.movies.core.extensions.replaceFragments
+import com.example.movies.domain.model.DataSource
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MoviesType
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.lists.SharedViewModel
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.movies.presentation.utils.constants.*
-import com.example.movies.presentation.utils.extensions.replaceFragments
 import com.example.movies.presentation.utils.pagination.PaginationListener
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.android.inject
@@ -42,7 +43,7 @@ class MoviesFragment : Fragment() {
     private var isLoading = false
     private var itemCount = 0
 
-    private val moviesListViewModel: MoviesListViewModel by inject()
+    private val viewModel: MoviesListViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val itemClickListener = object : ItemClickListener {
@@ -51,8 +52,9 @@ class MoviesFragment : Fragment() {
 
             parentFragmentManager.replaceFragments<MovieDetailsFragment>(
                 container = R.id.framenav,
-                hideTag = this@MoviesFragment,
-                bundle = bundleOf(INTENT_KEY to item.id)
+                hideFragment = this@MoviesFragment,
+                bundle = bundleOf(INTENT_KEY to item.id),
+                animation = NavigationAnimation.CENTER
             )
 
 //            val bundle = Bundle()
@@ -69,12 +71,12 @@ class MoviesFragment : Fragment() {
 
         override fun addToFavourites(item: Movie) {
             if (!item.isFavourite) logEvent(MOVIE_LIKED, item)
-            moviesListViewModel.addToFavourites(item)
+            viewModel.addToFavourites(item)
             sharedViewModel.setMovie(item)
         }
 
         override fun addToWatchlist(item: Movie) {
-            moviesListViewModel.addToWatchlist(item)
+            viewModel.addToWatchlist(item)
             //sharedViewModel.setMovie(item)
         }
     }
@@ -87,16 +89,12 @@ class MoviesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val bundle = this.arguments
-
-        if (bundle != null) {
-            movieType = bundle.get(MOVIE_TYPE) as MoviesType
-        }
+        if (bundle != null) movieType = bundle.get(MOVIE_TYPE) as MoviesType
         return inflater.inflate(R.layout.fragment_films, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         sharedViewModel.liked.observe(requireActivity(), { item ->
             adapter.updateItem(item)
         })
@@ -149,19 +147,27 @@ class MoviesFragment : Fragment() {
     }
 
     private fun logEvent(logMessage: String, item: Movie) {
-        val bundle = Bundle()
-        bundle.putString(MOVIE_ID, item.id.toString())
-        bundle.putString(MOVIE_TITLE, item.title)
+        val bundle = bundleOf(
+            MOVIE_ID to item.id.toString(),
+            MOVIE_TITLE to item.title
+        )
         firebaseAnalytics.logEvent(logMessage, bundle)
     }
 
     private fun getMovies(page: Int) {
-        moviesListViewModel.getMovies(movieType, page)
+        viewModel.getMovies(movieType, page)
+    }
+
+    private fun getMoviesStatuses(movies: List<Movie>?) {
+        if (movies.isNullOrEmpty()) return
+        for (movie in movies) {
+            viewModel.getMovieStatuses(movie)
+        }
     }
 
     private fun setData() {
 
-        moviesListViewModel.liveData.observe(viewLifecycleOwner, { result ->
+        viewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
                     swipeRefreshLayout.isRefreshing = true
@@ -170,6 +176,7 @@ class MoviesFragment : Fragment() {
                     swipeRefreshLayout.isRefreshing = false
                 }
                 is MoviesListViewModel.State.Result -> {
+                    getMoviesStatuses(result.moviesList)
                     if (result.dataSource == DataSource.LOCAL) {
                         adapter.replaceItems(result.moviesList)
                     } else {

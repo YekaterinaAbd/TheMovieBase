@@ -1,10 +1,11 @@
 package com.example.movies.domain.repository
 
 import android.content.Context
-import com.example.movies.data.mapper.MoviesAnswer
 import com.example.movies.data.model.entities.MovieStatus
 import com.example.movies.data.model.movie.*
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MoviesAnswer
+import com.example.movies.domain.model.MoviesType
 
 interface MovieRepository {
 
@@ -18,8 +19,6 @@ interface MovieRepository {
     suspend fun getMovies(
         type: MoviesType, apiKey: String, page: Int, context: Context
     ): MoviesAnswer
-
-    suspend fun getRecommendedMovies(apiKey: String, sessionId: String, page: Int): MoviesAnswer?
 
     suspend fun searchMovies(apiKey: String, query: String?, page: Int): List<Movie>?
 
@@ -46,11 +45,7 @@ interface MovieRepository {
     suspend fun getSimilarMovies(id: Int, apiKey: String): List<Movie>?
     suspend fun getKeywords(id: Int, apiKey: String): List<KeyWord>?
 
-    suspend fun getMovieStates(
-        movieId: Int,
-        apiKey: String,
-        sessionId: String
-    ): MovieStatus?
+    suspend fun getMovieStates(movieId: Int, apiKey: String, sessionId: String): MovieStatus?
 
     suspend fun updateRemoteFavourites(apiKey: String, sessionId: String, fav: FavouriteMovie)
 

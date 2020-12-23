@@ -1,12 +1,11 @@
 package com.example.movies.presentation.ui.lists.search
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.movies.core.base.BaseViewModel
 import com.example.movies.data.model.entities.SearchQuery
 import com.example.movies.domain.use_case.SearchUseCase
-import com.example.movies.presentation.BaseViewModel
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -27,7 +26,6 @@ class SearchViewModel(
     fun getLastQueries() {
         uiScope.launch {
             val queries = searchUseCase.getLastQueries()
-            Log.d("test22", queries.toString())
             _historyLiveData.value = HistoryState.Result(queries)
         }
     }

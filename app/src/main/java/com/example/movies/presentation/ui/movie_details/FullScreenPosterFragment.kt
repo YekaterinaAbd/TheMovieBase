@@ -17,7 +17,6 @@ class FullScreenPosterFragment : Fragment() {
     private lateinit var image: ImageView
     private lateinit var ivBack: ImageView
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {

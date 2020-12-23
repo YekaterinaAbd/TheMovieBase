@@ -1,9 +1,9 @@
 package com.example.movies.presentation.ui.markers
 
+import com.example.movies.core.base.BaseViewModel
 import com.example.movies.data.model.entities.Marker
 import com.example.movies.data.model.entities.generateMarkers
 import com.example.movies.domain.repository.MarkerRepository
-import com.example.movies.presentation.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

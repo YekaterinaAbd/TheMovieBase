@@ -38,15 +38,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
             android:elevation="3dp"
-            app:layout_constraintBottom_toBottomOf="@+id/ivPoster"
+            app:layout_constraintBottom_toBottomOf="@+id/poster"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ivPoster" />
+            app:layout_constraintTop_toTopOf="@+id/poster" />
 
     </FrameLayout>
 
     <ImageView
-        android:id="@+id/btnWatchList"
+        android:id="@+id/watchlist"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginTop="40dp"
@@ -57,14 +57,14 @@
         app:srcCompat="@drawable/ic_watchlist" />
 
     <ImageView
-        android:id="@+id/btnLike"
+        android:id="@+id/like"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:contentDescription="@string/watch_list"
-        app:layout_constraintBottom_toBottomOf="@+id/btnWatchList"
-        app:layout_constraintEnd_toStartOf="@+id/btnWatchList"
+        app:layout_constraintBottom_toBottomOf="@+id/watchlist"
+        app:layout_constraintEnd_toStartOf="@+id/watchlist"
         app:srcCompat="@drawable/ic_favourite_border" />
 
     <ImageView
@@ -128,7 +128,7 @@
 
 
                 <com.makeramen.roundedimageview.RoundedImageView
-                    android:id="@+id/ivPoster"
+                    android:id="@+id/poster"
                     android:layout_width="98dp"
                     android:layout_height="132dp"
                     android:layout_gravity="center_vertical"
@@ -148,11 +148,11 @@
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/ivPoster"
+                    app:layout_constraintStart_toEndOf="@+id/poster"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
-                        android:id="@+id/tvName"
+                        android:id="@+id/name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/quicksand_semi_bold"
@@ -161,7 +161,7 @@
                         tools:text="Title" />
 
                     <TextView
-                        android:id="@+id/tvYear"
+                        android:id="@+id/year"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -178,20 +178,20 @@
                         android:fontFamily="@font/quicksand_semi_bold"
                         android:textColor="@color/darkColorSecondaryIcons"
                         android:textSize="14sp"
-                        app:layout_constraintBottom_toTopOf="@+id/tvTagline"
+                        app:layout_constraintBottom_toTopOf="@+id/tagline"
                         app:layout_constraintStart_toStartOf="@+id/tvGenres"
                         app:layout_constraintTop_toBottomOf="@+id/tvGenres"
                         tools:text="Movie Duration Info" />
 
                     <TextView
-                        android:id="@+id/tvTagline"
+                        android:id="@+id/tagline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="?attr/colorPrimaryText"
                         android:textSize="13sp"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@+id/ivPoster"
-                        app:layout_constraintEnd_toEndOf="@+id/tvName"
+                        app:layout_constraintBottom_toBottomOf="@+id/poster"
+                        app:layout_constraintEnd_toEndOf="@+id/name"
                         app:layout_constraintStart_toStartOf="@+id/duration"
                         tools:text="TagLine" />
 
@@ -283,10 +283,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/line" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="16dp"
+                android:background="#81C0C0C0" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
 
                 <TextView
                     android:id="@+id/textView2"
@@ -360,12 +369,12 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="1dp"
                     android:fontFamily="@font/quicksand_semi_bold"
-                    android:text="My Rating"
+                    android:text="@string/my_rating_text"
                     android:textColor="?attr/colorPrimaryText"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/myRating"
+                    android:id="@+id/userRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -383,7 +392,7 @@
                     android:layout_marginEnd="24dp"
                     android:fontFamily="@font/quicksand_semi_bold"
                     android:gravity="end"
-                    android:text="Rate Movie"
+                    android:text="@string/rate_movie"
                     android:textAllCaps="true"
                     android:textColor="@color/darkColorSecondaryIcons" />
 
@@ -401,7 +410,6 @@
                 tools:visibility="visible">
 
                 <View
-                    android:id="@+id/line3"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginStart="16dp"
@@ -410,7 +418,6 @@
                     android:background="#81C0C0C0" />
 
                 <TextView
-                    android:id="@+id/tvTrailer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -442,7 +449,6 @@
             </LinearLayout>
 
             <View
-                android:id="@+id/line6"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginStart="16dp"
@@ -465,7 +471,6 @@
                 tools:visibility="visible">
 
                 <TextView
-                    android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -504,7 +509,6 @@
                 tools:visibility="visible">
 
                 <View
-                    android:id="@+id/view7"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginStart="16dp"

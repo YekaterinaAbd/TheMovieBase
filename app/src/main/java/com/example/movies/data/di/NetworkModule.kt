@@ -1,6 +1,7 @@
-package com.example.movies.data.module
+package com.example.movies.data.di
 
 import android.util.Log
+import com.example.movies.data.network.AccountApi
 import com.example.movies.data.network.BASE_URL
 import com.example.movies.data.network.MovieApi
 import okhttp3.OkHttpClient
@@ -13,11 +14,11 @@ import java.util.concurrent.TimeUnit
 val networkModule = module {
     single { createLoggingInterceptor() }
     single { createHttpClient(httpLoggingInterceptor = get()) }
-    single { createApiService(okHttpClient = get()) }
+    single { createMovieApiService(okHttpClient = get()) }
+    single { createAccountApiService(okHttpClient = get()) }
 }
 
-
-fun createApiService(
+fun createMovieApiService(
     okHttpClient: OkHttpClient
 ): MovieApi {
     return Retrofit.Builder()
@@ -26,6 +27,17 @@ fun createApiService(
         .client(okHttpClient)
         .build()
         .create(MovieApi::class.java)
+}
+
+fun createAccountApiService(
+    okHttpClient: OkHttpClient
+): AccountApi {
+    return Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(okHttpClient)
+        .build()
+        .create(AccountApi::class.java)
 }
 
 fun createHttpClient(
