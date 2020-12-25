@@ -4,7 +4,7 @@ import com.example.movies.domain.use_case.*
 import org.koin.dsl.module
 
 val useCaseModule = module {
-    factory { SessionIdUseCase(movieRepository = get()) }
+    factory { SessionIdUseCase(accountRepository = get()) }
     factory { LikesUseCase(movieRepository = get()) }
     factory { MoviesListsUseCase(movieRepository = get()) }
     factory { LocalMoviesUseCase(movieRepository = get()) }
@@ -14,4 +14,5 @@ val useCaseModule = module {
     factory { MovieDetailsUseCase(movieRepository = get()) }
     factory { LoginUseCase(accountRepository = get()) }
     factory { LocalLoginDataUseCase(accountRepository = get()) }
+    factory { RecentMoviesUseCase(searchRepository = get()) }
 }

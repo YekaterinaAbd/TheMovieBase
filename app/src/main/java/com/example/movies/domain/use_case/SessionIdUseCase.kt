@@ -1,10 +1,9 @@
 package com.example.movies.domain.use_case
 
-import android.content.Context
-import com.example.movies.domain.repository.MovieRepository
+import com.example.movies.domain.repository.AccountRepository
 
 class SessionIdUseCase(
-    private val movieRepository: MovieRepository
+    private val accountRepository: AccountRepository
 ) {
-    fun getLocalSessionId(context: Context) = movieRepository.getLocalSessionId(context)
+    fun getLocalSessionId() = accountRepository.getLocalSessionId()
 }

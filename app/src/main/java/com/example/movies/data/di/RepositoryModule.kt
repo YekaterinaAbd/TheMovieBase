@@ -13,9 +13,10 @@ import org.koin.dsl.module
 val repositoryModule = module {
     single<MovieRepository> {
         MovieRepositoryImpl(
+            api = get(),
             movieDao = get(),
-            service = get(),
             movieStatusDao = get(),
+            recentMovieDao = get(),
             sharedPreferences = get(),
             remoteMovieMapper = get(),
             localMovieMapper = get()
@@ -29,5 +30,10 @@ val repositoryModule = module {
         )
     }
     single<MarkerRepository> { MarkerRepositoryImpl(markerDao = get()) }
-    single<SearchRepository> { SearchRepositoryImpl(searchHistoryDao = get()) }
+    single<SearchRepository> {
+        SearchRepositoryImpl(
+            searchHistoryDao = get(),
+            recentMovieDao = get()
+        )
+    }
 }

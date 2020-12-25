@@ -107,7 +107,7 @@ class PaginationAdapter(
                     .into(poster)
 
             view.setOnClickListener {
-                itemClickListener?.itemClick(adapterPosition, movie)
+                itemClickListener?.itemClick(movie.id)
             }
         }
     }

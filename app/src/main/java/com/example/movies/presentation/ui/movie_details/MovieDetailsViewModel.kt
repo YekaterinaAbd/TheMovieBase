@@ -1,6 +1,5 @@
 package com.example.movies.presentation.ui.movie_details
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.example.movies.core.base.BaseViewModel
 import com.example.movies.data.model.movie.*
@@ -13,13 +12,12 @@ import com.google.gson.internal.LinkedTreeMap
 import kotlinx.coroutines.launch
 
 class MovieDetailsViewModel(
-    context: Context,
     sessionIdUseCase: SessionIdUseCase,
     private val movieDetailsUseCase: MovieDetailsUseCase,
     private val likesUseCase: LikesUseCase
 ) : BaseViewModel() {
 
-    private var sessionId = sessionIdUseCase.getLocalSessionId(context)
+    private var sessionId = sessionIdUseCase.getLocalSessionId()
     val liveData = MutableLiveData<State>()
 
     fun getMovie(id: Int) {

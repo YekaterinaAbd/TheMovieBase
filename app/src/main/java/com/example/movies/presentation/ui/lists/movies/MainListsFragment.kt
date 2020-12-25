@@ -15,7 +15,6 @@ import com.example.movies.domain.model.MoviesType
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.movies.presentation.utils.constants.INTENT_KEY
-import com.example.movies.presentation.utils.constants.MOVIE_CLICKED
 import com.example.movies.presentation.utils.constants.MOVIE_ID
 import com.example.movies.presentation.utils.constants.MOVIE_TITLE
 import com.example.movies.presentation.utils.widgets.MoviesListView
@@ -35,12 +34,12 @@ class MainListsFragment : Fragment() {
     private val moviesListViewModel: MoviesListViewModel by inject()
 
     private val itemClickListener = object : SimpleItemClickListener {
-        override fun itemClick(position: Int, item: Movie) {
-            if (item.id == null) return
-            logEvent(MOVIE_CLICKED, item)
+        override fun itemClick(id: Int?) {
+            if (id == null) return
+            //logEvent(MOVIE_CLICKED, item)
             parentFragmentManager.replaceFragments<MovieDetailsFragment>(
                 container = R.id.framenav,
-                bundle = bundleOf(INTENT_KEY to item.id),
+                bundle = bundleOf(INTENT_KEY to id),
                 animation = NavigationAnimation.CENTER
             )
         }

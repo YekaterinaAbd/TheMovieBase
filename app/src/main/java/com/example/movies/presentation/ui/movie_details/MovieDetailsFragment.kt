@@ -21,7 +21,6 @@ import com.example.movies.core.extensions.showToast
 import com.example.movies.data.model.movie.*
 import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.data.network.VIDEO_URL
-import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.ui.lists.SharedViewModel
 import com.example.movies.presentation.ui.lists.movies.HorizontalFilmsAdapter
 import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
@@ -44,17 +43,21 @@ class MovieDetailsFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val itemClickListener = object : SimpleItemClickListener {
-        override fun itemClick(position: Int, item: Movie) {
-            if (item.id == null) return
+        override fun itemClick(id: Int?) {
+            if (id == null) return
             parentFragmentManager.replaceFragments<MovieDetailsFragment>(
                 container = R.id.framenav,
-                bundle = bundleOf(INTENT_KEY to item.id)
+                bundle = bundleOf(INTENT_KEY to id)
             )
         }
     }
 
-    private val adapter by lazy {
+    private val similarMoviesAdapter by lazy {
         HorizontalFilmsAdapter(itemClickListener)
+    }
+
+    private val castAdapter by lazy {
+        CastAdapter()
     }
 
     override fun onCreateView(
@@ -114,7 +117,11 @@ class MovieDetailsFragment : Fragment() {
     private fun setAdapter() {
         rvSimilarMovies.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        rvSimilarMovies.adapter = adapter
+        rvSimilarMovies.adapter = similarMoviesAdapter
+
+        rvCast.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rvCast.adapter = castAdapter
     }
 
     private fun getMovie(id: Int?) {
@@ -151,7 +158,7 @@ class MovieDetailsFragment : Fragment() {
                 }
                 is MovieDetailsViewModel.State.SimilarMoviesResult -> {
                     if (!result.movies.isNullOrEmpty()) {
-                        adapter.addItems(result.movies)
+                        similarMoviesAdapter.addItems(result.movies)
                         similarMoviesLayout.visibility = View.VISIBLE
                     }
 
@@ -164,7 +171,8 @@ class MovieDetailsFragment : Fragment() {
                 }
                 is MovieDetailsViewModel.State.CreditsResult -> {
                     if (result.credits != null) {
-                        setCredits(result.credits)
+                        setCrew(result.credits.crew)
+                        setCast(result.credits.cast)
                     }
                 }
                 is MovieDetailsViewModel.State.RatingResult -> {
@@ -290,10 +298,16 @@ class MovieDetailsFragment : Fragment() {
         }
     }
 
-    private fun setCredits(credits: Credits) {
-        if (credits.crew.isNullOrEmpty()) return
-        val directorName = credits.crew.find { crew -> crew.job == "Director" }?.name
+    private fun setCrew(crew: List<Crew>?) {
+        if (crew.isNullOrEmpty()) return
+        val directorName = crew.find { it.job == "Director" }?.name
         director.text = directorName
+    }
+
+    private fun setCast(cast: List<Cast>?) {
+        if (cast.isNullOrEmpty()) return
+        castLayout.visibility = View.VISIBLE
+        castAdapter.addAll(cast)
     }
 
     private fun createChip(title: String, chipGroup: ChipGroup) {

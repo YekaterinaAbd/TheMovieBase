@@ -11,8 +11,6 @@ import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesType
 import com.example.movies.domain.model.MoviesType.*
-import com.example.movies.presentation.utils.extensions.Side
-import com.example.movies.presentation.utils.extensions.setMargin
 import com.squareup.picasso.Picasso
 
 interface ItemClickListener {
@@ -127,7 +125,6 @@ class ListsAdapter(
         private val tvGenres: TextView = view.findViewById(R.id.tvGenres)
         private val poster: ImageView = view.findViewById(R.id.poster)
         private val tvRating: TextView = view.findViewById(R.id.tvRating)
-        private val number: TextView = view.findViewById(R.id.number)
         private val addToFav: ImageView = view.findViewById(R.id.ivLike)
         private val addToWatchlist: ImageView = view.findViewById(R.id.ivWatchlist)
 
@@ -136,7 +133,7 @@ class ListsAdapter(
             addToFav.visibility = View.VISIBLE
             addToWatchlist.visibility = View.VISIBLE
 
-            if (movies[0] == movie) itemView.setMargin(16, Side.TOP)
+            //   if (movies[0] == movie) itemView.setMargin(16, Side.TOP)
 
             if (movie != null) {
 
@@ -151,8 +148,6 @@ class ListsAdapter(
                     tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
                 tvRating.text = movie.voteAverage.toString()
                 tvGenres.text = movie.genreNames
-
-                number.text = movie.position.toString()
 
                 if (!movie.posterPath.isNullOrEmpty())
                     Picasso.get()
@@ -182,6 +177,8 @@ class ListsAdapter(
 
         fun bind(movie: Movie?) {
 
+            if (movie == null) return
+
             val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
             val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
             val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
@@ -191,23 +188,21 @@ class ListsAdapter(
             val addToWatchlist = view.findViewById<ImageView>(R.id.ivWatchlist)
             val tvMyRating = view.findViewById<TextView>(R.id.tvRated)
 
-            if (movie != null) {
-                if (movies[0] == movie) itemView.setMargin(16, Side.TOP)
+            tvTitle.text = movie.title
+            tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
+            tvRating.text = movie.voteAverage.toString()
+            tvGenres.text = movie.genreNames
 
-                tvTitle.text = movie.title
-                tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
-                tvRating.text = movie.voteAverage.toString()
-                tvGenres.text = movie.genreNames
+            Picasso.get()
+                .load(IMAGE_URL + movie.posterPath)
+                .into(poster)
 
-                Picasso.get()
-                    .load(IMAGE_URL + movie.posterPath)
-                    .into(poster)
+            view.setOnClickListener {
+                itemClickListener?.itemClick(movie)
+            }
 
-                view.setOnClickListener {
-                    itemClickListener?.itemClick(movie)
-                }
-
-                if (moviesType == WATCH_LIST) {
+            when (moviesType) {
+                WATCH_LIST -> {
                     addToWatchlist.visibility = View.VISIBLE
                     addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
 
@@ -215,8 +210,8 @@ class ListsAdapter(
                         itemClickListener?.addToWatchlist(movie)
                         removeItem(movie, adapterPosition)
                     }
-
-                } else if (moviesType == FAVOURITES) {
+                }
+                FAVOURITES -> {
                     addToFav.visibility = View.VISIBLE
                     addToFav.setImageResource(R.drawable.ic_favourite)
 
@@ -224,7 +219,8 @@ class ListsAdapter(
                         itemClickListener?.addToFavourites(movie)
                         removeItem(movie, adapterPosition)
                     }
-                } else {
+                }
+                else -> {
                     tvMyRating.visibility = View.VISIBLE
                     tvMyRating.text =
                         itemView.context.getString(R.string.my_rating, movie.rating?.toFloat())

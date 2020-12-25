@@ -1,6 +1,5 @@
 package com.example.movies.domain.repository
 
-import android.content.Context
 import com.example.movies.data.model.entities.MovieStatus
 import com.example.movies.data.model.movie.*
 import com.example.movies.domain.model.Movie
@@ -17,7 +16,7 @@ interface MovieRepository {
 //    suspend fun getWatchListMovies(apiKey: String, sessionId: String, page: Int): MoviesAnswer
 
     suspend fun getMovies(
-        type: MoviesType, apiKey: String, page: Int, context: Context
+        type: MoviesType, apiKey: String, page: Int, sessionId: String
     ): MoviesAnswer
 
     suspend fun searchMovies(apiKey: String, query: String?, page: Int): List<Movie>?
@@ -36,7 +35,6 @@ interface MovieRepository {
     suspend fun getLocalMovieStatuses(): List<MovieStatus>?
     fun insertLocalMovieStatus(movieState: MovieStatus)
     suspend fun deleteLocalMovieStatus(id: Int)
-    fun getLocalSessionId(context: Context): String
 
     suspend fun getRemoteGenres(apiKey: String): Genres?
 

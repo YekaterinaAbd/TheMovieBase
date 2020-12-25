@@ -21,10 +21,9 @@ val viewModelModule = module {
             searchMoviesUseCase = get()
         )
     }
-    viewModel { SearchViewModel(context = get(), searchUseCase = get()) }
+    viewModel { SearchViewModel(searchUseCase = get(), recentMoviesUseCase = get()) }
     viewModel {
         MovieDetailsViewModel(
-            context = get(),
             movieDetailsUseCase = get(),
             sessionIdUseCase = get(),
             likesUseCase = get()

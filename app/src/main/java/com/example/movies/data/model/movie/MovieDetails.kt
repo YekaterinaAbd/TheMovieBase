@@ -10,6 +10,7 @@ data class MovieDetails(
     @SerializedName("title") val title: String?,
     @SerializedName("vote_average") val voteAverage: Double?,
     @SerializedName("poster_path") val posterPath: String?,
+    @SerializedName("backdrop_path") val backdropPath: String?,
     @SerializedName("release_date") val releaseDate: String?,
     @SerializedName("popularity") val popularity: String?,
     @SerializedName("overview") val overview: String?,

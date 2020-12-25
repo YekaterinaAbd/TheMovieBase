@@ -12,6 +12,7 @@ val storageModule = module {
     single { getMovieStatusDao(context = get()) }
     single { getMarkerDao(context = get()) }
     single { getSearchHistoryDao(context = get()) }
+    single { getRecentMovieDao(context = get()) }
 }
 
 private fun getMovieDao(context: Context): MovieDao {
@@ -28,6 +29,10 @@ private fun getMarkerDao(context: Context): MarkerDao {
 
 private fun getSearchHistoryDao(context: Context): SearchHistoryDao {
     return MovieDatabase.getDatabase(context).searchHistoryDao()
+}
+
+private fun getRecentMovieDao(context: Context): RecentMovieDao {
+    return MovieDatabase.getDatabase(context).recentMovieDao()
 }
 
 private fun getSharedPreferences(context: Context): SharedPreferences {

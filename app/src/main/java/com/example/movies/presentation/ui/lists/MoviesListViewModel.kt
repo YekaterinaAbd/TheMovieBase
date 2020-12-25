@@ -38,7 +38,7 @@ class MoviesListViewModel(
     lateinit var searchPagedList: LiveData<PagedList<Movie>>
     lateinit var searchStateLiveData: LiveData<MovieState>
 
-    private val sessionId = sessionIdUseCase.getLocalSessionId(context)
+    private val sessionId = sessionIdUseCase.getLocalSessionId()
     val liveData = MutableLiveData<State>()
 
     init {
@@ -54,7 +54,7 @@ class MoviesListViewModel(
         uiScope.launch {
             if (page == 1) liveData.value = State.ShowLoading
             likesUseCase.synchronizeLocalLikes(sessionId)
-            val response = moviesListsUseCase.getMovies(page, type, context)
+            val response = moviesListsUseCase.getMovies(page, type, sessionId)
             when (type) {
                 TOP -> processLists(response, type)
                 CURRENT -> processLists(response, type)

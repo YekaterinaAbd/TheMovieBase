@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="8dp"
     app:cardCornerRadius="4dp">
 
     <!--    <androidx.cardview.widget.CardView-->
@@ -23,18 +23,18 @@
         android:layout_height="wrap_content"
         android:paddingEnd="16dp">
 
-        <TextView
-            android:id="@+id/number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/quicksand_semi_bold"
-            android:textAlignment="center"
-            android:textColor="@color/darkColorSecondaryText"
-            app:layout_constraintEnd_toEndOf="@+id/ivWatchlist"
-            app:layout_constraintStart_toStartOf="@+id/ivWatchlist"
-            app:layout_constraintTop_toTopOf="@+id/tvTitle"
-            tools:text="123"
-            tools:visibility="gone" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/number"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:fontFamily="@font/quicksand_semi_bold"-->
+        <!--            android:textAlignment="center"-->
+        <!--            android:textColor="@color/darkColorSecondaryText"-->
+        <!--            app:layout_constraintEnd_toEndOf="@+id/ivWatchlist"-->
+        <!--            app:layout_constraintStart_toStartOf="@+id/ivWatchlist"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/tvTitle"-->
+        <!--            tools:text="123"-->
+        <!--            tools:visibility="gone" />-->
 
         <TextView
             android:id="@+id/tvTitle"
@@ -50,7 +50,7 @@
             android:textColor="?attr/colorPrimaryText"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/number"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/poster"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Title" />
@@ -145,7 +145,6 @@
             android:text="| 8.0"
             android:textColor="@color/colorRating"
             android:textSize="15sp"
-
             android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvRating"

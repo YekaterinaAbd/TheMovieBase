@@ -226,7 +226,6 @@
 
             </LinearLayout>
 
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -234,7 +233,6 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="16dp"
                 android:background="#81C0C0C0" />
-
 
             <TextView
                 android:layout_width="wrap_content"
@@ -330,8 +328,8 @@
                 <TextView
                     android:id="@+id/votesCount"
                     android:layout_width="wrap_content"
-                    android:layout_gravity="bottom"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="24dp"
                     android:gravity="end"
@@ -448,16 +446,40 @@
 
             </LinearLayout>
 
-            <View
+            <LinearLayout
+                android:id="@+id/castLayout"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="#81C0C0C0"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/overviewLayout" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="#81C0C0C0" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/quicksand_semi_bold"
+                    android:text="Cast"
+                    android:textColor="@color/lightColorPrimaryText"
+                    android:textSize="16sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingStart="16dp" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/similarMoviesLayout"
@@ -469,6 +491,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/trailerLayout"
                 tools:visibility="visible">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="#81C0C0C0" />
 
                 <TextView
                     android:layout_width="wrap_content"

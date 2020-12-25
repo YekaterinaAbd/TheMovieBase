@@ -15,7 +15,7 @@ import com.example.movies.presentation.utils.extensions.setMargin
 import com.squareup.picasso.Picasso
 
 interface SimpleItemClickListener {
-    fun itemClick(position: Int, item: Movie)
+    fun itemClick(id: Int?)
 }
 
 class HorizontalFilmsAdapter(
@@ -70,7 +70,7 @@ class HorizontalFilmsAdapter(
                     .into(ivPoster)
 
                 view.setOnClickListener {
-                    simpleItemClickListener?.itemClick(adapterPosition, movie)
+                    movie.id?.let { it1 -> simpleItemClickListener?.itemClick(it1) }
                 }
             }
         }

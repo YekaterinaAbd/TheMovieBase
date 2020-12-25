@@ -1,13 +1,16 @@
 package com.example.movies.data.repository
 
+import com.example.movies.data.database.RecentMovieDao
 import com.example.movies.data.database.SearchHistoryDao
+import com.example.movies.data.model.entities.RecentMovie
 import com.example.movies.data.model.entities.SearchQuery
 import com.example.movies.domain.repository.SearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class SearchRepositoryImpl(
-    private val searchHistoryDao: SearchHistoryDao
+    private val searchHistoryDao: SearchHistoryDao,
+    private val recentMovieDao: RecentMovieDao
 ) : SearchRepository {
 
     override suspend fun getAllQueries(): List<SearchQuery>? = withContext(Dispatchers.IO) {
@@ -51,6 +54,20 @@ class SearchRepositoryImpl(
             return@withContext null
         } catch (e: Exception) {
             return@withContext e.message
+        }
+    }
+
+    override suspend fun getRecentMovies(): List<RecentMovie> = withContext(Dispatchers.IO) {
+        try {
+            return@withContext recentMovieDao.getRecentMovies() ?: emptyList()
+        } catch (e: java.lang.Exception) {
+            return@withContext emptyList()
+        }
+    }
+
+    override suspend fun deleteRecentMovies() {
+        withContext(Dispatchers.IO) {
+            recentMovieDao.deleteAll()
         }
     }
 }
