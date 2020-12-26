@@ -17,7 +17,6 @@ val repositoryModule = module {
             movieDao = get(),
             movieStatusDao = get(),
             recentMovieDao = get(),
-            sharedPreferences = get(),
             remoteMovieMapper = get(),
             localMovieMapper = get()
         )

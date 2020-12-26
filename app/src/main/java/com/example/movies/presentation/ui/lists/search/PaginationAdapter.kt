@@ -62,7 +62,7 @@ class PaginationAdapter(
     }
 
     fun setNetworkState(newState: MovieState) {
-        val previousState: MovieState? = this.state
+        val previousState: MovieState = this.state
         val previousExtraRow = hasExtraRow()
         this.state = newState
         val newExtraRow = hasExtraRow()
@@ -105,6 +105,7 @@ class PaginationAdapter(
                 Picasso.get()
                     .load(IMAGE_URL + movie.posterPath)
                     .into(poster)
+
 
             view.setOnClickListener {
                 itemClickListener?.itemClick(movie.id)

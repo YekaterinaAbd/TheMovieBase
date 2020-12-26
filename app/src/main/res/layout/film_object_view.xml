@@ -9,32 +9,10 @@
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="4dp">
 
-    <!--    <androidx.cardview.widget.CardView-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="16dp"-->
-    <!--        android:layout_marginEnd="16dp"-->
-    <!--        app:cardCornerRadius="4dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent">-->
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="16dp">
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/number"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:fontFamily="@font/quicksand_semi_bold"-->
-        <!--            android:textAlignment="center"-->
-        <!--            android:textColor="@color/darkColorSecondaryText"-->
-        <!--            app:layout_constraintEnd_toEndOf="@+id/ivWatchlist"-->
-        <!--            app:layout_constraintStart_toStartOf="@+id/ivWatchlist"-->
-        <!--            app:layout_constraintTop_toTopOf="@+id/tvTitle"-->
-        <!--            tools:text="123"-->
-        <!--            tools:visibility="gone" />-->
 
         <TextView
             android:id="@+id/tvTitle"
@@ -87,7 +65,7 @@
 
         <ImageView
             android:id="@+id/poster"
-            android:layout_width="72dp"
+            android:layout_width="80dp"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -142,7 +120,7 @@
             android:drawablePadding="4dp"
             android:fontFamily="@font/quicksand"
             android:gravity="center_vertical"
-            android:text="| 8.0"
+            tools:text="| 8.0"
             android:textColor="@color/colorRating"
             android:textSize="15sp"
             android:textStyle="bold"

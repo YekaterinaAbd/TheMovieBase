@@ -8,22 +8,6 @@
     android:background="?attr/colorBackground"
     tools:context=".presentation.ui.MainActivity">
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/toolbar"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:paddingLeft="20dp"-->
-    <!--        android:paddingTop="20dp"-->
-    <!--        android:background="?attr/colorItems"-->
-    <!--        android:paddingBottom="16dp"-->
-    <!--        android:text="Top-rated movies"-->
-    <!--        android:textColor="?attr/colorPrimaryText"-->
-    <!--        android:textSize="20sp"-->
-    <!--        android:textStyle="bold"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
     <FrameLayout
         android:id="@+id/framenav"
         android:layout_width="match_parent"

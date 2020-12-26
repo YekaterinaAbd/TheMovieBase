@@ -7,43 +7,32 @@
     android:layout_height="match_parent"
     android:background="@color/lightColorToolbar">
 
-    <FrameLayout
-        android:id="@+id/loadingLayout"
+    <!--    <FrameLayout-->
+    <!--        android:id="@+id/loadingLayout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:background="@color/lightColorBackground"-->
+    <!--        android:elevation="2dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/tvTitle"-->
+    <!--        tools:visibility="visible">-->
+
+    <include
+        android:id="@+id/errorLayout"
+        layout="@layout/view_error"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/lightColorBackground"
+        android:layout_weight="1"
         android:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        tools:visibility="gone">
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
-        <include
-            android:id="@+id/errorLayout"
-            layout="@layout/view_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="48dp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="@android:style/Widget.DeviceDefault.Light.ProgressBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:elevation="3dp"
-            app:layout_constraintBottom_toBottomOf="@+id/poster"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/poster" />
-
-    </FrameLayout>
+    <!--    </FrameLayout>-->
 
     <ImageView
         android:id="@+id/watchlist"
@@ -69,19 +58,15 @@
 
     <ImageView
         android:id="@+id/ivBack"
-        android:layout_width="72dp"
+        android:layout_width="36dp"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        android:cropToPadding="false"
         android:elevation="3dp"
-        android:paddingStart="0dp"
-        android:paddingTop="18dp"
+        android:layout_marginStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="18dp"
         android:src="@drawable/back"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/like" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -89,13 +74,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:background="@color/cardview_light_background"
-        android:fontFamily="@font/quicksand_bold"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:textAlignment="center"
-        android:textColor="@color/darkColorPrimaryText"
-        android:textSize="20sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -104,14 +84,13 @@
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/lightColorBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle">
 
-
         <LinearLayout
+            android:id="@+id/mainLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

@@ -1,9 +1,11 @@
 package com.example.movies.presentation.ui.lists.search
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
@@ -13,7 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
+import com.ethanhua.skeleton.Skeleton
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
 import com.example.movies.core.extensions.replaceFragments
@@ -28,11 +31,13 @@ import org.koin.android.ext.android.inject
 
 class SearchFragment : Fragment() {
 
+    private lateinit var skeletonScreen: RecyclerViewSkeletonScreen
     private lateinit var search: SearchView
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchHistoryRecyclerView: RecyclerView
     private lateinit var recentMoviesRecyclerView: RecyclerView
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
+    //  private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var searchTipsLayout: LinearLayout
     private lateinit var clearQueries: ImageView
     private lateinit var clearRecentMovies: ImageView
@@ -57,6 +62,7 @@ class SearchFragment : Fragment() {
         override fun onQueryClick(item: SearchQuery) {
             search.setQuery(item.query, true)
             search.isIconified = false
+            hideKeyboard()
         }
 
         override fun onQueryRemove(item: SearchQuery) {
@@ -97,7 +103,7 @@ class SearchFragment : Fragment() {
         clearQueries = findViewById(R.id.clearQuery)
         clearRecentMovies = findViewById(R.id.clearMovies)
         search = findViewById(R.id.search)
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+        //  swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
         appbar = findViewById(R.id.appbar)
 
         val searchCloseButtonId: Int = search.context.resources
@@ -122,12 +128,12 @@ class SearchFragment : Fragment() {
             recentMoviesAdapter.clearAll()
         }
 
-        swipeRefreshLayout.setOnRefreshListener {
-            adapter.submitList(null)
-            if (!query.isNullOrEmpty())
-                query?.let { searchMovies(it) }
-            swipeRefreshLayout.isRefreshing = false
-        }
+//        swipeRefreshLayout.setOnRefreshListener {
+//            adapter.submitList(null)
+//            if (!query.isNullOrEmpty())
+//                query?.let { searchMovies(it) }
+//            swipeRefreshLayout.isRefreshing = false
+//        }
 
         search.setOnClickListener {
             search.isIconified = false
@@ -163,6 +169,15 @@ class SearchFragment : Fragment() {
 
         recentMoviesRecyclerView.layoutManager = GridLayoutManager(context, 3)
         recentMoviesRecyclerView.adapter = recentMoviesAdapter
+
+        skeletonScreen = Skeleton.bind(recyclerView)
+            .adapter(adapter)
+            .load(R.layout.film_object_skeleton_view)
+            .shimmer(true)
+            .color(R.color.lightColorBackground)
+            .duration(1000)
+            .show()
+
     }
 
     private fun getSearchHistory() {
@@ -188,6 +203,15 @@ class SearchFragment : Fragment() {
         })
     }
 
+    private fun hideKeyboard() {
+        // Check if no view has focus:
+        val view = requireActivity().currentFocus
+        view?.let { v ->
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(v.windowToken, 0)
+        }
+    }
+
     private fun insertQuery(query: String?) {
         if (!query.isNullOrEmpty()) {
             searchViewModel.insertQuery(query)
@@ -204,13 +228,15 @@ class SearchFragment : Fragment() {
         moviesViewModel.searchStateLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is MovieState.ShowLoading -> {
-                    swipeRefreshLayout.isRefreshing = true
+                    skeletonScreen.show()
+                    //swipeRefreshLayout.isRefreshing = true
                 }
                 is MovieState.HideLoading -> {
-                    swipeRefreshLayout.isRefreshing = false
+                    skeletonScreen.hide()
+                    //swipeRefreshLayout.isRefreshing = false
                 }
                 is MovieState.HidePageLoading -> {
-                    swipeRefreshLayout.isRefreshing = false
+                    // swipeRefreshLayout.isRefreshing = false
                 }
                 is MovieState.Error -> {
                     Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()

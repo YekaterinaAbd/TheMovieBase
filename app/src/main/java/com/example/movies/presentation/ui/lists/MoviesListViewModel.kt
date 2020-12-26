@@ -96,7 +96,7 @@ class MoviesListViewModel(
                 //getMovieStatuses(movie)
             }
         }
-        liveData.value = State.HideLoading
+        if (response.page == 1) liveData.value = State.HideLoading
         liveData.value =
             State.Result(
                 moviesList = response.movies ?: emptyList(),
@@ -108,7 +108,7 @@ class MoviesListViewModel(
 
     private fun processUserLists(response: MoviesAnswer, type: MoviesType, block: () -> Unit) {
         block()
-        liveData.value = State.HideLoading
+        if (response.page == 1) liveData.value = State.HideLoading
         liveData.value =
             State.Result(
                 moviesList = response.movies ?: emptyList(),

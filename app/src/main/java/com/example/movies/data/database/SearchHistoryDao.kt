@@ -14,8 +14,14 @@ interface SearchHistoryDao {
     @Query("SELECT * FROM search_history")
     fun getAll(): List<SearchQuery>
 
-    @Query("SELECT * FROM search_history ORDER BY id DESC LIMIT 10")
+    @Query("SELECT * FROM search_history ORDER BY id DESC")
     fun getQueries(): List<SearchQuery>
+
+    @Query("SELECT count(*) from search_history")
+    fun getQueriesCount(): Int
+
+    @Query("DELETE FROM search_history WHERE id in (SELECT id from search_history order by id LIMIT 1)")
+    fun deleteFirst()
 
     @Query("DELETE FROM search_history WHERE id = :id")
     fun deleteQuery(id: Int)

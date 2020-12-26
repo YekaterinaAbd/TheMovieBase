@@ -12,6 +12,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
+import com.ethanhua.skeleton.Skeleton
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
 import com.example.movies.core.extensions.replaceFragments
@@ -30,6 +32,7 @@ class MoviesFragment : Fragment() {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var recyclerView: RecyclerView
+    private lateinit var skeletonScreen: RecyclerViewSkeletonScreen
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var tvTitle: TextView
@@ -110,7 +113,6 @@ class MoviesFragment : Fragment() {
         tvTitle = view.findViewById(R.id.tvTitle)
         layoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = layoutManager
-
         tvTitle.text = movieType.type
 
         ivBack = view.findViewById(R.id.ivBack)
@@ -119,7 +121,10 @@ class MoviesFragment : Fragment() {
         }
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        //swipeRefreshLayout.visibility = View.INVISIBLE
         swipeRefreshLayout.setOnRefreshListener {
+            //swipeRefreshLayout.isRefreshing = false
+            //skeletonScreen.show()
             adapter.clearAll()
             itemCount = 0
             currentPage = PaginationListener.PAGE_START
@@ -144,6 +149,13 @@ class MoviesFragment : Fragment() {
 
     private fun setAdapter() {
         recyclerView.adapter = adapter
+        skeletonScreen = Skeleton.bind(recyclerView)
+            .adapter(adapter)
+            .load(R.layout.film_object_skeleton_view)
+            .shimmer(true)
+            .color(R.color.lightColorBackground)
+            .duration(1000)
+            .show()
     }
 
     private fun logEvent(logMessage: String, item: Movie) {
@@ -170,10 +182,12 @@ class MoviesFragment : Fragment() {
         viewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
-                    swipeRefreshLayout.isRefreshing = true
+                    //swipeRefreshLayout.isRefreshing = true
+                    skeletonScreen.show()
                 }
                 is MoviesListViewModel.State.HideLoading -> {
                     swipeRefreshLayout.isRefreshing = false
+                    skeletonScreen.hide()
                 }
                 is MoviesListViewModel.State.Result -> {
                     getMoviesStatuses(result.moviesList)
@@ -198,6 +212,5 @@ class MoviesFragment : Fragment() {
                 }
             }
         })
-
     }
 }

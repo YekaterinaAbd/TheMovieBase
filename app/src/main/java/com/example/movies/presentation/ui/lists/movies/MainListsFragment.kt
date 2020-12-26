@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
 import com.example.movies.core.extensions.replaceFragments
@@ -25,7 +24,7 @@ class MainListsFragment : Fragment() {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+  //  private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var topMoviesView: MoviesListView
     private lateinit var currentMoviesView: MoviesListView
     private lateinit var upcomingMoviesView: MoviesListView
@@ -60,7 +59,7 @@ class MainListsFragment : Fragment() {
     }
 
     private fun bindViews(view: View) {
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        // swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         topMoviesView = view.findViewById(R.id.topMovies)
         currentMoviesView = view.findViewById(R.id.currentMovies)
         upcomingMoviesView = view.findViewById(R.id.upcomingMovies)
@@ -90,10 +89,10 @@ class MainListsFragment : Fragment() {
             setAdapter(itemClickListener)
         }
 
-        swipeRefreshLayout.setOnRefreshListener {
-            clear()
-            getMovies()
-        }
+//        swipeRefreshLayout.setOnRefreshListener {
+//            clear()
+//            getMovies()
+//        }
     }
 
     private fun getMovies() {
@@ -114,26 +113,46 @@ class MainListsFragment : Fragment() {
         popularMoviesView.clearAdapter()
     }
 
+    private fun showSkeletonScreen() {
+        topMoviesView.showSkeletonScreen()
+        currentMoviesView.showSkeletonScreen()
+        upcomingMoviesView.showSkeletonScreen()
+        popularMoviesView.showSkeletonScreen()
+    }
+
+    private fun hideSkeletonScreen() {
+        topMoviesView.hideSkeletonScreen()
+        currentMoviesView.hideSkeletonScreen()
+        upcomingMoviesView.hideSkeletonScreen()
+        popularMoviesView.hideSkeletonScreen()
+    }
+
     private fun observe() {
         moviesListViewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
-                    swipeRefreshLayout.isRefreshing = true
+                    //swipeRefreshLayout.isRefreshing = true
+                    showSkeletonScreen()
                 }
                 is MoviesListViewModel.State.HideLoading -> {
-                    swipeRefreshLayout.isRefreshing = false
+                    // swipeRefreshLayout.isRefreshing = false
+                    //  hideSkeletonScreen()
                 }
                 is MoviesListViewModel.State.Result -> {
                     if (result.type == MoviesType.TOP) {
+                        topMoviesView.hideSkeletonScreen()
                         addToAdapter(topMoviesView, result.moviesList)
                     }
                     if (result.type == MoviesType.CURRENT) {
+                        currentMoviesView.hideSkeletonScreen()
                         addToAdapter(currentMoviesView, result.moviesList)
                     }
                     if (result.type == MoviesType.UPCOMING) {
+                        upcomingMoviesView.hideSkeletonScreen()
                         addToAdapter(upcomingMoviesView, result.moviesList)
                     }
                     if (result.type == MoviesType.POPULAR) {
+                        popularMoviesView.hideSkeletonScreen()
                         addToAdapter(popularMoviesView, result.moviesList)
                     }
                 }

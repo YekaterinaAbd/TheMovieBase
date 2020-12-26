@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="100dp"
-    android:layout_marginEnd="16dp"
-    android:paddingTop="32dp"
-    app:cardCornerRadius="10dp"
-    app:contentPaddingBottom="16dp"
-    app:contentPaddingTop="16dp">
+    android:layout_height="match_parent"
+    android:background="@color/lightColorBackground">
 
-    <TextView
-        android:id="@+id/text"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:layout_margin="16dp"
-        android:fontFamily="@font/quicksand_semi_bold"
-        android:text="Ups, there are some problems. Try to reload the page"
-        android:textAlignment="center"
-        android:textColor="@color/lightColorPrimaryText"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:layout_gravity="bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="48dp"
+        android:paddingTop="32dp"
+        app:cardCornerRadius="10dp"
+        app:contentPaddingBottom="16dp"
+        app:contentPaddingTop="16dp">
 
-</androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_margin="16dp"
+            android:fontFamily="@font/quicksand_semi_bold"
+            android:text="@string/details_error_text"
+            android:textAlignment="center"
+            android:textColor="@color/lightColorPrimaryText"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

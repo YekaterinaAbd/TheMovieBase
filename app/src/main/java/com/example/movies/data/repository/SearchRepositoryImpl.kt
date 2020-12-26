@@ -13,7 +13,7 @@ class SearchRepositoryImpl(
     private val recentMovieDao: RecentMovieDao
 ) : SearchRepository {
 
-    override suspend fun getAllQueries(): List<SearchQuery>? = withContext(Dispatchers.IO) {
+    override suspend fun getAllQueries(): List<SearchQuery> = withContext(Dispatchers.IO) {
         try {
             return@withContext searchHistoryDao.getAll()
         } catch (e: Exception) {
@@ -21,7 +21,7 @@ class SearchRepositoryImpl(
         }
     }
 
-    override suspend fun getLastQueries(): List<SearchQuery>? = withContext(Dispatchers.IO) {
+    override suspend fun getLastQueries(): List<SearchQuery> = withContext(Dispatchers.IO) {
         try {
             return@withContext searchHistoryDao.getQueries()
         } catch (e: Exception) {
@@ -31,6 +31,7 @@ class SearchRepositoryImpl(
 
     override suspend fun insertQuery(query: SearchQuery): String? = withContext(Dispatchers.IO) {
         try {
+            if (searchHistoryDao.getQueriesCount() >= 10) searchHistoryDao.deleteFirst()
             searchHistoryDao.insertQuery(query)
             return@withContext null
 

@@ -1,7 +1,5 @@
 package com.example.movies.data.repository
 
-import android.content.SharedPreferences
-import android.util.Log
 import com.example.movies.data.database.MovieDao
 import com.example.movies.data.database.MovieStatusDao
 import com.example.movies.data.database.RecentMovieDao
@@ -30,7 +28,6 @@ class MovieRepositoryImpl(
     private val movieDao: MovieDao,
     private val movieStatusDao: MovieStatusDao,
     private val recentMovieDao: RecentMovieDao,
-    private var sharedPreferences: SharedPreferences,
     private val remoteMovieMapper: RemoteMovieMapper,
     private val localMovieMapper: LocalMovieMapper
 ) : MovieRepository {
@@ -69,14 +66,14 @@ class MovieRepositoryImpl(
                 val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
                 val totalPages = response.body()?.totalPages ?: 0
                 insertToDatabase(list, type)
-                return@withContext MoviesAnswer(list, DataSource.REMOTE, totalPages)
+                return@withContext MoviesAnswer(list, DataSource.REMOTE, page, totalPages)
             } else {
                 val list = getFromDatabase(type)
-                return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
+                return@withContext MoviesAnswer(list, DataSource.LOCAL, page, 1)
             }
         } catch (e: Exception) {
             val list = getFromDatabase(type)
-            return@withContext MoviesAnswer(list, DataSource.LOCAL, 1)
+            return@withContext MoviesAnswer(list, DataSource.LOCAL, page, 1)
         }
     }
 
@@ -170,7 +167,7 @@ class MovieRepositoryImpl(
         movieStatusDao.insertMovieStatus(movieState)
     }
 
-    override suspend fun getLocalMovieStatuses(): List<MovieStatus>? = withContext(Dispatchers.IO) {
+    override suspend fun getLocalMovieStatuses(): List<MovieStatus> = withContext(Dispatchers.IO) {
         return@withContext movieStatusDao.getMovieStatuses()
     }
 
@@ -190,22 +187,27 @@ class MovieRepositoryImpl(
                 val response = api.getMovieById(id, apiKey)
                 if (response.isSuccessful) {
                     val movie = response.body()
-                    recentMovieDao.insertRecentMovie(
-                        RecentMovie(
-                            id = movie?.id,
-                            title = movie?.title,
-                            releaseDate = movie?.releaseDate,
-                            posterPath = movie?.posterPath,
-                            voteAverage = movie?.voteAverage
-                        )
-                    )
-                    Log.d("testt", recentMovieDao.getRecentMovies().toString())
+                    if (movie != null) insertRecentMovie(movie)
                     movie
                 } else null
             } catch (e: Exception) {
                 null
             }
         }
+
+    private fun insertRecentMovie(movie: MovieDetails) {
+        val listSize = recentMovieDao.getRecentMoviesCount()
+        if (listSize >= 15) recentMovieDao.deleteFirst()
+        recentMovieDao.insertRecentMovie(
+            RecentMovie(
+                id = movie.id,
+                title = movie.title,
+                releaseDate = movie.releaseDate,
+                posterPath = movie.posterPath,
+                voteAverage = movie.voteAverage
+            )
+        )
+    }
 
     override suspend fun getSimilarMovies(id: Int, apiKey: String): List<Movie>? =
         withContext(Dispatchers.IO) {

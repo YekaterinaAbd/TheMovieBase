@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.findFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ethanhua.skeleton.Skeleton
+import com.ethanhua.skeleton.ViewSkeletonScreen
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
 import com.example.movies.core.extensions.replaceFragments
@@ -20,6 +22,8 @@ import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
 import com.example.movies.presentation.utils.constants.MOVIE_TYPE
 
 class MoviesListView : LinearLayout {
+
+    private lateinit var skeletonScreen: ViewSkeletonScreen
 
     private lateinit var llTitle: LinearLayout
     private lateinit var title: TextView
@@ -38,6 +42,21 @@ class MoviesListView : LinearLayout {
     fun setData(movieType: MoviesType) {
         type = movieType
         title.text = movieType.type
+
+        skeletonScreen = Skeleton.bind(this)
+            .load(R.layout.list_skeleton_view)
+            .shimmer(true)
+            .color(android.R.color.white)
+            .duration(1000)
+            .show()
+    }
+
+    fun showSkeletonScreen() {
+        skeletonScreen.show()
+    }
+
+    fun hideSkeletonScreen() {
+        skeletonScreen.hide()
     }
 
     fun setListener(fm: FragmentManager) {

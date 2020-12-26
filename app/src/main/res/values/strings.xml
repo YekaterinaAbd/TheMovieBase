@@ -2,8 +2,8 @@
     <string name="app_name">TheMovieDB</string>
     <string name="todo">TODO</string>
     <string name="preference_file">shared_preferences</string>
-    <string name="username">username</string>
-    <string name="password">password</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
     <string name="session_id">session_id</string>
     <string name="favourite_movie">Favourite Movies</string>
     <string name="duration_time">%1$s min</string>
@@ -50,4 +50,8 @@
     <string name="my_rating">| %.1f</string>
     <string name="my_rating_text">My Rating</string>
     <string name="rate_movie">Rate Movie</string>
+    <string name="sign_in">Sign In</string>
+    <string name="dont_have_account_yet">Don\'t have account yet?</string>
+    <string name="sign_in_description">Specify the username and password that you used to log in to TheMovieDB</string>
+    <string name="details_error_text">Ups, there are some problems. Try to reload the page</string>
 </resources>

@@ -45,6 +45,8 @@
         android:text="@string/expand"
         android:textAlignment="textStart"
         android:textColor="@color/lightColorAccent"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:textSize="14sp"
         tools:text="Expand" />
 
