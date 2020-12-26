@@ -6,34 +6,13 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="8dp"
     app:cardCornerRadius="4dp">
-
-    <!--    <androidx.cardview.widget.CardView-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="16dp"-->
-    <!--        android:layout_marginEnd="16dp"-->
-    <!--        app:cardCornerRadius="4dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent">-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="16dp">
-
-        <TextView
-            android:id="@+id/number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/darkColorSecondaryText"
-            app:layout_constraintEnd_toEndOf="@+id/tvAddToFav"
-            app:layout_constraintStart_toStartOf="@+id/tvAddToFav"
-            app:layout_constraintTop_toTopOf="@+id/tvTitle"
-            tools:text="123"
-            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/tvTitle"
@@ -43,12 +22,14 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
+            android:fontFamily="@font/quicksand_semi_bold"
             android:maxLines="2"
+            android:singleLine="true"
             android:textColor="?attr/colorPrimaryText"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/number"
-            app:layout_constraintStart_toEndOf="@+id/ivPoster"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/poster"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Title" />
 
@@ -56,10 +37,15 @@
             android:id="@+id/tvGenres"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/quicksand"
+            android:maxLines="1"
             android:textColor="?attr/colorPrimaryText"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/tvAddToFav"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/ivWatchlist"
             app:layout_constraintStart_toStartOf="@+id/tvReleaseDate"
             app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate"
             tools:text="genres" />
@@ -68,15 +54,18 @@
             android:id="@+id/tvReleaseDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/quicksand_variable"
             android:textColor="?attr/colorPrimaryText"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/tvTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             tools:text="release year" />
 
 
         <ImageView
-            android:id="@+id/ivPoster"
-            android:layout_width="72dp"
+            android:id="@+id/poster"
+            android:layout_width="80dp"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -89,6 +78,7 @@
             android:id="@+id/tvRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
             android:textColor="#2F7C52"
             android:textSize="15sp"
@@ -98,26 +88,47 @@
             app:layout_constraintTop_toBottomOf="@+id/tvGenres"
             tools:text="9.2" />
 
+        <ImageView
+            android:id="@+id/ivWatchlist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_watchlist"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ivLike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivWatchlist"
+            app:layout_constraintTop_toBottomOf="@+id/tvGenres"
+            app:srcCompat="@drawable/ic_favourite_border"
+            tools:visibility="visible" />
+
         <TextView
-            android:id="@+id/tvVotesCount"
+            android:id="@+id/tvRated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:gravity="clip_vertical"
-            android:textColor="?attr/colorPrimaryText"
-            android:textSize="12sp"
+            android:drawablePadding="4dp"
+            android:fontFamily="@font/quicksand"
+            android:gravity="center_vertical"
+            tools:text="| 8.0"
+            android:textColor="@color/colorRating"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvRating"
             app:layout_constraintStart_toEndOf="@+id/tvRating"
             app:layout_constraintTop_toTopOf="@+id/tvRating"
-            tools:text="12000" />
-
-        <ImageView
-            android:id="@+id/tvAddToFav"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/tvRating"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_turned_in_not_black_24dp" />
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

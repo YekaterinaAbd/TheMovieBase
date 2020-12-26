@@ -1,115 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".presentation.ui.sign_in.SignInActivity">
 
+    <android.widget.Button
+        android:id="@+id/btnSignIn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/button_background"
+        android:text="@string/sign_in"
 
-        <Button
-            android:id="@+id/btnSignIn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/button_background"
-            android:text="Sign In"
-            android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="@+id/evPassword"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/evPassword"
-            app:layout_constraintTop_toBottomOf="@+id/evPassword" />
+        android:textColor="@color/darkColorAccount"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/evPassword"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/evPassword"
+        app:layout_constraintTop_toBottomOf="@+id/evPassword" />
 
-        <EditText
-            android:id="@+id/evUsername"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/edittext_border"
-            android:ems="10"
-            android:hint="Username"
-            android:inputType="textPersonName"
-            android:paddingLeft="8dp"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@+id/tvHint"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/tvHint"
-            app:layout_constraintTop_toBottomOf="@+id/tvHint" />
+    <EditText
+        android:id="@+id/evUsername"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/edittext_border"
+        android:ellipsize="start"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textPersonName"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:singleLine="true"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tvHint"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvHint"
+        app:layout_constraintTop_toBottomOf="@+id/tvHint" />
 
-        <EditText
-            android:id="@+id/evPassword"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/edittext_border"
-            android:ems="10"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:paddingLeft="8dp"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@+id/evUsername"
-            app:layout_constraintStart_toStartOf="@+id/evUsername"
-            app:layout_constraintTop_toBottomOf="@+id/evUsername" />
 
-        <TextView
-            android:id="@+id/tvWrongData"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#C81A1A"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="@+id/evPassword"
-            app:layout_constraintTop_toBottomOf="@+id/evPassword"
-            tools:text="Wrong data"
-            android:background="@drawable/textview_border"/>
+    <EditText
+        android:id="@+id/evPassword"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/edittext_border"
+        android:ellipsize="start"
+        android:ems="10"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:singleLine="true"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/evUsername"
+        app:layout_constraintStart_toStartOf="@+id/evUsername"
+        app:layout_constraintTop_toBottomOf="@+id/evUsername" />
 
-        <TextView
-            android:id="@+id/tvAccountLink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:text="Don't have account yet?"
-            android:textColor="#3C3C3E"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:background="@drawable/textview_border"/>
+    <TextView
+        android:id="@+id/tvWrongData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/textview_border"
+        android:textColor="#C81A1A"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/evPassword"
+        app:layout_constraintTop_toBottomOf="@+id/evPassword"
+        tools:text="Wrong data" />
 
-        <TextView
-            android:id="@+id/tvHint"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="48dp"
-            android:text="Specify the username and password that you used to log in to TheMovieDB"
-            android:textAlignment="center"
-            android:textColor="#B1B1B1"
-            android:textSize="14.5sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+    <TextView
+        android:id="@+id/tvAccountLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/textview_border"
+        android:text="@string/dont_have_account_yet"
+        android:textColor="#3C3C3E"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
+    <TextView
+        android:id="@+id/tvHint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="48dp"
+        android:text="@string/sign_in_description"
+        android:textAlignment="center"
+        android:textColor="@color/lightColorAccent"
+        android:textSize="14.5sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
-        android:text="TheMovieBase"
+        android:text="@string/app_name"
         android:textColor="@color/darkColorAccount"
         android:textSize="36sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/tvHint"
         app:layout_constraintStart_toStartOf="@+id/tvHint"
         app:layout_constraintTop_toTopOf="parent" />

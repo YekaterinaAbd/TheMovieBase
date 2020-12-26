@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/films"
-        android:icon="@drawable/ic_view_list_black_24dp"
+        android:icon="@drawable/ic_clapperboard"
         android:title="Movies" />
     <item
         android:id="@+id/search"
-        android:icon="@drawable/ic_baseline_search_24"
+        android:icon="@drawable/ic_loupe"
         android:title="Search" />
     <item
         android:id="@+id/account"
-        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:icon="@drawable/ic_user"
         android:title="Account"/>
 </menu>

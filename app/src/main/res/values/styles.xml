@@ -1,8 +1,9 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:fontFamily">@font/quicksand</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="colorPrimary">@color/lightColorPrimary</item>
         <item name="colorAccent">@color/lightColorAccent</item>
@@ -12,13 +13,19 @@
         <item name="colorSecondaryText">@color/lightColorSecondaryText</item>
         <item name="colorItems">@color/lightColorItems</item>
         <item name="colorAccount">@color/lightColorAccount</item>
-        <item name="colorButtons">@color/lightColorButtons</item>
+        <item name="colorButtons">@color/darkColorSelectedIcon</item>
         <item name="colorSecondaryIcons">@color/lightColorSecondaryIcons</item>
         <item name="colorLike">@color/lightColorLike</item>
         <item name="colorRating">@color/lightColorRating</item>
         <item name="colorUnselectedIcons">@color/lightColorUnselectedIcons</item>
         <item name="colorThemeSwitcherIcon">@drawable/ic_sun</item>
+        <item name="buttonStyle">@style/ButtonStyle</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:fitsSystemWindows">true</item>
+
     </style>
+
     <style name="AppThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/lightColorPrimary</item>
@@ -33,8 +40,34 @@
         <item name="colorSecondaryIcons">@color/darkColorSecondaryIcons</item>
         <item name="colorLike">@color/lightColorLike</item>
         <item name="colorRating">@color/darkColorRating</item>
-<!--        <item name="android:actionMenuTextColor">@color/darkColorButtons</item>-->
+        <!--        <item name="android:actionMenuTextColor">@color/darkColorButtons</item>-->
         <item name="colorUnselectedIcons">@color/darkColorUnselectedIcons</item>
         <item name="colorThemeSwitcherIcon">@drawable/ic_moon</item>
+        <item name="android:fontFamily">@font/quicksand</item>
     </style>
+
+    <style name="collapsedToolbarStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textColor">@color/darkColorBackground</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="expandedToolbarStyleSmall">
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textColor">@color/darkColorBackground</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ButtonStyle">
+        <item name="background">@drawable/button_background</item>
+        <item name="minHeight">48dp</item>
+    </style>
+
+    <style name="BottomNavigationViewTextStyle">
+        <item name="android:textSize">10sp</item>
+        <item name="fontFamily">@font/quicksand_semi_bold</item>
+    </style>
+
 </resources>
