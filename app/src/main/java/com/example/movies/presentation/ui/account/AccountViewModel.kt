@@ -11,14 +11,11 @@ class AccountViewModel(
     private val accountUseCase: AccountUseCase
 ) : BaseViewModel() {
 
-    // var username = DEFAULT_VALUE
-
     private val _liveData = MutableLiveData<State>()
     val liveData: LiveData<State>
         get() = _liveData
 
     init {
-        //getUsername()
         getAccountInfo()
     }
 

@@ -8,6 +8,6 @@ class MoviesListsUseCase(
     private val movieRepository: MovieRepository
 ) {
 
-    suspend fun getMovies(page: Int, moviesType: MoviesType, sessionId: String) =
-        movieRepository.getMovies(moviesType, API_KEY, page, sessionId)
+    suspend fun getMovies(page: Int, moviesType: MoviesType, sessionId: String, sortBy: String?) =
+        movieRepository.getMovies(moviesType, API_KEY, page, sessionId, sortBy)
 }

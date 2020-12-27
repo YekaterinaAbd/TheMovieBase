@@ -7,8 +7,10 @@ import androidx.lifecycle.Transformations
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.example.movies.core.base.BaseViewModel
+import com.example.movies.data.model.entities.MovieStatus
 import com.example.movies.data.model.movie.FavouriteMovie
 import com.example.movies.data.model.movie.WatchListMovie
+import com.example.movies.data.network.DESC
 import com.example.movies.domain.model.DataSource
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesAnswer
@@ -17,8 +19,10 @@ import com.example.movies.domain.model.MoviesType.*
 import com.example.movies.domain.use_case.*
 import com.example.movies.presentation.model.GenresList
 import com.example.movies.presentation.ui.MovieState
+import com.example.movies.presentation.ui.data_source.DiscoverDataSource
+import com.example.movies.presentation.ui.data_source.DiscoverDataSourceFactory
 import com.example.movies.presentation.ui.data_source.SearchDataSource
-import com.example.movies.presentation.ui.data_source.SearchMoviesDataSourceFactory
+import com.example.movies.presentation.ui.data_source.SearchDataSourceFactory
 import com.example.movies.presentation.utils.constants.MEDIA_TYPE
 import com.google.gson.internal.LinkedTreeMap
 import kotlinx.coroutines.launch
@@ -34,9 +38,13 @@ class MoviesListViewModel(
 
     private val pagedListConfig: PagedList.Config
 
-    private lateinit var searchMoviesDataSourceFactory: SearchMoviesDataSourceFactory
+    private lateinit var searchMoviesDataSourceFactory: SearchDataSourceFactory
     lateinit var searchPagedList: LiveData<PagedList<Movie>>
     lateinit var searchStateLiveData: LiveData<MovieState>
+
+    private lateinit var discoverMoviesDataSourceFactory: DiscoverDataSourceFactory
+    lateinit var discoverPagedList: LiveData<PagedList<Movie>>
+    lateinit var discoverStateLiveData: LiveData<MovieState>
 
     private val sessionId = sessionIdUseCase.getLocalSessionId()
     val liveData = MutableLiveData<State>()
@@ -50,11 +58,11 @@ class MoviesListViewModel(
             .build()
     }
 
-    fun getMovies(type: MoviesType, page: Int = 1) {
+    fun getMovies(type: MoviesType, page: Int = 1, sortBy: String? = DESC) {
         uiScope.launch {
             if (page == 1) liveData.value = State.ShowLoading
             likesUseCase.synchronizeLocalLikes(sessionId)
-            val response = moviesListsUseCase.getMovies(page, type, sessionId)
+            val response = moviesListsUseCase.getMovies(page, type, sessionId, sortBy)
             when (type) {
                 TOP -> processLists(response, type)
                 CURRENT -> processLists(response, type)
@@ -118,15 +126,27 @@ class MoviesListViewModel(
             )
     }
 
-    fun searchMovies(query: String) {
+    fun searchMovies(query: String? = null) {
         searchMoviesDataSourceFactory =
-            SearchMoviesDataSourceFactory(uiScope, searchMoviesUseCase, query, context)
+            SearchDataSourceFactory(context, uiScope, searchMoviesUseCase, query)
         searchPagedList =
             LivePagedListBuilder(searchMoviesDataSourceFactory, pagedListConfig).build()
 
         searchStateLiveData = Transformations.switchMap(
             searchMoviesDataSourceFactory.liveData,
             SearchDataSource::getState
+        )
+    }
+
+    fun discoverMovies(genres: String? = null, keywords: String? = null) {
+        discoverMoviesDataSourceFactory =
+            DiscoverDataSourceFactory(context, uiScope, searchMoviesUseCase, genres, keywords)
+        discoverPagedList =
+            LivePagedListBuilder(discoverMoviesDataSourceFactory, pagedListConfig).build()
+
+        discoverStateLiveData = Transformations.switchMap(
+            discoverMoviesDataSourceFactory.liveData,
+            DiscoverDataSource::getState
         )
     }
 
@@ -169,15 +189,15 @@ class MoviesListViewModel(
                 }
                 localMoviesUseCase.updateLocalMovieIsFavourite(movie.isFavourite, movie.id)
                 //localMoviesUseCase.updateLocalMovieIsInWatchList(movie.isInWatchList, movie.id)
-                liveData.value = State.Update
+                liveData.value = State.MovieStates(movieStatus)
             }
         }
     }
 
     sealed class State {
-        object Update : State()
         object ShowLoading : State()
         object HideLoading : State()
+        data class MovieStates(val states: MovieStatus) : State()
         data class Result(
             val moviesList: List<Movie>,
             val dataSource: DataSource? = null,

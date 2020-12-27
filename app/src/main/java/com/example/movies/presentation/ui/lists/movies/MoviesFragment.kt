@@ -1,10 +1,12 @@
 package com.example.movies.presentation.ui.lists.movies
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -16,29 +18,36 @@ import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.ethanhua.skeleton.Skeleton
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
-import com.example.movies.core.extensions.replaceFragments
+import com.example.movies.core.extensions.changeFragment
+import com.example.movies.data.network.ASC
+import com.example.movies.data.network.DESC
 import com.example.movies.domain.model.DataSource
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesType
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.lists.SharedViewModel
+import com.example.movies.presentation.ui.lists.StatesBottomSheetFragment
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.movies.presentation.utils.constants.*
 import com.example.movies.presentation.utils.pagination.PaginationListener
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.android.inject
 
+
 class MoviesFragment : Fragment() {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var skeletonScreen: RecyclerViewSkeletonScreen
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var tvTitle: TextView
     private lateinit var ivBack: ImageView
+    private lateinit var sortMenu: ImageView
 
     private var movieType: MoviesType = MoviesType.TOP
+    private var sortBy: String = DESC
 
     private var currentPage = PaginationListener.PAGE_START
     private var isLocal = false
@@ -49,14 +58,13 @@ class MoviesFragment : Fragment() {
     private val viewModel: MoviesListViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    private val itemClickListener = object : ItemClickListener {
+    private val itemClickListener = object : ListsAdapter.ItemClickListener {
         override fun itemClick(item: Movie) {
-            logEvent(MOVIE_CLICKED, item)
+            logEvent(LOG_MOVIE_CLICKED, item)
 
-            parentFragmentManager.replaceFragments<MovieDetailsFragment>(
+            changeFragment<MovieDetailsFragment>(
                 container = R.id.framenav,
-                hideFragment = this@MoviesFragment,
-                bundle = bundleOf(INTENT_KEY to item.id),
+                bundle = bundleOf(MOVIE_ID to item.id),
                 animation = NavigationAnimation.CENTER
             )
 
@@ -73,7 +81,7 @@ class MoviesFragment : Fragment() {
         }
 
         override fun addToFavourites(item: Movie) {
-            if (!item.isFavourite) logEvent(MOVIE_LIKED, item)
+            if (!item.isFavourite) logEvent(LOG_MOVIE_LIKED, item)
             viewModel.addToFavourites(item)
             sharedViewModel.setMovie(item)
         }
@@ -81,6 +89,14 @@ class MoviesFragment : Fragment() {
         override fun addToWatchlist(item: Movie) {
             viewModel.addToWatchlist(item)
             //sharedViewModel.setMovie(item)
+        }
+
+        override fun openActionsDialog(item: Movie) {
+            val addPhotoBottomDialogFragment: StatesBottomSheetFragment =
+                StatesBottomSheetFragment.newInstance(
+                    bundleOf(MOVIE to item)
+                )
+            addPhotoBottomDialogFragment.show(parentFragmentManager, "DIALOG_FRAGMENT")
         }
     }
 
@@ -105,12 +121,13 @@ class MoviesFragment : Fragment() {
         bindViews(view)
         setAdapter()
         setData()
-        getMovies(currentPage)
+        getMovies()
     }
 
     private fun bindViews(view: View) {
         recyclerView = view.findViewById(R.id.filmsRecyclerView)
         tvTitle = view.findViewById(R.id.tvTitle)
+
         layoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = layoutManager
         tvTitle.text = movieType.type
@@ -120,16 +137,17 @@ class MoviesFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
+        sortMenu = view.findViewById(R.id.sortMenu)
+        if (movieType == MoviesType.FAVOURITES || movieType == MoviesType.WATCH_LIST)
+            sortMenu.visibility = View.VISIBLE
+        sortMenu.setOnClickListener {
+            openPopupWindow(sortMenu)
+        }
+
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        //swipeRefreshLayout.visibility = View.INVISIBLE
         swipeRefreshLayout.setOnRefreshListener {
-            //swipeRefreshLayout.isRefreshing = false
-            //skeletonScreen.show()
-            adapter.clearAll()
-            itemCount = 0
-            currentPage = PaginationListener.PAGE_START
-            isLastPage = false
-            getMovies(page = currentPage)
+            clearAdapter()
+            getMovies()
         }
 
         recyclerView.addOnScrollListener(object : PaginationListener(layoutManager) {
@@ -137,7 +155,7 @@ class MoviesFragment : Fragment() {
             override fun loadMoreItems() {
                 isLoading = true
                 currentPage++
-                getMovies(page = currentPage)
+                getMovies()
             }
 
             override fun isLastPage(): Boolean = isLastPage
@@ -158,16 +176,23 @@ class MoviesFragment : Fragment() {
             .show()
     }
 
+    private fun clearAdapter() {
+        adapter.clearAll()
+        itemCount = 0
+        currentPage = PaginationListener.PAGE_START
+        isLastPage = false
+    }
+
     private fun logEvent(logMessage: String, item: Movie) {
         val bundle = bundleOf(
-            MOVIE_ID to item.id.toString(),
-            MOVIE_TITLE to item.title
+            LOG_MOVIE_ID to item.id.toString(),
+            LOG_MOVIE_TITLE to item.title
         )
         firebaseAnalytics.logEvent(logMessage, bundle)
     }
 
-    private fun getMovies(page: Int) {
-        viewModel.getMovies(movieType, page)
+    private fun getMovies() {
+        viewModel.getMovies(movieType, currentPage, sortBy)
     }
 
     private fun getMoviesStatuses(movies: List<Movie>?) {
@@ -182,7 +207,6 @@ class MoviesFragment : Fragment() {
         viewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is MoviesListViewModel.State.ShowLoading -> {
-                    //swipeRefreshLayout.isRefreshing = true
                     skeletonScreen.show()
                 }
                 is MoviesListViewModel.State.HideLoading -> {
@@ -207,10 +231,31 @@ class MoviesFragment : Fragment() {
                         isLoading = false
                     }
                 }
-                is MoviesListViewModel.State.Update -> {
+                is MoviesListViewModel.State.MovieStates -> {
                     adapter.notifyDataSetChanged()
                 }
             }
         })
+    }
+
+    private fun openPopupWindow(view: View) {
+        val popup = PopupMenu(context, view, Gravity.END, 0, R.style.PopupMenu)
+        popup.menuInflater.inflate(R.menu.pop_up_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.asc -> {
+                    clearAdapter()
+                    sortBy = ASC
+                    getMovies()
+                }
+                R.id.desc -> {
+                    clearAdapter()
+                    sortBy = DESC
+                    getMovies()
+                }
+            }
+            true
+        }
+        popup.show()
     }
 }

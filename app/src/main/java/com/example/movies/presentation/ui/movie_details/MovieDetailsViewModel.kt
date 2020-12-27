@@ -96,7 +96,7 @@ class MovieDetailsViewModel(
         data class Result(val movie: MovieDetails?) : State()
         data class TrailerResult(val trailer: Video?) : State()
         data class SimilarMoviesResult(val movies: List<Movie>?) : State()
-        data class KeyWordsListResult(val keywords: List<KeyWord>?) : State()
+        data class KeyWordsListResult(val keywords: List<Keyword>?) : State()
         data class CreditsResult(val credits: Credits?) : State()
         data class RatingResult(val success: Boolean) : State()
     }

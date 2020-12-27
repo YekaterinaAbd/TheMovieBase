@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="100dp"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="16dp"
     android:layout_marginEnd="8dp"
     android:orientation="vertical">
@@ -10,7 +11,7 @@
         android:id="@+id/image"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/luffy" />
+        tools:src="@drawable/luffy" />
 
     <TextView
         android:id="@+id/name"
@@ -20,7 +21,7 @@
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:maxLines="2"
-        android:text="Leonardo Di Capri"
+        tools:text="Leonardo Di Capri"
         android:textColor="@color/darkColorPrimary"
         android:textSize="12sp"
         android:textStyle="bold" />
@@ -33,7 +34,7 @@
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:maxLines="2"
-        android:text="Some Strange Person"
+        tools:text="Some Strange Person"
         android:textColor="@color/lightColorSecondaryText"
         android:textSize="12sp" />
 

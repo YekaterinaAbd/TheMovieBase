@@ -21,7 +21,6 @@ val viewModelModule = module {
             searchMoviesUseCase = get()
         )
     }
-    viewModel { SearchViewModel(searchUseCase = get(), recentMoviesUseCase = get()) }
     viewModel {
         MovieDetailsViewModel(
             movieDetailsUseCase = get(),
@@ -29,13 +28,9 @@ val viewModelModule = module {
             likesUseCase = get()
         )
     }
+    viewModel { SearchViewModel(searchUseCase = get(), recentMoviesUseCase = get()) }
     viewModel { AccountViewModel(accountUseCase = get()) }
     viewModel { MarkersViewModel(markerRepository = get()) }
-    viewModel {
-        SignInViewModel(
-            loginUseCase = get(),
-            localLoginDataUseCase = get()
-        )
-    }
-    viewModel { ThemeViewModel(context = get(), accountRepository = get()) }
+    viewModel { SignInViewModel(loginUseCase = get(), localLoginDataUseCase = get()) }
+    viewModel { ThemeViewModel(accountUseCase = get()) }
 }

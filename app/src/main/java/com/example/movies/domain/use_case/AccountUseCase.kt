@@ -8,6 +8,8 @@ class AccountUseCase(private val accountRepository: AccountRepository) {
 
     fun getUsername() = accountRepository.getLocalUsername()
 
+    fun isLoggedIn() = accountRepository.hasSessionId()
+
     suspend fun logOut() = accountRepository.logOut()
 
     fun deleteLoginData() = accountRepository.deleteLoginData()

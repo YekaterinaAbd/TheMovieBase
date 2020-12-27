@@ -36,18 +36,26 @@
 
         <activity
             android:name="com.example.movies.presentation.ui.markers.GoogleMapsActivity"
-            android:label="@string/title_activity_google_maps">
+            android:label="@string/title_activity_google_maps" />
 
-        </activity>
+        <!--        <activity-->
+        <!--            android:name=".presentation.ui.SplashActivity"-->
+        <!--            android:theme="@style/AppThemeLight.Launcher">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.intent.action.MAIN" />-->
+        <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+        <!--            </intent-filter>-->
+        <!--        </activity>-->
+
         <activity
             android:name="com.example.movies.presentation.ui.sign_in.SignInActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.example.movies.presentation.ui.MainActivity"
             android:configChanges="orientation|screenSize"

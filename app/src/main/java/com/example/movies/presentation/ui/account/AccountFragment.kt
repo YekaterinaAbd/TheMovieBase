@@ -15,7 +15,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
-import com.example.movies.core.extensions.replaceFragments
+import com.example.movies.core.extensions.changeFragment
 import com.example.movies.data.model.account.Account
 import com.example.movies.domain.model.MoviesType
 import com.example.movies.presentation.ui.lists.movies.MoviesFragment
@@ -96,17 +96,11 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
     }
 
     private fun openListFragment(type: MoviesType) {
-        val bundle = bundleOf(MOVIE_TYPE to type)
-        parentFragmentManager.replaceFragments<MoviesFragment>(
+        changeFragment<MoviesFragment>(
             container = R.id.framenav,
-            bundle = bundle,
+            bundle = bundleOf(MOVIE_TYPE to type),
             animation = NavigationAnimation.SLIDE_LEFT
         )
-
-//        val movieListsFragment = MoviesFragment()
-//        movieListsFragment.arguments = bundle
-//        parentFragmentManager.beginTransaction().add(R.id.framenav, movieListsFragment)
-//            .addToBackStack(null).commit()
     }
 
     private fun observeData() {

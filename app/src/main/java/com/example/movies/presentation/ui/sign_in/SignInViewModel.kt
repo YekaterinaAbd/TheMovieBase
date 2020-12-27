@@ -25,10 +25,6 @@ class SignInViewModel(
         if (localLoginDataUseCase.hasSessionId()) liveData.value = State.Result
     }
 
-    fun isLoggedIn(): Boolean {
-        return localLoginDataUseCase.hasSessionId()
-    }
-
     fun createTokenRequest(receivedUsername: String, receivedPassword: String) {
         uiScope.launch {
             liveData.value = State.ShowLoading

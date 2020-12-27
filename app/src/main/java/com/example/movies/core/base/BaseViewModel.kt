@@ -9,7 +9,7 @@ import kotlin.coroutines.CoroutineContext
 abstract class BaseViewModel : ViewModel() {
 
     private val job = Job()
-    val coroutineContext: CoroutineContext
+    private val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
     protected val uiScope = CoroutineScope(coroutineContext)

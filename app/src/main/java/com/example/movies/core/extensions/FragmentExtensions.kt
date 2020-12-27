@@ -1,39 +1,42 @@
 package com.example.movies.core.extensions
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.commit
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
 
-fun Fragment.showToast(text: String) {
-    Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
+fun Context.showToast(text: String) {
+    Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
 
-inline fun <reified T : Fragment> FragmentManager.replaceFragments(
+inline fun <reified T : Fragment> Fragment.changeFragment(
     container: Int,
-    hideFragment: Fragment? = null,
     bundle: Bundle? = null,
     animation: NavigationAnimation? = NavigationAnimation.NONE
 ) {
+    val fragmentManager: FragmentManager = parentFragmentManager
+    val fragment = fragmentManager.getFragmentByClass<T>(bundle)
+    fragmentManager.beginTransaction().apply {
+        setTransactionAnimation(animation ?: NavigationAnimation.NONE)
+        add(container, fragment)
+        addToBackStack(null)
+        hide(this@changeFragment)
+        commit()
+    }
+}
+
+inline fun <reified T : Fragment> FragmentManager.getFragmentByClass(bundle: Bundle?): Fragment {
     val clazz = T::class.java
-    val fragment = findFragmentByTag(clazz.name) ?: (clazz.getConstructor().newInstance().apply {
+    return findFragmentByTag(clazz.name) ?: (clazz.getConstructor().newInstance().apply {
         bundle?.let {
             it.classLoader = javaClass.classLoader
             arguments = bundle
         }
     })
-    commit {
-        setTransactionAnimation(animation ?: NavigationAnimation.NONE)
-        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        beginTransaction()
-        add(container, fragment)
-        addToBackStack(hideFragment?.tag)
-        if (hideFragment != null) hide(hideFragment)
-    }
 }
 
 fun FragmentTransaction.setTransactionAnimation(animation: NavigationAnimation) {
@@ -43,8 +46,8 @@ fun FragmentTransaction.setTransactionAnimation(animation: NavigationAnimation) 
         NavigationAnimation.SLIDE_LEFT -> {
             setCustomAnimations(
                 R.anim.enter_from_right,
-                R.anim.exit_to_left,
-                R.anim.enter_from_left,
+                R.anim.stay,
+                R.anim.stay,
                 R.anim.exit_to_right
             )
         }
@@ -54,6 +57,14 @@ fun FragmentTransaction.setTransactionAnimation(animation: NavigationAnimation) 
                 R.anim.stay,
                 R.anim.stay,
                 R.anim.exit_to_left
+            )
+        }
+        NavigationAnimation.BOTTOM -> {
+            setCustomAnimations(
+                R.anim.enter_from_bottom,
+                R.anim.stay,
+                R.anim.stay,
+                R.anim.exit_to_bottom
             )
         }
     }

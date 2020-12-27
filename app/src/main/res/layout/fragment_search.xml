@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:background="@drawable/search_background"
+            android:background="@drawable/rounded_corners_background"
             android:clickable="true"
             android:elevation="1dp"
             android:focusable="true"
@@ -169,18 +169,11 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-        <!--            android:id="@+id/swipeRefreshLayout"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent">-->
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/film_object_view" />
-
-        <!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
     </LinearLayout>
 

@@ -19,17 +19,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.ViewSkeletonScreen
 import com.example.movies.R
-import com.example.movies.core.extensions.replaceFragments
+import com.example.movies.core.NavigationAnimation
+import com.example.movies.core.extensions.changeFragment
 import com.example.movies.core.extensions.showToast
 import com.example.movies.data.model.movie.*
 import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.data.network.VIDEO_URL
 import com.example.movies.presentation.ui.lists.SharedViewModel
 import com.example.movies.presentation.ui.lists.movies.HorizontalFilmsAdapter
-import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
+import com.example.movies.presentation.ui.lists.search.DiscoverFragment
 import com.example.movies.presentation.utils.DateUtil
 import com.example.movies.presentation.utils.FullScreenChromeClient
-import com.example.movies.presentation.utils.constants.INTENT_KEY
+import com.example.movies.presentation.utils.constants.GENRES
+import com.example.movies.presentation.utils.constants.KEYWORDS
+import com.example.movies.presentation.utils.constants.MOVIE_ID
 import com.example.movies.presentation.utils.constants.POSTER_PATH
 import com.example.movies.presentation.utils.widgets.OverviewView
 import com.google.android.material.chip.Chip
@@ -42,8 +45,6 @@ class MovieDetailsFragment : Fragment() {
     private var id: Int? = null
 
     private lateinit var skeletonScreen: ViewSkeletonScreen
-
-    //private lateinit var progressBar: ProgressBar
     private lateinit var mainLayout: LinearLayout
     private lateinit var poster: ImageView
     private lateinit var name: TextView
@@ -62,8 +63,6 @@ class MovieDetailsFragment : Fragment() {
     private lateinit var trailerLayout: LinearLayout
     private lateinit var similarMoviesLayout: LinearLayout
     private lateinit var keywordsLayout: LinearLayout
-
-    //  private lateinit var loadingLayout: FrameLayout
     private lateinit var overviewLayout: OverviewView
     private lateinit var errorLayout: FrameLayout
     private lateinit var rvSimilarMovies: RecyclerView
@@ -76,12 +75,13 @@ class MovieDetailsFragment : Fragment() {
     private val viewModel: MovieDetailsViewModel by inject()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    private val itemClickListener = object : SimpleItemClickListener {
+    private val itemClickListener = object : HorizontalFilmsAdapter.ItemClickListener {
         override fun itemClick(id: Int?) {
             if (id == null) return
-            parentFragmentManager.replaceFragments<MovieDetailsFragment>(
+            changeFragment<MovieDetailsFragment>(
                 container = R.id.framenav,
-                bundle = bundleOf(INTENT_KEY to id)
+                bundle = bundleOf(MOVIE_ID to id),
+                animation = NavigationAnimation.CENTER
             )
         }
     }
@@ -94,11 +94,16 @@ class MovieDetailsFragment : Fragment() {
         CastAdapter()
     }
 
+    override fun setArguments(args: Bundle?) {
+        super.setArguments(args)
+        if (args?.get(MOVIE_ID) != null) {
+            id = args.getInt(MOVIE_ID)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        val bundle = this.arguments
-        if (bundle != null) id = bundle.getInt(INTENT_KEY)
         return inflater.inflate(R.layout.fragment_movie_detail, container, false)
     }
 
@@ -126,7 +131,6 @@ class MovieDetailsFragment : Fragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun bindViews(view: View) = with(view) {
-        //  progressBar = findViewById(R.id.progressBar)
         mainLayout = findViewById(R.id.mainLayout)
         poster = findViewById(R.id.poster)
         name = findViewById(R.id.name)
@@ -214,7 +218,6 @@ class MovieDetailsFragment : Fragment() {
         viewModel.liveData.observe(requireActivity(), { result ->
             when (result) {
                 is MovieDetailsViewModel.State.HideLoading -> {
-                    //progressBar.visibility = View.GONE
                     skeletonScreen.hide()
                 }
                 is MovieDetailsViewModel.State.Error -> {
@@ -223,7 +226,6 @@ class MovieDetailsFragment : Fragment() {
                 }
                 is MovieDetailsViewModel.State.Result -> {
                     if (result.movie != null) {
-                        //loadingLayout.visibility = View.GONE
                         bindData(result.movie)
                     }
                 }
@@ -255,8 +257,7 @@ class MovieDetailsFragment : Fragment() {
                 is MovieDetailsViewModel.State.RatingResult -> {
                     if (result.success) {
                         rate.text = getString(R.string.update_rating)
-                        showToast(getString(R.string.movie_rated))
-                    } else showToast(getString(R.string.rating_failed))
+                    } else requireContext().showToast(getString(R.string.rating_failed))
                 }
             }
         })
@@ -364,14 +365,27 @@ class MovieDetailsFragment : Fragment() {
         if (genres.isNullOrEmpty()) return
         for (genre in genres) {
             if (genre.genre == null) continue
-            createChip(genre.genre, genresChipGroup)
+            createChip(genre.genre, genresChipGroup) {
+                changeFragment<DiscoverFragment>(
+                    container = R.id.framenav,
+                    bundle = bundleOf(GENRES to listOf(genre)),
+                    animation = NavigationAnimation.BOTTOM
+                )
+            }
         }
     }
 
-    private fun setKeywords(keywords: List<KeyWord>) {
+    private fun setKeywords(keywords: List<Keyword>) {
         if (keywords.isNullOrEmpty()) return
         for (keyword in keywords) {
-            keyword.keyword?.let { createChip(it, chipGroup) }
+            if (keyword.keyword == null) continue
+            createChip(keyword.keyword, chipGroup) {
+                changeFragment<DiscoverFragment>(
+                    container = R.id.framenav,
+                    bundle = bundleOf(KEYWORDS to listOf(keyword)),
+                    animation = NavigationAnimation.BOTTOM
+                )
+            }
         }
     }
 
@@ -387,17 +401,21 @@ class MovieDetailsFragment : Fragment() {
         castAdapter.addAll(cast)
     }
 
-    private fun createChip(title: String, chipGroup: ChipGroup) {
+    private fun createChip(title: String, chipGroup: ChipGroup, onClick: () -> Unit) {
         if (context == null) return
         val chip = LayoutInflater.from(context)
             .inflate(R.layout.item_chip_category, null, false) as Chip
         chip.text = title
+        chip.setOnClickListener {
+            onClick()
+        }
         chipGroup.addView(chip)
     }
 
     private fun showRatingDialog() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setContentView(R.layout.dialog_rating)
 
         val ratingBar = dialog.findViewById<RatingBar>(R.id.ratingBar)

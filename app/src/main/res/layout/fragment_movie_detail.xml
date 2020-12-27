@@ -7,18 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/lightColorToolbar">
 
-    <!--    <FrameLayout-->
-    <!--        android:id="@+id/loadingLayout"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        android:background="@color/lightColorBackground"-->
-    <!--        android:elevation="2dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/tvTitle"-->
-    <!--        tools:visibility="visible">-->
-
     <include
         android:id="@+id/errorLayout"
         layout="@layout/view_error"
@@ -31,8 +19,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
-
-    <!--    </FrameLayout>-->
 
     <ImageView
         android:id="@+id/watchlist"
@@ -456,6 +442,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
+                    android:layout_marginBottom="16dp"
                     android:paddingStart="16dp" />
 
             </LinearLayout>
@@ -475,7 +462,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:background="#81C0C0C0" />
 
@@ -554,6 +540,7 @@
                     <!--                        android:layout_height="wrap_content"-->
                     <!--                        android:text="Hello"-->
                     <!--                        android:theme="@style/Theme.MaterialComponents.Light" />-->
+
                 </com.google.android.material.chip.ChipGroup>
 
             </LinearLayout>

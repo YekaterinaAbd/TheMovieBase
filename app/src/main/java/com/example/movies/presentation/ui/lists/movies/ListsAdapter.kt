@@ -13,12 +13,6 @@ import com.example.movies.domain.model.MoviesType
 import com.example.movies.domain.model.MoviesType.*
 import com.squareup.picasso.Picasso
 
-interface ItemClickListener {
-    fun itemClick(item: Movie)
-    fun addToFavourites(item: Movie)
-    fun addToWatchlist(item: Movie)
-}
-
 private const val VIEW_TYPE_LOADING = 0
 private const val VIEW_TYPE_NORMAL = 1
 
@@ -78,14 +72,12 @@ class ListsAdapter(
         val position = movies.size - 1
         if (movies.isNotEmpty()) {
             val item = getItem(position)
-            if (item != null) {
-                movies.removeAt(position)
-                notifyItemRemoved(position)
-            }
+            movies.removeAt(position)
+            notifyItemRemoved(position)
         }
     }
 
-    private fun getItem(position: Int): Movie? {
+    private fun getItem(position: Int): Movie {
         return movies[position]
     }
 
@@ -125,68 +117,47 @@ class ListsAdapter(
         private val tvGenres: TextView = view.findViewById(R.id.tvGenres)
         private val poster: ImageView = view.findViewById(R.id.poster)
         private val tvRating: TextView = view.findViewById(R.id.tvRating)
-        private val addToFav: ImageView = view.findViewById(R.id.ivLike)
-        private val addToWatchlist: ImageView = view.findViewById(R.id.ivWatchlist)
+        private val verticalDots: ImageView = view.findViewById(R.id.verticalDots)
 
         fun bind(movie: Movie?) {
+            if (movie == null) return
 
-            addToFav.visibility = View.VISIBLE
-            addToWatchlist.visibility = View.VISIBLE
+            verticalDots.visibility = View.VISIBLE
 
-            //   if (movies[0] == movie) itemView.setMargin(16, Side.TOP)
+            tvTitle.text = movie.title
+            if (!movie.releaseDate.isNullOrEmpty())
+                tvReleaseDate.text = movie.releaseDate.substring(0, 4)
+            tvRating.text = movie.voteAverage.toString()
+            tvGenres.text = movie.genreNames
 
-            if (movie != null) {
+            if (!movie.posterPath.isNullOrEmpty())
+                Picasso.get()
+                    .load(IMAGE_URL + movie.posterPath)
+                    .into(poster)
 
-                if (movie.isFavourite) addToFav.setImageResource(R.drawable.ic_favourite)
-                else addToFav.setImageResource(R.drawable.ic_favourite_border)
+            view.setOnClickListener {
+                itemClickListener?.itemClick(movie)
+            }
 
-                if (movie.isInWatchList) addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
-                else addToWatchlist.setImageResource(R.drawable.ic_watchlist)
-
-                tvTitle.text = movie.title
-                if (!movie.releaseDate.isNullOrEmpty())
-                    tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
-                tvRating.text = movie.voteAverage.toString()
-                tvGenres.text = movie.genreNames
-
-                if (!movie.posterPath.isNullOrEmpty())
-                    Picasso.get()
-                        .load(IMAGE_URL + movie.posterPath)
-                        .into(poster)
-
-                view.setOnClickListener {
-                    itemClickListener?.itemClick(movie)
-                }
-
-                addToFav.setOnClickListener {
-                    itemClickListener?.addToFavourites(movie)
-                    if (movie.isFavourite) addToFav.setImageResource(R.drawable.ic_favourite)
-                    else addToFav.setImageResource(R.drawable.ic_favourite_border)
-                }
-
-                addToWatchlist.setOnClickListener {
-                    itemClickListener?.addToWatchlist(movie)
-                    if (movie.isInWatchList) addToWatchlist.setImageResource(R.drawable.ic_watchlist_filled)
-                    else addToWatchlist.setImageResource(R.drawable.ic_watchlist)
-                }
+            verticalDots.setOnClickListener {
+                itemClickListener?.openActionsDialog(movie)
             }
         }
     }
 
     inner class MyMovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val tvTitle: TextView = view.findViewById(R.id.tvTitle)
+        private val tvReleaseDate: TextView = view.findViewById(R.id.tvReleaseDate)
+        private val tvGenres: TextView = view.findViewById(R.id.tvGenres)
+        private val poster: ImageView = view.findViewById(R.id.poster)
+        private val tvRating: TextView = view.findViewById(R.id.tvRating)
+        private val addToFav: ImageView = view.findViewById(R.id.ivLike)
+        private val addToWatchlist: ImageView = view.findViewById(R.id.ivWatchlist)
+        private val tvMyRating: TextView = view.findViewById(R.id.tvRated)
+
         fun bind(movie: Movie?) {
-
             if (movie == null) return
-
-            val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
-            val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
-            val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
-            val poster = view.findViewById<ImageView>(R.id.poster)
-            val tvRating = view.findViewById<TextView>(R.id.tvRating)
-            val addToFav = view.findViewById<ImageView>(R.id.ivLike)
-            val addToWatchlist = view.findViewById<ImageView>(R.id.ivWatchlist)
-            val tvMyRating = view.findViewById<TextView>(R.id.tvRated)
 
             tvTitle.text = movie.title
             tvReleaseDate.text = movie.releaseDate?.substring(0, 4)
@@ -230,4 +201,11 @@ class ListsAdapter(
     }
 
     inner class LoaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    interface ItemClickListener {
+        fun itemClick(item: Movie)
+        fun addToFavourites(item: Movie)
+        fun addToWatchlist(item: Movie)
+        fun openActionsDialog(item: Movie)
+    }
 }

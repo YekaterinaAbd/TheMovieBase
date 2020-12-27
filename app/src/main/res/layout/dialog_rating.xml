@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="280dp"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_gravity="center_horizontal"
-    android:background="@android:color/white"
+    android:background="@drawable/rounded_corners_background"
     android:orientation="vertical"
     app:cardCornerRadius="6dp">
 
@@ -18,18 +19,19 @@
         android:isIndicator="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/ratingText" />
 
     <TextView
         android:id="@+id/ratingText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="4.5/10"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/quicksand_semi_bold"
         android:textColor="@color/lightColorRating"
-        app:layout_constraintBottom_toBottomOf="@+id/cancelBtn"
+        app:layout_constraintEnd_toEndOf="@+id/ratingBar"
         app:layout_constraintStart_toStartOf="@+id/ratingBar"
-        app:layout_constraintTop_toTopOf="@+id/cancelBtn" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="4.5/10.0" />
 
     <TextView
         android:id="@+id/cancelBtn"
@@ -38,8 +40,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
+        android:fontFamily="@font/quicksand_semi_bold"
         android:padding="8dp"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:textAllCaps="true"
         android:textColor="@color/darkColorSecondaryIcons"
         android:textSize="14sp"
@@ -56,9 +59,10 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="16dp"
         android:padding="8dp"
-        android:text="Rate"
+        android:fontFamily="@font/quicksand_semi_bold"
         android:textAllCaps="true"
         android:textColor="@color/darkColorSecondaryIcons"
+        android:text="@string/rate"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
