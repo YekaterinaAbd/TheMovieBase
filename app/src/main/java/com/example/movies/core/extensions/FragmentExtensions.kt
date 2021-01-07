@@ -20,6 +20,7 @@ inline fun <reified T : Fragment> Fragment.changeFragment(
 ) {
     val fragmentManager: FragmentManager = parentFragmentManager
     val fragment = fragmentManager.getFragmentByClass<T>(bundle)
+
     fragmentManager.beginTransaction().apply {
         setTransactionAnimation(animation ?: NavigationAnimation.NONE)
         add(container, fragment)

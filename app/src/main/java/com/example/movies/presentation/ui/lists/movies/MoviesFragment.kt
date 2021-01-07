@@ -237,7 +237,7 @@ class MoviesFragment : Fragment() {
             }
         })
     }
-
+//тут!!
     private fun openPopupWindow(view: View) {
         val popup = PopupMenu(context, view, Gravity.END, 0, R.style.PopupMenu)
         popup.menuInflater.inflate(R.menu.pop_up_menu, popup.menu)

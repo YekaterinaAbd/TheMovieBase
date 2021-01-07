@@ -42,7 +42,7 @@ class MovieRepositoryImpl(
 
     private fun getFromDatabase(type: MoviesType) =
         movieDao.getMovies(type.name).map { localMovieMapper.from(it) }
-
+            //тут!!
     private suspend fun getMoviesByType(
         type: MoviesType, apiKey: String, page: Int, sessionId: String, sortBy: String?
     ): Response<Movies> {
@@ -181,6 +181,7 @@ class MovieRepositoryImpl(
         return api.getGenres(apiKey).body()
     }
 
+    //тут!!
     override suspend fun getRemoteMovie(id: Int, apiKey: String): MovieDetails? =
         withContext(Dispatchers.IO) {
             return@withContext try {

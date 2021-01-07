@@ -70,9 +70,7 @@ class AccountRepositoryImpl(
     }
 
     override fun getLocalPassword(): String {
-        return sharedPreferences.get(
-            context.getString(R.string.password), DEFAULT_VALUE
-        )
+        return sharedPreferences.get(context.getString(R.string.password), DEFAULT_VALUE)
     }
 
     override fun getLocalUsername(): String {

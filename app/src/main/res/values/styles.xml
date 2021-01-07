@@ -3,8 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:fontFamily">@font/quicksand</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:fontFamily">@font/quicksand</item>
         <item name="colorPrimary">@color/lightColorPrimary</item>
         <item name="colorAccent">@color/lightColorAccent</item>
         <item name="colorPrimaryDark">#FFFFFF</item>
@@ -18,9 +18,6 @@
         <item name="colorUnselectedIcons">@color/lightColorUnselectedIcons</item>
         <item name="colorThemeSwitcherIcon">@drawable/ic_sun</item>
         <item name="buttonStyle">@style/ButtonStyle</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat.Light.NoActionBar">

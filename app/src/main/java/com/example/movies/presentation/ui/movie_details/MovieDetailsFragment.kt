@@ -411,7 +411,7 @@ class MovieDetailsFragment : Fragment() {
         }
         chipGroup.addView(chip)
     }
-
+//тут!!
     private fun showRatingDialog() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)

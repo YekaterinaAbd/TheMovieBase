@@ -3,7 +3,6 @@ package com.example.movies.presentation.ui
 //import com.example.kino.presentation.ThemeViewModel
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -41,19 +40,20 @@ class MainActivity : AppCompatActivity() {
 //            R.style.AppThemeLight
 //        }
 //        super.setTheme(themeMode)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//
+//        window.setFlags(
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+//        )
 
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         createFragments()
         bindViews()
     }
-
 
     private fun bindViews() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)

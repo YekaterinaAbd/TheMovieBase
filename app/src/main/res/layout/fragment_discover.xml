@@ -11,13 +11,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cardview_light_background">
+        android:background="@android:color/white">
 
         <ImageView
             android:id="@+id/ivBack"
             android:layout_width="72dp"
             android:layout_height="0dp"
-            android:layout_marginTop="24dp"
             android:cropToPadding="false"
             android:paddingStart="0dp"
             android:paddingTop="18dp"
@@ -32,7 +31,6 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:background="@color/cardview_light_background"
             android:fontFamily="@font/quicksand"
             android:paddingTop="18dp"

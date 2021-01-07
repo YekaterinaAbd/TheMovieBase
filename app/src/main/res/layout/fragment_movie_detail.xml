@@ -5,7 +5,7 @@
     android:id="@+id/ConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightColorToolbar">
+    android:background="@android:color/white">
 
     <include
         android:id="@+id/errorLayout"
@@ -24,18 +24,16 @@
         android:id="@+id/watchlist"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginTop="40dp"
         android:layout_marginEnd="16dp"
         android:contentDescription="@string/like"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_watchlist" />
 
     <ImageView
         android:id="@+id/like"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:contentDescription="@string/watch_list"
         app:layout_constraintBottom_toBottomOf="@+id/watchlist"
@@ -58,9 +56,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:background="@color/cardview_light_background"
-        android:paddingTop="16dp"
         android:paddingBottom="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,6 +66,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -57,7 +57,7 @@ class MoviesListViewModel(
             .setPrefetchDistance(10)
             .build()
     }
-
+//тут!!
     fun getMovies(type: MoviesType, page: Int = 1, sortBy: String? = DESC) {
         uiScope.launch {
             if (page == 1) liveData.value = State.ShowLoading

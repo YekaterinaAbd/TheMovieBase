@@ -10,13 +10,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cardview_light_background">
+        android:background="@android:color/white">
 
         <ImageView
             android:id="@+id/ivBack"
             android:layout_width="72dp"
             android:layout_height="0dp"
-            android:layout_marginTop="24dp"
             android:cropToPadding="false"
             android:paddingStart="0dp"
             android:paddingTop="18dp"
@@ -31,11 +30,10 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:background="@color/cardview_light_background"
             android:fontFamily="@font/quicksand"
-            android:paddingTop="18dp"
-            android:paddingBottom="18dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:textAlignment="center"
             android:textColor="?attr/colorPrimaryText"
             android:textSize="20sp"
@@ -61,6 +59,59 @@
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:background="@color/cardview_light_background">-->
+
+    <!--        <ImageView-->
+    <!--            android:id="@+id/ivBack"-->
+    <!--            android:layout_width="72dp"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            android:cropToPadding="false"-->
+    <!--            android:paddingStart="0dp"-->
+    <!--            android:paddingTop="18dp"-->
+    <!--            android:paddingEnd="16dp"-->
+    <!--            android:paddingBottom="18dp"-->
+    <!--            android:src="@drawable/back"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/tvTitle"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:background="@color/cardview_light_background"-->
+    <!--            android:fontFamily="@font/quicksand"-->
+    <!--            android:paddingTop="18dp"-->
+    <!--            android:paddingBottom="18dp"-->
+    <!--            android:textAlignment="center"-->
+    <!--            android:textColor="?attr/colorPrimaryText"-->
+    <!--            android:textSize="20sp"-->
+    <!--            android:textStyle="bold"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent"-->
+    <!--            tools:Text="Title"-->
+    <!--            tools:text="Title" />-->
+
+    <!--        <ImageView-->
+    <!--            android:id="@+id/sortMenu"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:cropToPadding="true"-->
+    <!--            android:padding="16dp"-->
+    <!--            android:src="@drawable/ic_vertical_dots"-->
+    <!--            android:visibility="gone"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="@+id/tvTitle"-->
+    <!--            app:tint="@color/darkColorPrimary"-->
+    <!--            tools:visibility="visible" />-->
+
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
