@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightColorBackground"
+    android:background="@color/lightBlue"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -86,7 +86,7 @@
                         android:fontFamily="@font/quicksand"
                         android:text="Recent Queries"
                         android:textAllCaps="true"
-                        android:textColor="@color/lightColorSecondaryText"
+                        android:textColor="@color/gray"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -102,7 +102,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="4dp"
                         android:src="@drawable/ic_cancel"
-                        app:tint="@color/lightColorSecondaryText" />
+                        app:tint="@color/gray" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -133,7 +133,7 @@
                         android:fontFamily="@font/quicksand"
                         android:text="Recent Movies"
                         android:textAllCaps="true"
-                        android:textColor="@color/lightColorSecondaryText"
+                        android:textColor="@color/gray"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -149,7 +149,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="4dp"
                         android:src="@drawable/ic_cancel"
-                        app:tint="@color/lightColorSecondaryText" />
+                        app:tint="@color/gray" />
 
                 </LinearLayout>
 

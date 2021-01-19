@@ -1,17 +1,19 @@
 package com.example.movies.presentation.ui.sign_in
 
 import androidx.lifecycle.MutableLiveData
-import com.example.movies.core.base.BaseViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.movies.data.model.account.LoginValidationData
 import com.example.movies.data.model.account.Token
 import com.example.movies.domain.use_case.LocalLoginDataUseCase
 import com.example.movies.domain.use_case.LoginUseCase
+import com.example.movies.presentation.ui.SignInState
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
     private val loginUseCase: LoginUseCase,
     private val localLoginDataUseCase: LocalLoginDataUseCase
-) : BaseViewModel() {
+) : ViewModel() {
 
     private lateinit var loginValidationData: LoginValidationData
     private var token: Token? = null
@@ -19,15 +21,15 @@ class SignInViewModel(
     private var username: String = ""
     private var password: String = ""
 
-    val liveData = MutableLiveData<State>()
+    val liveData = MutableLiveData<SignInState>()
 
     init {
-        if (localLoginDataUseCase.hasSessionId()) liveData.value = State.Result
+        if (localLoginDataUseCase.hasSessionId()) liveData.value = SignInState.Result
     }
 
     fun createTokenRequest(receivedUsername: String, receivedPassword: String) {
-        uiScope.launch {
-            liveData.value = State.ShowLoading
+        viewModelScope.launch {
+            liveData.value = SignInState.ShowLoading
             token = loginUseCase.createToken()
             username = receivedUsername
             password = receivedPassword
@@ -36,35 +38,35 @@ class SignInViewModel(
                 loginValidationData = LoginValidationData(username, password, token!!.token)
                 validateWithLogin()
             } else {
-                liveData.value = State.FailedLoading
-                liveData.value = State.HideLoading
+                liveData.value = SignInState.FailedLoading
+                liveData.value = SignInState.HideLoading
             }
         }
     }
 
     private fun validateWithLogin() {
-        uiScope.launch {
+        viewModelScope.launch {
             val response = loginUseCase.validateWithLogin(loginValidationData)
             if (response) {
                 createSession()
             } else {
-                liveData.value = State.WrongDataProvided
-                liveData.value = State.HideLoading
+                liveData.value = SignInState.WrongDataProvided
+                liveData.value = SignInState.HideLoading
             }
         }
     }
 
     private fun createSession() {
-        uiScope.launch {
-            liveData.value = State.ShowLoading
+        viewModelScope.launch {
+            liveData.value = SignInState.ShowLoading
             sessionId = token?.let { loginUseCase.getSessionId(it) }
             if (!sessionId.isNullOrEmpty()) {
                 saveLoginData()
-                liveData.value = State.HideLoading
-                liveData.value = State.Result
+                liveData.value = SignInState.HideLoading
+                liveData.value = SignInState.Result
             } else {
-                liveData.value = State.FailedLoading
-                liveData.value = State.HideLoading
+                liveData.value = SignInState.FailedLoading
+                liveData.value = SignInState.HideLoading
             }
         }
     }
@@ -79,13 +81,5 @@ class SignInViewModel(
 
     fun getSavedPassword(): String {
         return localLoginDataUseCase.getLocalPassword()
-    }
-
-    sealed class State {
-        object ShowLoading : State()
-        object HideLoading : State()
-        object FailedLoading : State()
-        object WrongDataProvided : State()
-        object Result : State()
     }
 }

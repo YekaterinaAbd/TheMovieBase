@@ -1,12 +1,15 @@
 package com.example.movies.presentation.ui.movie_details
 
 import androidx.lifecycle.MutableLiveData
-import com.example.movies.core.base.BaseViewModel
-import com.example.movies.data.model.movie.*
-import com.example.movies.domain.model.Movie
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.movies.data.model.movie.FavouriteMovie
+import com.example.movies.data.model.movie.MovieDetails
+import com.example.movies.data.model.movie.WatchListMovie
 import com.example.movies.domain.use_case.LikesUseCase
 import com.example.movies.domain.use_case.MovieDetailsUseCase
 import com.example.movies.domain.use_case.SessionIdUseCase
+import com.example.movies.presentation.ui.MovieDetailsState
 import com.example.movies.presentation.utils.constants.MEDIA_TYPE
 import com.google.gson.internal.LinkedTreeMap
 import kotlinx.coroutines.launch
@@ -15,13 +18,13 @@ class MovieDetailsViewModel(
     sessionIdUseCase: SessionIdUseCase,
     private val movieDetailsUseCase: MovieDetailsUseCase,
     private val likesUseCase: LikesUseCase
-) : BaseViewModel() {
+) : ViewModel() {
 
     private var sessionId = sessionIdUseCase.getLocalSessionId()
-    val liveData = MutableLiveData<State>()
+    val liveData = MutableLiveData<MovieDetailsState>()
 
     fun getMovie(id: Int) {
-        uiScope.launch {
+        viewModelScope.launch {
             val movieDetails: MovieDetails? = movieDetailsUseCase.getMovie(id)
             val movieState = likesUseCase.getMovieStates(
                 id, sessionId
@@ -35,69 +38,58 @@ class MovieDetailsViewModel(
                         movieDetails.userRating = rating["value"]
                     }
                 }
-                liveData.value = State.Result(movieDetails)
-            } else liveData.value = State.Error
-            liveData.value = State.HideLoading
+                liveData.value = MovieDetailsState.Result(movieDetails)
+            } else liveData.value = MovieDetailsState.Error
+            liveData.value = MovieDetailsState.HideLoading
         }
     }
 
     fun getSimilarMovies(id: Int) {
-        uiScope.launch {
+        viewModelScope.launch {
             val movies = movieDetailsUseCase.getSimilarMovies(id)
-            liveData.value = State.SimilarMoviesResult(movies)
+            liveData.value = MovieDetailsState.SimilarMoviesResult(movies)
         }
     }
 
     fun getKeyWords(id: Int) {
-        uiScope.launch {
+        viewModelScope.launch {
             val keyWordsList = movieDetailsUseCase.getKeywords(id)
-            liveData.value = State.KeyWordsListResult(keyWordsList)
+            liveData.value = MovieDetailsState.KeyWordsListResult(keyWordsList)
         }
     }
 
     fun getTrailer(id: Int) {
-        uiScope.launch {
+        viewModelScope.launch {
             val trailer = movieDetailsUseCase.getTrailer(id)
-            liveData.value = State.TrailerResult(trailer)
+            liveData.value = MovieDetailsState.TrailerResult(trailer)
         }
     }
 
     fun getCredits(id: Int) {
-        uiScope.launch {
+        viewModelScope.launch {
             val credits = movieDetailsUseCase.getCredits(id)
-            liveData.value = State.CreditsResult(credits)
+            liveData.value = MovieDetailsState.CreditsResult(credits)
         }
     }
 
     fun updateFavouriteStatus(id: Int, isClicked: Boolean) {
         val movie = FavouriteMovie(MEDIA_TYPE, id, isClicked)
-        uiScope.launch {
+        viewModelScope.launch {
             likesUseCase.updateIsFavourite(movie, sessionId)
         }
     }
 
     fun updateWatchListStatus(id: Int, isClicked: Boolean) {
         val movie = WatchListMovie(MEDIA_TYPE, id, isClicked)
-        uiScope.launch {
+        viewModelScope.launch {
             likesUseCase.updateIsInWatchList(movie, sessionId)
         }
     }
 
     fun rateMovie(id: Int, rating: Double) {
-        uiScope.launch {
+        viewModelScope.launch {
             val result = movieDetailsUseCase.rateMovie(id, sessionId, rating)
-            liveData.value = State.RatingResult(result)
+            liveData.value = MovieDetailsState.RatingResult(result)
         }
-    }
-
-    sealed class State {
-        object HideLoading : State()
-        object Error : State()
-        data class Result(val movie: MovieDetails?) : State()
-        data class TrailerResult(val trailer: Video?) : State()
-        data class SimilarMoviesResult(val movies: List<Movie>?) : State()
-        data class KeyWordsListResult(val keywords: List<Keyword>?) : State()
-        data class CreditsResult(val credits: Credits?) : State()
-        data class RatingResult(val success: Boolean) : State()
     }
 }

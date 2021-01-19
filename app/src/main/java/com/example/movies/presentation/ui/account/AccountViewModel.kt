@@ -2,17 +2,18 @@ package com.example.movies.presentation.ui.account
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.movies.core.base.BaseViewModel
-import com.example.movies.data.model.account.Account
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.movies.domain.use_case.AccountUseCase
+import com.example.movies.presentation.ui.AccountState
 import kotlinx.coroutines.launch
 
 class AccountViewModel(
     private val accountUseCase: AccountUseCase
-) : BaseViewModel() {
+) : ViewModel() {
 
-    private val _liveData = MutableLiveData<State>()
-    val liveData: LiveData<State>
+    private val _liveData = MutableLiveData<AccountState>()
+    val liveData: LiveData<AccountState>
         get() = _liveData
 
     init {
@@ -21,36 +22,29 @@ class AccountViewModel(
 
     private fun getUsername() {
         val username = accountUseCase.getUsername()
-        _liveData.value = State.AccountLocalResult(username)
+        _liveData.value = AccountState.AccountLocalResult(username)
     }
 
     private fun getAccountInfo() {
-        uiScope.launch {
+        viewModelScope.launch {
             val result = accountUseCase.getAccountInfo()
-            if (result != null) _liveData.value = State.AccountResult(result)
+            if (result != null) _liveData.value = AccountState.AccountResult(result)
             else getUsername()
         }
     }
 
     fun logOut() {
-        uiScope.launch {
+        viewModelScope.launch {
             if (accountUseCase.logOut()) {
                 deleteLogInData()
-                _liveData.value = State.LogOutSuccessful
+                _liveData.value = AccountState.LogOutSuccessful
             } else {
-                _liveData.value = State.LogOutFailed
+                _liveData.value = AccountState.LogOutFailed
             }
         }
     }
 
     private fun deleteLogInData() {
         accountUseCase.deleteLoginData()
-    }
-
-    sealed class State {
-        data class AccountResult(val data: Account) : State()
-        data class AccountLocalResult(val username: String) : State()
-        object LogOutSuccessful : State()
-        object LogOutFailed : State()
     }
 }

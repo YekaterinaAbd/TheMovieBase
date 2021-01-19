@@ -12,12 +12,12 @@ import com.example.movies.R
 import com.example.movies.core.extensions.navigateTo
 import com.example.movies.data.network.SIGN_UP_URL
 import com.example.movies.presentation.ui.MainActivity
+import com.example.movies.presentation.ui.SignInState
 import com.example.movies.presentation.ui.markers.MarkersViewModel
 import com.example.movies.presentation.utils.constants.LOG_SIGNED_IN
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
 import org.koin.android.ext.android.inject
-
 
 class SignInActivity : AppCompatActivity() {
 
@@ -80,20 +80,20 @@ class SignInActivity : AppCompatActivity() {
     private fun signIn() {
         signInViewModel.liveData.observe(this, Observer { result ->
             when (result) {
-                is SignInViewModel.State.ShowLoading -> {
+                is SignInState.ShowLoading -> {
                     progressBar.visibility = View.VISIBLE
                 }
-                is SignInViewModel.State.HideLoading -> {
+                is SignInState.HideLoading -> {
                     progressBar.visibility = View.GONE
                 }
-                is SignInViewModel.State.FailedLoading -> {
+                is SignInState.FailedLoading -> {
                     Toast.makeText(this, getString(R.string.error_occurred), Toast.LENGTH_SHORT)
                         .show()
                 }
-                is SignInViewModel.State.WrongDataProvided -> {
+                is SignInState.WrongDataProvided -> {
                     wrongDataText.text = getString(R.string.wrong_data)
                 }
-                is SignInViewModel.State.Result -> {
+                is SignInState.Result -> {
                     navigateTo<MainActivity>()
                     finish()
                 }

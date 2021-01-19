@@ -7,70 +7,63 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <include
-        android:id="@+id/errorLayout"
-        layout="@layout/view_error"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:elevation="2dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
-
-    <ImageView
-        android:id="@+id/watchlist"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="@string/like"
-        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_watchlist" />
-
-    <ImageView
-        android:id="@+id/like"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="@string/watch_list"
-        app:layout_constraintBottom_toBottomOf="@+id/watchlist"
-        app:layout_constraintEnd_toStartOf="@+id/watchlist"
-        app:srcCompat="@drawable/ic_favourite_border" />
-
-    <ImageView
-        android:id="@+id/ivBack"
-        android:layout_width="36dp"
-        android:layout_height="0dp"
-        android:elevation="3dp"
-        android:layout_marginStart="16dp"
-        android:paddingEnd="16dp"
-        android:src="@drawable/back"
-        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/like" />
-
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/cardview_light_background"
+        android:background="@color/white"
+        android:elevation="10dp"
+        android:paddingTop="16dp"
         android:paddingBottom="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/watchlist"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/like"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_watchlist" />
+
+        <ImageView
+            android:id="@+id/like"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/watch_list"
+            app:layout_constraintBottom_toBottomOf="@+id/watchlist"
+            app:layout_constraintEnd_toStartOf="@+id/watchlist"
+            app:srcCompat="@drawable/ic_favourite_border" />
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="16dp"
+            android:elevation="3dp"
+            android:paddingEnd="16dp"
+            android:src="@drawable/back"
+            app:layout_constraintBottom_toBottomOf="@+id/like"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/like" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
         <LinearLayout
             android:id="@+id/mainLayout"
@@ -138,7 +131,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
                         android:fontFamily="@font/quicksand_semi_bold"
-                        android:textColor="@color/darkColorSecondaryIcons"
+                        android:textColor="@color/blue"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toTopOf="@+id/tagline"
                         app:layout_constraintStart_toStartOf="@+id/tvGenres"
@@ -341,7 +334,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/quicksand_semi_bold"
                     android:text="@string/no_rating"
-                    android:textColor="@color/colorRating"
+                    android:textColor="@color/orange"
                     android:textSize="18sp" />
 
                 <TextView
@@ -354,7 +347,7 @@
                     android:gravity="end"
                     android:text="@string/rate_movie"
                     android:textAllCaps="true"
-                    android:textColor="@color/darkColorSecondaryIcons" />
+                    android:textColor="@color/blue" />
 
             </LinearLayout>
 
@@ -430,16 +423,16 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/quicksand_semi_bold"
-                    android:text="Cast"
-                    android:textColor="@color/lightColorPrimaryText"
+                    android:text="@string/cast"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvCast"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clipToPadding="false"
                     android:layout_marginBottom="16dp"
+                    android:clipToPadding="false"
                     android:paddingStart="16dp" />
 
             </LinearLayout>
@@ -469,7 +462,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/quicksand_semi_bold"
                     android:text="@string/similar_movies"
-                    android:textColor="@color/lightColorPrimaryText"
+                    android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/view" />
@@ -508,7 +501,6 @@
                     android:layout_marginEnd="16dp"
                     android:background="#81C0C0C0" />
 
-
                 <TextView
                     android:id="@+id/textView4"
                     android:layout_width="wrap_content"
@@ -517,7 +509,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/quicksand_semi_bold"
                     android:text="@string/keywords"
-                    android:textColor="@color/lightColorPrimaryText"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <com.google.android.material.chip.ChipGroup
@@ -545,5 +537,18 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <include
+        android:id="@+id/errorLayout"
+        layout="@layout/view_error"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:elevation="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

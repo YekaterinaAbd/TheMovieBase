@@ -1,7 +1,7 @@
 package com.example.movies.core.extensions
 
 import android.content.SharedPreferences
-//тут!!
+
 fun SharedPreferences.get(key: String, default: String): String {
     return if (this.contains(key)) this.getString(key, default) ?: default
     else default

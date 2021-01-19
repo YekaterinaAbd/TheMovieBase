@@ -25,6 +25,7 @@ import com.example.movies.core.extensions.showToast
 import com.example.movies.data.model.movie.*
 import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.data.network.VIDEO_URL
+import com.example.movies.presentation.ui.MovieDetailsState
 import com.example.movies.presentation.ui.lists.SharedViewModel
 import com.example.movies.presentation.ui.lists.movies.HorizontalFilmsAdapter
 import com.example.movies.presentation.ui.lists.search.DiscoverFragment
@@ -163,7 +164,7 @@ class MovieDetailsFragment : Fragment() {
         skeletonScreen = Skeleton.bind(mainLayout)
             .load(R.layout.movie_details_skeleton_view)
             .shimmer(true)
-            .color(R.color.lightColorBackground)
+            .color(R.color.lightBlue)
             .duration(1000)
             .show()
 
@@ -217,44 +218,44 @@ class MovieDetailsFragment : Fragment() {
 
         viewModel.liveData.observe(requireActivity(), { result ->
             when (result) {
-                is MovieDetailsViewModel.State.HideLoading -> {
+                is MovieDetailsState.HideLoading -> {
                     skeletonScreen.hide()
                 }
-                is MovieDetailsViewModel.State.Error -> {
+                is MovieDetailsState.Error -> {
                     errorLayout.visibility = View.VISIBLE
                     mainLayout.visibility = View.GONE
                 }
-                is MovieDetailsViewModel.State.Result -> {
+                is MovieDetailsState.Result -> {
                     if (result.movie != null) {
                         bindData(result.movie)
                     }
                 }
-                is MovieDetailsViewModel.State.TrailerResult -> {
+                is MovieDetailsState.TrailerResult -> {
                     if (result.trailer?.id != null) {
                         trailerLayout.visibility = View.VISIBLE
                         setTrailer(result.trailer)
                     }
                 }
-                is MovieDetailsViewModel.State.SimilarMoviesResult -> {
+                is MovieDetailsState.SimilarMoviesResult -> {
                     if (!result.movies.isNullOrEmpty()) {
                         similarMoviesAdapter.addItems(result.movies)
                         similarMoviesLayout.visibility = View.VISIBLE
                     }
 
                 }
-                is MovieDetailsViewModel.State.KeyWordsListResult -> {
+                is MovieDetailsState.KeyWordsListResult -> {
                     if (!result.keywords.isNullOrEmpty()) {
                         keywordsLayout.visibility = View.VISIBLE
                         setKeywords(result.keywords)
                     }
                 }
-                is MovieDetailsViewModel.State.CreditsResult -> {
+                is MovieDetailsState.CreditsResult -> {
                     if (result.credits != null) {
                         setCrew(result.credits.crew)
                         setCast(result.credits.cast)
                     }
                 }
-                is MovieDetailsViewModel.State.RatingResult -> {
+                is MovieDetailsState.RatingResult -> {
                     if (result.success) {
                         rate.text = getString(R.string.update_rating)
                     } else requireContext().showToast(getString(R.string.rating_failed))
@@ -411,7 +412,8 @@ class MovieDetailsFragment : Fragment() {
         }
         chipGroup.addView(chip)
     }
-//тут!!
+
+    //тут!!
     private fun showRatingDialog() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)

@@ -18,7 +18,7 @@ import com.example.movies.core.extensions.changeFragment
 import com.example.movies.data.model.movie.Genre
 import com.example.movies.data.model.movie.Keyword
 import com.example.movies.domain.model.Movie
-import com.example.movies.presentation.ui.MovieState
+import com.example.movies.presentation.ui.LoadingState
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.lists.StatesBottomSheetFragment
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
@@ -114,7 +114,7 @@ class DiscoverFragment : Fragment() {
             .adapter(adapter)
             .load(R.layout.film_object_skeleton_view)
             .shimmer(true)
-            .color(R.color.lightColorBackground)
+            .color(R.color.lightBlue)
             .duration(1000)
             .show()
     }
@@ -153,13 +153,13 @@ class DiscoverFragment : Fragment() {
 
         viewModel.discoverStateLiveData.observe(viewLifecycleOwner, {
             when (it) {
-                is MovieState.ShowLoading -> {
+                is LoadingState.ShowLoading -> {
                     skeletonScreen.show()
                 }
-                is MovieState.HideLoading -> {
+                is LoadingState.HideLoading -> {
                     skeletonScreen.hide()
                 }
-                is MovieState.Error -> {
+                is LoadingState.Error -> {
                     errorLayout.visibility = View.VISIBLE
                 }
             }

@@ -11,6 +11,7 @@ import com.example.movies.core.NavigationAnimation
 import com.example.movies.core.extensions.changeFragment
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesType
+import com.example.movies.presentation.ui.MoviesState
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
 import com.example.movies.presentation.utils.constants.LOG_MOVIE_ID
@@ -109,12 +110,12 @@ class MainListsFragment : Fragment() {
     private fun observe() {
         moviesListViewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
-                is MoviesListViewModel.State.ShowLoading -> {
+                is MoviesState.ShowLoading -> {
                     showSkeletonScreen()
                 }
-                is MoviesListViewModel.State.HideLoading -> {
+                is MoviesState.HideLoading -> {
                 }
-                is MoviesListViewModel.State.Result -> {
+                is MoviesState.Result -> {
                     if (result.type == MoviesType.TOP) {
                         topMoviesView.hideSkeletonScreen()
                         addToAdapter(topMoviesView, result.moviesList)

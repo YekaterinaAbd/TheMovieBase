@@ -46,6 +46,7 @@
     <string name="rating_failed">Rating failed</string>
     <string name="my_rating">| %.1f</string>
     <string name="my_rating_text">My Rating</string>
+    <string name="my_rating_full">My Rating: %.1f</string>
     <string name="rate_movie">Rate Movie</string>
     <string name="sign_in">Sign In</string>
     <string name="dont_have_account_yet">Don\'t have account yet?</string>
@@ -64,4 +65,5 @@
     <string name="account">Account</string>
     <string name="asc">Sort Oldest to Newest</string>
     <string name="desc">Sort Newest to Oldest</string>
+    <string name="cast">Cast</string>
 </resources>

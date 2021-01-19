@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import com.example.movies.R
 import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.ui.MoviesState
 import com.example.movies.presentation.utils.constants.MOVIE
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.android.ext.android.inject
@@ -68,16 +68,16 @@ class StatesBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun getMovieStates() {
         movie?.let { viewModel.getMovieStatuses(it) }
-        viewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.liveData.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is MoviesListViewModel.State.MovieStates -> {
-                    movie?.isFavourite = result.states.favourite
-                    movie?.isInWatchList = result.states.watchlist
-                    //movie?.rating = result.states.rated
+                is MoviesState.MovieStates -> {
+                    movie?.isFavourite = result.favourite
+                    movie?.isInWatchList = result.watchlist
+                    movie?.rating = result.rating
                     bindData()
                 }
             }
-        })
+        }
     }
 
     private fun bindData() {
@@ -100,6 +100,11 @@ class StatesBottomSheetFragment : BottomSheetDialogFragment() {
             watchlist.setCompoundDrawablesWithIntrinsicBounds(
                 R.drawable.ic_watchlist, 0, 0, 0
             )
+        }
+        if (movie?.rating != null && movie?.rating != 0.0) {
+            rating.text = getString(R.string.my_rating_full, movie?.rating)
+        } else {
+            rating.text = getString(R.string.put_rating)
         }
     }
 }

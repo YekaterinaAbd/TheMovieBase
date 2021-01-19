@@ -34,15 +34,15 @@
             <TextView
                 android:id="@+id/tvTitle"
                 android:layout_width="110dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:background="#BEE6E6E6"
                 android:ellipsize="end"
                 android:fontFamily="@font/quicksand_semi_bold"
                 android:gravity="center_vertical|center_horizontal"
-                android:maxLines="2"
+                android:lines="2"
                 android:padding="4dp"
                 android:textAlignment="center"
-                android:textColor="@color/darkColorBackground"
+                android:textColor="@color/darkBlack"
                 android:textSize="12sp"
                 tools:text="Gabriel's Inferno Part II" />
 

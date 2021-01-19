@@ -22,7 +22,7 @@ import com.example.movies.core.NavigationAnimation
 import com.example.movies.core.extensions.changeFragment
 import com.example.movies.data.model.entities.SearchQuery
 import com.example.movies.domain.model.Movie
-import com.example.movies.presentation.ui.MovieState
+import com.example.movies.presentation.ui.LoadingState
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.lists.StatesBottomSheetFragment
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
@@ -209,7 +209,7 @@ class SearchFragment : Fragment() {
             .adapter(adapter)
             .load(R.layout.film_object_skeleton_view)
             .shimmer(true)
-            .color(R.color.lightColorBackground)
+            .color(R.color.lightBlue)
             .duration(1000)
             .show()
     }
@@ -231,15 +231,15 @@ class SearchFragment : Fragment() {
 
         moviesViewModel.searchStateLiveData.observe(viewLifecycleOwner, {
             when (it) {
-                is MovieState.ShowLoading -> {
+                is LoadingState.ShowLoading -> {
                     skeletonScreen.show()
                 }
-                is MovieState.HideLoading -> {
+                is LoadingState.HideLoading -> {
                     skeletonScreen.hide()
                 }
-                is MovieState.HidePageLoading -> {
+                is LoadingState.HidePageLoading -> {
                 }
-                is MovieState.Error -> {
+                is LoadingState.Error -> {
                     Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
                 }
             }

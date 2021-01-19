@@ -130,7 +130,7 @@
             android:fontFamily="@font/quicksand"
             android:gravity="center_vertical"
             tools:text="| 8.0"
-            android:textColor="@color/colorRating"
+            android:textColor="@color/orange"
             android:textSize="15sp"
             android:textStyle="bold"
             android:visibility="gone"

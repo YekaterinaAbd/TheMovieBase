@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:text="Hello"
-    android:textColor="@color/darkColorSecondaryIcons"
+    android:textColor="@color/blue"
     android:textAppearance="?android:attr/textAppearance"
     android:theme="@style/Theme.MaterialComponents.Light"
     app:chipBackgroundColor="#1E1789DB"

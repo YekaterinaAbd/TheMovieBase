@@ -24,6 +24,7 @@ import com.example.movies.data.network.DESC
 import com.example.movies.domain.model.DataSource
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesType
+import com.example.movies.presentation.ui.MoviesState
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.lists.SharedViewModel
 import com.example.movies.presentation.ui.lists.StatesBottomSheetFragment
@@ -67,17 +68,6 @@ class MoviesFragment : Fragment() {
                 bundle = bundleOf(MOVIE_ID to item.id),
                 animation = NavigationAnimation.CENTER
             )
-
-//            val bundle = Bundle()
-//            bundle.putInt(INTENT_KEY, item.id)
-//
-//            val movieDetailedFragment = MovieDetailsFragment()
-//            movieDetailedFragment.arguments = bundle
-//
-//            parentFragmentManager.beginTransaction().add(R.id.framenav, movieDetailedFragment)
-//                .addToBackStack(this@MoviesFragment.tag)
-//
-//                .commit()
         }
 
         override fun addToFavourites(item: Movie) {
@@ -171,7 +161,7 @@ class MoviesFragment : Fragment() {
             .adapter(adapter)
             .load(R.layout.film_object_skeleton_view)
             .shimmer(true)
-            .color(R.color.lightColorBackground)
+            .color(R.color.lightBlue)
             .duration(1000)
             .show()
     }
@@ -206,14 +196,14 @@ class MoviesFragment : Fragment() {
 
         viewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
-                is MoviesListViewModel.State.ShowLoading -> {
+                is MoviesState.ShowLoading -> {
                     skeletonScreen.show()
                 }
-                is MoviesListViewModel.State.HideLoading -> {
+                is MoviesState.HideLoading -> {
                     swipeRefreshLayout.isRefreshing = false
                     skeletonScreen.hide()
                 }
-                is MoviesListViewModel.State.Result -> {
+                is MoviesState.Result -> {
                     getMoviesStatuses(result.moviesList)
                     if (result.dataSource == DataSource.LOCAL) {
                         adapter.replaceItems(result.moviesList)
@@ -231,13 +221,13 @@ class MoviesFragment : Fragment() {
                         isLoading = false
                     }
                 }
-                is MoviesListViewModel.State.MovieStates -> {
+                is MoviesState.MovieStates -> {
                     adapter.notifyDataSetChanged()
                 }
             }
         })
     }
-//тут!!
+
     private fun openPopupWindow(view: View) {
         val popup = PopupMenu(context, view, Gravity.END, 0, R.style.PopupMenu)
         popup.menuInflater.inflate(R.menu.pop_up_menu, popup.menu)
