@@ -5,20 +5,18 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.findFragment
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.ViewSkeletonScreen
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
-import com.example.movies.core.extensions.replaceFragments
+import com.example.movies.core.extensions.changeFragment
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesType
 import com.example.movies.presentation.ui.lists.movies.HorizontalFilmsAdapter
 import com.example.movies.presentation.ui.lists.movies.MoviesFragment
-import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
 import com.example.movies.presentation.utils.constants.MOVIE_TYPE
 
 class MoviesListView : LinearLayout {
@@ -59,13 +57,13 @@ class MoviesListView : LinearLayout {
         skeletonScreen.hide()
     }
 
-    fun setListener(fm: FragmentManager) {
+    fun setListener(fragment: Fragment) {
         llTitle.setOnClickListener {
-            openListFragment(fm, type)
+            openListFragment(fragment, type)
         }
     }
 
-    fun setAdapter(clickListener: SimpleItemClickListener) {
+    fun setAdapter(clickListener: HorizontalFilmsAdapter.ItemClickListener) {
         adapter = HorizontalFilmsAdapter(clickListener)
         recyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -80,10 +78,9 @@ class MoviesListView : LinearLayout {
         adapter.addItems(moviesList)
     }
 
-    private fun openListFragment(fm: FragmentManager, movieType: MoviesType) {
-        fm.replaceFragments<MoviesFragment>(
+    private fun openListFragment(fragment: Fragment, movieType: MoviesType) {
+        fragment.changeFragment<MoviesFragment>(
             container = R.id.framenav,
-            hideFragment = this.findFragment(),
             bundle = bundleOf(
                 MOVIE_TYPE to movieType
             ),

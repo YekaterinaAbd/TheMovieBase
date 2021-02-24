@@ -19,42 +19,51 @@ import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.ethanhua.skeleton.Skeleton
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
-import com.example.movies.core.extensions.replaceFragments
+import com.example.movies.core.extensions.changeFragment
 import com.example.movies.data.model.entities.SearchQuery
-import com.example.movies.presentation.ui.MovieState
+import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.ui.LoadingState
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
-import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
+import com.example.movies.presentation.ui.lists.StatesBottomSheetFragment
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
-import com.example.movies.presentation.utils.constants.INTENT_KEY
+import com.example.movies.presentation.utils.constants.MOVIE
+import com.example.movies.presentation.utils.constants.MOVIE_ID
 import com.google.android.material.appbar.AppBarLayout
 import org.koin.android.ext.android.inject
 
 class SearchFragment : Fragment() {
+
+    private var query: String? = null
 
     private lateinit var skeletonScreen: RecyclerViewSkeletonScreen
     private lateinit var search: SearchView
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchHistoryRecyclerView: RecyclerView
     private lateinit var recentMoviesRecyclerView: RecyclerView
-
-    //  private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var searchTipsLayout: LinearLayout
     private lateinit var clearQueries: ImageView
     private lateinit var clearRecentMovies: ImageView
     private lateinit var appbar: AppBarLayout
-    private var query: String? = null
 
     private val searchViewModel: SearchViewModel by inject()
     private val moviesViewModel: MoviesListViewModel by inject()
 
-    private val itemClickListener = object : SimpleItemClickListener {
+    private val itemClickListener = object : PaginationAdapter.ItemClickListener {
         override fun itemClick(id: Int?) {
             if (id == null) return
-            parentFragmentManager.replaceFragments<MovieDetailsFragment>(
+            changeFragment<MovieDetailsFragment>(
                 container = R.id.framenav,
-                bundle = bundleOf(INTENT_KEY to id),
+                bundle = bundleOf(MOVIE_ID to id),
                 animation = NavigationAnimation.CENTER
             )
+        }
+
+        override fun openActionsDialog(item: Movie) {
+            val addPhotoBottomDialogFragment: StatesBottomSheetFragment =
+                StatesBottomSheetFragment.newInstance(
+                    bundleOf(MOVIE to item)
+                )
+            addPhotoBottomDialogFragment.show(parentFragmentManager, "DIALOG_FRAGMENT")
         }
     }
 
@@ -103,7 +112,6 @@ class SearchFragment : Fragment() {
         clearQueries = findViewById(R.id.clearQuery)
         clearRecentMovies = findViewById(R.id.clearMovies)
         search = findViewById(R.id.search)
-        //  swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
         appbar = findViewById(R.id.appbar)
 
         val searchCloseButtonId: Int = search.context.resources
@@ -127,13 +135,6 @@ class SearchFragment : Fragment() {
             searchViewModel.deleteRecentMovies()
             recentMoviesAdapter.clearAll()
         }
-
-//        swipeRefreshLayout.setOnRefreshListener {
-//            adapter.submitList(null)
-//            if (!query.isNullOrEmpty())
-//                query?.let { searchMovies(it) }
-//            swipeRefreshLayout.isRefreshing = false
-//        }
 
         search.setOnClickListener {
             search.isIconified = false
@@ -169,15 +170,6 @@ class SearchFragment : Fragment() {
 
         recentMoviesRecyclerView.layoutManager = GridLayoutManager(context, 3)
         recentMoviesRecyclerView.adapter = recentMoviesAdapter
-
-        skeletonScreen = Skeleton.bind(recyclerView)
-            .adapter(adapter)
-            .load(R.layout.film_object_skeleton_view)
-            .shimmer(true)
-            .color(R.color.lightColorBackground)
-            .duration(1000)
-            .show()
-
     }
 
     private fun getSearchHistory() {
@@ -212,6 +204,16 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun loadInitialSkeletonScreen() {
+        skeletonScreen = Skeleton.bind(recyclerView)
+            .adapter(adapter)
+            .load(R.layout.film_object_skeleton_view)
+            .shimmer(true)
+            .color(R.color.lightBlue)
+            .duration(1000)
+            .show()
+    }
+
     private fun insertQuery(query: String?) {
         if (!query.isNullOrEmpty()) {
             searchViewModel.insertQuery(query)
@@ -221,24 +223,23 @@ class SearchFragment : Fragment() {
     private fun searchMovies(query: String) {
         moviesViewModel.searchMovies(query)
 
+        loadInitialSkeletonScreen()
+
         moviesViewModel.searchPagedList.observe(viewLifecycleOwner, { list ->
             adapter.submitList(list)
         })
 
         moviesViewModel.searchStateLiveData.observe(viewLifecycleOwner, {
             when (it) {
-                is MovieState.ShowLoading -> {
+                is LoadingState.ShowLoading -> {
                     skeletonScreen.show()
-                    //swipeRefreshLayout.isRefreshing = true
                 }
-                is MovieState.HideLoading -> {
+                is LoadingState.HideLoading -> {
                     skeletonScreen.hide()
-                    //swipeRefreshLayout.isRefreshing = false
                 }
-                is MovieState.HidePageLoading -> {
-                    // swipeRefreshLayout.isRefreshing = false
+                is LoadingState.HidePageLoading -> {
                 }
-                is MovieState.Error -> {
+                is LoadingState.Error -> {
                     Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
                 }
             }

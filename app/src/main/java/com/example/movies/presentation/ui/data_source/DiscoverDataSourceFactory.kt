@@ -7,28 +7,30 @@ import com.example.movies.domain.model.Movie
 import com.example.movies.domain.use_case.SearchMoviesUseCase
 import kotlinx.coroutines.CoroutineScope
 
-class SearchMoviesDataSourceFactory(
+class DiscoverDataSourceFactory(
+    private val context: Context,
     private val scope: CoroutineScope,
     private val searchUseCase: SearchMoviesUseCase,
-    private val query: String? = null,
-    private val context: Context
+    private val genres: String?,
+    private val keywords: String?
 ) : DataSource.Factory<Int, Movie>() {
 
-    val liveData = MutableLiveData<SearchDataSource>()
-    private lateinit var searchDataSource: SearchDataSource
+    val liveData = MutableLiveData<DiscoverDataSource>()
+    private lateinit var discoverDataSource: DiscoverDataSource
 
     override fun create(): DataSource<Int, Movie> {
-        searchDataSource = SearchDataSource(
-            searchUseCase = searchUseCase,
+        discoverDataSource = DiscoverDataSource(
+            context = context,
             scope = scope,
-            query = query,
-            context = context
+            searchUseCase = searchUseCase,
+            genres = genres,
+            keywords = keywords
         )
-        liveData.postValue(searchDataSource)
-        return searchDataSource
+        liveData.postValue(discoverDataSource)
+        return discoverDataSource
     }
 
     fun invalidate() {
-        searchDataSource.invalidate()
+        discoverDataSource.invalidate()
     }
 }

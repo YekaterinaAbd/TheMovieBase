@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="?attr/colorBackground"
     tools:context=".presentation.ui.MainActivity">
 
@@ -46,15 +45,5 @@
         app:labelVisibilityMode="selected"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation" />
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/themeModeImage"-->
-    <!--        android:layout_width="30dp"-->
-    <!--        android:layout_height="30dp"-->
-    <!--        android:layout_marginTop="16dp"-->
-    <!--        android:layout_marginEnd="16dp"-->
-    <!--        android:background="?attr/colorThemeSwitcherIcon"-->
-    <!--        app:layout_constraintEnd_toEndOf="@+id/toolbar"-->
-    <!--        app:layout_constraintTop_toTopOf="@+id/toolbar" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

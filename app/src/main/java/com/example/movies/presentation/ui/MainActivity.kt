@@ -3,7 +3,6 @@ package com.example.movies.presentation.ui
 //import com.example.kino.presentation.ThemeViewModel
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -11,9 +10,9 @@ import com.example.movies.R
 import com.example.movies.presentation.ui.account.AccountFragment
 import com.example.movies.presentation.ui.lists.movies.MainListsFragment
 import com.example.movies.presentation.ui.lists.search.SearchFragment
-import com.example.movies.presentation.utils.constants.MAIN_PAGE_CLICKED
-import com.example.movies.presentation.utils.constants.PROFILE_PAGE_CLICKED
-import com.example.movies.presentation.utils.constants.SEARCH_PAGE_CLICKED
+import com.example.movies.presentation.utils.constants.LOG_MAIN_PAGE_CLICKED
+import com.example.movies.presentation.utils.constants.LOG_PROFILE_PAGE_CLICKED
+import com.example.movies.presentation.utils.constants.LOG_SEARCH_PAGE_CLICKED
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 
@@ -41,19 +40,20 @@ class MainActivity : AppCompatActivity() {
 //            R.style.AppThemeLight
 //        }
 //        super.setTheme(themeMode)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//
+//        window.setFlags(
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+//        )
 
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         createFragments()
         bindViews()
     }
-
 
     private fun bindViews() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
@@ -98,21 +98,21 @@ class MainActivity : AppCompatActivity() {
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.films -> {
-                    logEvent(MAIN_PAGE_CLICKED)
+                    logEvent(LOG_MAIN_PAGE_CLICKED)
                     fragmentManager.beginTransaction().hide(activeFragment).show(mainListsFragment)
                         .commit()
                     activeFragment = mainListsFragment
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.search -> {
-                    logEvent(SEARCH_PAGE_CLICKED)
+                    logEvent(LOG_SEARCH_PAGE_CLICKED)
                     fragmentManager.beginTransaction().hide(activeFragment).show(searchFragment)
                         .commit()
                     activeFragment = searchFragment
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.account -> {
-                    logEvent(PROFILE_PAGE_CLICKED)
+                    logEvent(LOG_PROFILE_PAGE_CLICKED)
                     fragmentManager.beginTransaction().hide(activeFragment).show(accountFragment)
                         .commit()
                     activeFragment = accountFragment

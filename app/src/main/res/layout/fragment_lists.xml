@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/lightBlue"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="104dp"
-        android:background="@color/lightColorBackground">
+        android:layout_height="80dp"
+        android:background="@drawable/gradient_background">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -17,7 +18,7 @@
             app:collapsedTitleGravity="center_vertical"
             app:collapsedTitleTextAppearance="@style/collapsedToolbarStyle"
             app:expandedTitleGravity="center_vertical|center_horizontal"
-            app:expandedTitleMargin="40dp"
+            app:expandedTitleMargin="16dp"
             app:expandedTitleMarginBottom="16dp"
             app:expandedTitleTextAppearance="@style/expandedToolbarStyleSmall"
             app:layout_scrollFlags="scroll">
@@ -31,28 +32,67 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
-    <!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-    <!--        android:id="@+id/swipeRefreshLayout"-->
+    <!--    <com.google.android.material.appbar.AppBarLayout-->
+    <!--        android:id="@+id/appbar"-->
     <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:backgroundTint="?attr/colorBackground"-->
-    <!--        app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-    <!--        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent">-->
+    <!--        android:layout_height="80dp"-->
+    <!--        android:background="@drawable/gradient_background">-->
+
+    <!--        <com.google.android.material.appbar.CollapsingToolbarLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            app:collapsedTitleGravity="center_vertical"-->
+    <!--            app:collapsedTitleTextAppearance="@style/collapsedToolbarStyle"-->
+    <!--            app:expandedTitleGravity="center_vertical|center_horizontal"-->
+    <!--            app:expandedTitleMargin="16dp"-->
+    <!--            app:expandedTitleMarginBottom="16dp"-->
+    <!--            app:expandedTitleTextAppearance="@style/expandedToolbarStyleSmall"-->
+    <!--            app:layout_scrollFlags="scroll">-->
+
+    <!--            <androidx.appcompat.widget.Toolbar-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="?attr/actionBarSize"-->
+    <!--                app:title="@string/media" />-->
+
+    <!--        </com.google.android.material.appbar.CollapsingToolbarLayout>-->
+
+    <!--    </com.google.android.material.appbar.AppBarLayout>-->
+
+    <!--    <com.google.android.material.appbar.AppBarLayout-->
+    <!--        android:id="@+id/appbar"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="80dp"-->
+    <!--        android:background="@color/lightColorBackground">-->
+
+    <!--        <com.google.android.material.appbar.CollapsingToolbarLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            app:collapsedTitleGravity="center_vertical"-->
+    <!--            app:collapsedTitleTextAppearance="@style/collapsedToolbarStyle"-->
+    <!--            app:expandedTitleGravity="center_vertical|center_horizontal"-->
+    <!--            app:expandedTitleMargin="16dp"-->
+    <!--            app:expandedTitleMarginBottom="16dp"-->
+    <!--            app:expandedTitleTextAppearance="@style/expandedToolbarStyleSmall"-->
+    <!--            app:layout_scrollFlags="scroll">-->
+
+    <!--            <androidx.appcompat.widget.Toolbar-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="?attr/actionBarSize"-->
+    <!--                app:title="@string/media" />-->
+
+    <!--        </com.google.android.material.appbar.CollapsingToolbarLayout>-->
+
+    <!--    </com.google.android.material.appbar.AppBarLayout>-->
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="?attr/colorBackground"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,28 +101,26 @@
 
             <com.example.movies.presentation.utils.widgets.MoviesListView
                 android:id="@+id/currentMovies"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-                <com.example.movies.presentation.utils.widgets.MoviesListView
-                    android:id="@+id/topMovies"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+            <com.example.movies.presentation.utils.widgets.MoviesListView
+                android:id="@+id/topMovies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-                <com.example.movies.presentation.utils.widgets.MoviesListView
-                    android:id="@+id/upcomingMovies"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+            <com.example.movies.presentation.utils.widgets.MoviesListView
+                android:id="@+id/upcomingMovies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-                <com.example.movies.presentation.utils.widgets.MoviesListView
-                    android:id="@+id/popularMovies"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+            <com.example.movies.presentation.utils.widgets.MoviesListView
+                android:id="@+id/popularMovies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-            </LinearLayout>
+        </LinearLayout>
 
-        </androidx.core.widget.NestedScrollView>
-
-    <!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,6 +1,7 @@
 package com.example.movies.presentation.ui.markers
 
-import com.example.movies.core.base.BaseViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.movies.data.model.entities.Marker
 import com.example.movies.data.model.entities.generateMarkers
 import com.example.movies.domain.repository.MarkerRepository
@@ -9,11 +10,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-class MarkersViewModel(private val markerRepository: MarkerRepository) :
-    BaseViewModel() {
+class MarkersViewModel(private val markerRepository: MarkerRepository) : ViewModel() {
 
     fun fillDatabase() {
-        uiScope.launch {
+        viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 markerRepository.deleteMarkers()
                 markerRepository.insertMarkers(generateMarkers())

@@ -17,11 +17,8 @@
     <string name="theme_state">Boolean theme</string>
     <string name="title_activity_google_maps">Map</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="search">Search</string>
-
     <string name="top_rated_movies">Top-Rated Movies</string>
     <string name="media">Media</string>
-    <string name="account">Account</string>
     <string name="movie">Movie</string>
     <string name="current_playing">Current Playing</string>
     <string name="log_out">LOG OUT</string>
@@ -43,15 +40,30 @@
     <string name="rated">Rated</string>
     <string name="no_rating">---</string>
     <string name="no_info">It seems to be no info :(</string>
-    <string name="rating">%.1f/10</string>
+    <string name="rating">%.1f/10.0</string>
     <string name="update_rating">Update Rating</string>
     <string name="movie_rated">Movie Rated</string>
     <string name="rating_failed">Rating failed</string>
     <string name="my_rating">| %.1f</string>
     <string name="my_rating_text">My Rating</string>
+    <string name="my_rating_full">My Rating: %.1f</string>
     <string name="rate_movie">Rate Movie</string>
     <string name="sign_in">Sign In</string>
     <string name="dont_have_account_yet">Don\'t have account yet?</string>
     <string name="sign_in_description">Specify the username and password that you used to log in to TheMovieDB</string>
     <string name="details_error_text">Ups, there are some problems. Try to reload the page</string>
+    <string name="remove_from_favourites">Remove from favourites</string>
+    <string name="add_to_favourites">Add to favourites</string>
+    <string name="remove_from_watchlist">Remove from Watchlist</string>
+    <string name="add_to_watchlist">Add to Watchlist</string>
+    <string name="cancel">Cancel</string>
+    <string name="rate">Rate</string>
+    <string name="discover">Discover</string>
+    <string name="put_rating">Put a Rating</string>
+    <string name="movies">Movies</string>
+    <string name="search">Search</string>
+    <string name="account">Account</string>
+    <string name="asc">Sort Oldest to Newest</string>
+    <string name="desc">Sort Newest to Oldest</string>
+    <string name="cast">Cast</string>
 </resources>

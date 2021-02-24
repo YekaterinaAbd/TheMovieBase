@@ -4,18 +4,10 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:text="Hello"
-    android:textColor="@color/darkColorSecondaryIcons"
+    android:textColor="@color/blue"
     android:textAppearance="?android:attr/textAppearance"
     android:theme="@style/Theme.MaterialComponents.Light"
     app:chipBackgroundColor="#1E1789DB"
     app:chipCornerRadius="12dp"
-    app:chipMinHeight="26dp"
+    app:chipMinHeight="28dp"
     app:ensureMinTouchTargetSize="false" />
-
-    <!--    app:chipBackgroundColor="#1E10649F"-->
-
-    <!--<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    android:layout_width="wrap_content"-->
-    <!--    android:layout_height="wrap_content"-->
-    <!--    android:text="Hello"-->
-    <!--    android:theme="@style/Theme.MaterialComponents.Light" />-->

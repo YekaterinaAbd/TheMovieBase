@@ -10,11 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
 import com.example.movies.data.model.entities.RecentMovie
 import com.example.movies.data.network.IMAGE_URL
-import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
 import com.squareup.picasso.Picasso
 
 class RecentMovieAdapter(
-    private val itemClickListener: SimpleItemClickListener
+    private val itemClickListener: PaginationAdapter.ItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var movies = mutableListOf<RecentMovie>()
@@ -62,7 +61,7 @@ class RecentMovieAdapter(
                 .into(poster)
 
             view.setOnClickListener {
-                itemClickListener.itemClick(movie.id)
+                movie.id?.let { it1 -> itemClickListener.itemClick(it1) }
             }
         }
     }

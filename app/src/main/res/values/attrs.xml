@@ -8,7 +8,7 @@
     <attr name="colorBackground" format="color|reference" />
     <attr name="colorButtons" format="color|reference" />
     <attr name="colorToolbar" format="color|reference" />
-    <attr name="colorThemeSwitcherIcon" format="color|reference" />
+    <attr name="themeSwitchIcon" format="color|reference" />
     <attr name="colorSecondaryIcons" format="color|reference" />
     <attr name="colorItems" format="color|reference" />
     <attr name="colorAccount" format="color|reference" />

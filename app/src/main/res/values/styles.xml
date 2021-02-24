@@ -2,61 +2,59 @@
 
     <!-- Base application theme. -->
     <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:fontFamily">@font/quicksand</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:fontFamily">@font/quicksand</item>
+
         <item name="colorPrimary">@color/lightColorPrimary</item>
         <item name="colorAccent">@color/lightColorAccent</item>
-        <item name="colorPrimaryDark">#FFFFFF</item>
-        <item name="colorBackground">@color/lightColorBackground</item>
-        <item name="colorPrimaryText">@color/lightColorPrimaryText</item>
-        <item name="colorSecondaryText">@color/lightColorSecondaryText</item>
-        <item name="colorItems">@color/lightColorItems</item>
-        <item name="colorAccount">@color/lightColorAccount</item>
-        <item name="colorButtons">@color/darkColorSelectedIcon</item>
-        <item name="colorSecondaryIcons">@color/lightColorSecondaryIcons</item>
-        <item name="colorLike">@color/lightColorLike</item>
-        <item name="colorRating">@color/lightColorRating</item>
-        <item name="colorUnselectedIcons">@color/lightColorUnselectedIcons</item>
-        <item name="colorThemeSwitcherIcon">@drawable/ic_sun</item>
-        <item name="buttonStyle">@style/ButtonStyle</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:fitsSystemWindows">true</item>
+        <item name="colorPrimaryDark">@color/white</item>
 
+        <item name="colorBackground">@color/lightBlue</item>
+        <item name="colorPrimaryText">@color/black</item>
+        <item name="colorSecondaryText">@color/gray</item>
+        <item name="colorItems">@color/white</item>
+        <item name="colorAccount">@color/white</item>
+        <item name="colorButtons">@color/blue</item>
+        <item name="colorRating">@color/green</item>
+        <item name="colorUnselectedIcons">@color/unselectedGray</item>
+        <item name="themeSwitchIcon">@drawable/ic_sun</item>
+        <item name="buttonStyle">@style/ButtonStyle</item>
     </style>
 
-    <style name="AppThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppThemeDark" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:fontFamily">@font/quicksand</item>
+
         <item name="colorPrimary">@color/lightColorPrimary</item>
         <item name="colorAccent">@color/darkColorAccent</item>
         <item name="colorPrimaryDark">@color/darkColorPrimary</item>
-        <item name="colorBackground">@color/darkColorBackground</item>
-        <item name="colorPrimaryText">@color/darkColorPrimaryText</item>
-        <item name="colorSecondaryText">@color/darkColorSecondaryText</item>
-        <item name="colorItems">@color/darkColorItems</item>
-        <item name="colorAccount">@color/darkColorAccount</item>
-        <item name="colorButtons">@color/darkColorButtons</item>
-        <item name="colorSecondaryIcons">@color/darkColorSecondaryIcons</item>
-        <item name="colorLike">@color/lightColorLike</item>
-        <item name="colorRating">@color/darkColorRating</item>
-        <!--        <item name="android:actionMenuTextColor">@color/darkColorButtons</item>-->
-        <item name="colorUnselectedIcons">@color/darkColorUnselectedIcons</item>
-        <item name="colorThemeSwitcherIcon">@drawable/ic_moon</item>
-        <item name="android:fontFamily">@font/quicksand</item>
+
+        <item name="colorBackground">@color/darkBlack</item>
+        <item name="colorPrimaryText">@color/white</item>
+        <item name="colorSecondaryText">@color/lightGray</item>
+        <item name="colorItems">@color/darkColorPrimary</item>
+        <item name="colorAccount">@color/darkColorPrimary</item>
+        <item name="colorButtons">@color/blueButtons</item>
+        <item name="colorSecondaryIcons">@color/blue</item>
+        <item name="colorRating">@color/green</item>
+        <item name="colorUnselectedIcons">@color/white</item>
+        <item name="themeSwitchIcon">@drawable/ic_moon</item>
+    </style>
+
+    <style name="AppThemeLight.Launcher" parent="AppThemeLight">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
 
     <style name="collapsedToolbarStyle">
         <item name="android:textSize">20sp</item>
         <item name="android:fontFamily">@font/quicksand</item>
-        <item name="android:textColor">@color/darkColorBackground</item>
+        <item name="android:textColor">@color/darkBlack</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="expandedToolbarStyleSmall">
         <item name="android:textSize">24sp</item>
         <item name="android:fontFamily">@font/quicksand</item>
-        <item name="android:textColor">@color/darkColorBackground</item>
+        <item name="android:textColor">@color/darkBlack</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -68,6 +66,30 @@
     <style name="BottomNavigationViewTextStyle">
         <item name="android:textSize">10sp</item>
         <item name="fontFamily">@font/quicksand_semi_bold</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppBottomSheetStyle</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <style name="AppBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:background">@drawable/bottom_sheet_background</item>
+    </style>
+
+    <style name="ItemTextStyle.AppTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="fontFamily">@font/quicksand_semi_bold</item>
+    </style>
+
+    <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:overlapAnchor">false</item>
+        <item name="android:popupBackground">@drawable/rounded_corners_background</item>
+        <item name="android:dropDownVerticalOffset">20dp</item>
+        <item name="android:dropDownHorizontalOffset">-16dp</item>
+        <item name="android:fontFamily">@font/quicksand_semi_bold</item>
+        <item name="android:itemTextAppearance">@style/ItemTextStyle.AppTheme</item>
     </style>
 
 </resources>

@@ -11,16 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
 import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.domain.model.Movie
-import com.example.movies.presentation.ui.MovieState
-import com.example.movies.presentation.ui.lists.movies.SimpleItemClickListener
+import com.example.movies.presentation.ui.LoadingState
 import com.example.movies.presentation.utils.LoadMoreItemViewHolder
 import com.squareup.picasso.Picasso
 
+
 class PaginationAdapter(
-    private val itemClickListener: SimpleItemClickListener? = null
+    private val itemClickListener: ItemClickListener? = null
 ) : PagedListAdapter<Movie, RecyclerView.ViewHolder>(DiffUtilCallBack) {
 
-    private var state: MovieState = MovieState.ShowPageLoading
+    private var state: LoadingState = LoadingState.ShowPageLoading
 
     companion object {
 
@@ -44,7 +44,7 @@ class PaginationAdapter(
             VIEW_TYPE_DATA -> MovieViewHolder(
                 inflater.inflate(R.layout.film_object_view, parent, false)
             )
-            VIEW_TYPE_LOADING -> LoadMoreItemViewHolder<MovieState>(
+            VIEW_TYPE_LOADING -> LoadMoreItemViewHolder<LoadingState>(
                 inflater.inflate(R.layout.loader, parent, false)
             )
             else -> throw Throwable("invalid view")
@@ -54,15 +54,15 @@ class PaginationAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == VIEW_TYPE_DATA) getItem(position)?.let {
             (holder as MovieViewHolder).bind(it)
-        } else (holder as LoadMoreItemViewHolder<MovieState>).bind(state)
+        } else (holder as LoadMoreItemViewHolder<LoadingState>).bind(state)
     }
 
     override fun getItemViewType(position: Int): Int {
         return if (position < super.getItemCount()) VIEW_TYPE_DATA else VIEW_TYPE_LOADING
     }
 
-    fun setNetworkState(newState: MovieState) {
-        val previousState: MovieState = this.state
+    fun setNetworkState(newState: LoadingState) {
+        val previousState: LoadingState = this.state
         val previousExtraRow = hasExtraRow()
         this.state = newState
         val newExtraRow = hasExtraRow()
@@ -78,22 +78,22 @@ class PaginationAdapter(
     }
 
     private fun hasExtraRow(): Boolean {
-        return state !== MovieState.HidePageLoading
+        return state !== LoadingState.HidePageLoading
     }
 
     inner class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
+        private val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
+        private val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
+        private val poster = view.findViewById<ImageView>(R.id.poster)
+        private val tvRating = view.findViewById<TextView>(R.id.tvRating)
+        private val verticalDots = view.findViewById<ImageView>(R.id.verticalDots)
+
         fun bind(movie: Movie?) {
             if (movie == null) return
 
-            val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
-            val tvReleaseDate = view.findViewById<TextView>(R.id.tvReleaseDate)
-            val tvGenres = view.findViewById<TextView>(R.id.tvGenres)
-            val poster = view.findViewById<ImageView>(R.id.poster)
-            val tvRating = view.findViewById<TextView>(R.id.tvRating)
-            val addToFav = view.findViewById<ImageView>(R.id.ivWatchlist)
-
-            addToFav.visibility = View.GONE
+            verticalDots.visibility = View.VISIBLE
 
             tvTitle.text = movie.title
             if (!movie.releaseDate.isNullOrEmpty())
@@ -110,6 +110,15 @@ class PaginationAdapter(
             view.setOnClickListener {
                 itemClickListener?.itemClick(movie.id)
             }
+
+            verticalDots.setOnClickListener {
+                itemClickListener?.openActionsDialog(movie)
+            }
         }
+    }
+
+    interface ItemClickListener {
+        fun itemClick(id: Int?)
+        fun openActionsDialog(item: Movie)
     }
 }

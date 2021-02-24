@@ -2,9 +2,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <gradient android:angle="135" android:centerColor="#C4E0F8" android:endColor="#ACDDFF" android:startColor="#09589E" android:type="linear" />
+            <gradient android:angle="270" android:centerColor="@color/lightColorPrimary" android:endColor="@color/lightColorPrimary" android:startColor="@android:color/white" android:type="linear" />
         </shape>
     </item>
-</selector><!--<gradient android:angle="135" android:centerColor="#C4E0F8" android:endColor="#1C7BBD" android:startColor="#906CDC" android:type="linear" />-->
-    <!--<gradient android:angle="135" android:centerColor="#809FBA" android:endColor="@color/darkColorSecondaryIcons" android:startColor="#6128D8" android:type="linear" />-->
+</selector><!--    android:centerColor="#ACDDFF"-->
+    <!--    android:startColor="#C4E0F8"-->
 
+    <!--<gradient android:angle="135" android:centerColor="#C4E0F8" android:endColor="#1C7BBD" android:startColor="#906CDC" android:type="linear" />-->
+    <!--<gradient android:angle="135" android:centerColor="#809FBA" android:endColor="@color/darkColorSecondaryIcons" android:startColor="#6128D8" android:type="linear" />-->

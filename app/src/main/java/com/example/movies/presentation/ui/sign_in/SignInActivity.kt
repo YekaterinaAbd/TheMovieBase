@@ -9,14 +9,15 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.movies.R
+import com.example.movies.core.extensions.navigateTo
 import com.example.movies.data.network.SIGN_UP_URL
 import com.example.movies.presentation.ui.MainActivity
+import com.example.movies.presentation.ui.SignInState
 import com.example.movies.presentation.ui.markers.MarkersViewModel
-import com.example.movies.presentation.utils.constants.SIGNED_IN
+import com.example.movies.presentation.utils.constants.LOG_SIGNED_IN
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
 import org.koin.android.ext.android.inject
-
 
 class SignInActivity : AppCompatActivity() {
 
@@ -29,6 +30,7 @@ class SignInActivity : AppCompatActivity() {
 
     private val signInViewModel: SignInViewModel by inject()
     private val markersViewModel: MarkersViewModel by inject()
+
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private val topic = "movies"
@@ -39,7 +41,7 @@ class SignInActivity : AppCompatActivity() {
         subscribeToTopic()
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         markersViewModel.fillDatabase()
-        processSignIn()
+        signIn()
         bindViews()
     }
 
@@ -67,33 +69,33 @@ class SignInActivity : AppCompatActivity() {
         }
 
         signInButton.setOnClickListener {
-            processSignIn()
+            signIn()
             signInViewModel.createTokenRequest(username.text.toString(), password.text.toString())
 
             val bundle = Bundle()
-            firebaseAnalytics.logEvent(SIGNED_IN, bundle)
+            firebaseAnalytics.logEvent(LOG_SIGNED_IN, bundle)
         }
     }
 
-    private fun processSignIn() {
+    private fun signIn() {
         signInViewModel.liveData.observe(this, Observer { result ->
             when (result) {
-                is SignInViewModel.State.ShowLoading -> {
+                is SignInState.ShowLoading -> {
                     progressBar.visibility = View.VISIBLE
                 }
-                is SignInViewModel.State.HideLoading -> {
+                is SignInState.HideLoading -> {
                     progressBar.visibility = View.GONE
                 }
-                is SignInViewModel.State.FailedLoading -> {
+                is SignInState.FailedLoading -> {
                     Toast.makeText(this, getString(R.string.error_occurred), Toast.LENGTH_SHORT)
                         .show()
                 }
-                is SignInViewModel.State.WrongDataProvided -> {
+                is SignInState.WrongDataProvided -> {
                     wrongDataText.text = getString(R.string.wrong_data)
                 }
-                is SignInViewModel.State.Result -> {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+                is SignInState.Result -> {
+                    navigateTo<MainActivity>()
+                    finish()
                 }
             }
         })

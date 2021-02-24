@@ -15,17 +15,20 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
-import com.example.movies.core.extensions.replaceFragments
+import com.example.movies.core.extensions.changeFragment
 import com.example.movies.data.model.account.Account
+import com.example.movies.data.network.GRAVATAR_DEFAULT_HASH
+import com.example.movies.data.network.GRAVATAR_URL
 import com.example.movies.domain.model.MoviesType
+import com.example.movies.presentation.ui.AccountState
 import com.example.movies.presentation.ui.lists.movies.MoviesFragment
 import com.example.movies.presentation.ui.sign_in.SignInActivity
 import com.example.movies.presentation.utils.constants.MOVIE_TYPE
 import com.google.android.material.appbar.AppBarLayout
+import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import org.koin.android.ext.android.inject
 import kotlin.math.abs
-
 
 class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
 
@@ -96,35 +99,29 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
     }
 
     private fun openListFragment(type: MoviesType) {
-        val bundle = bundleOf(MOVIE_TYPE to type)
-        parentFragmentManager.replaceFragments<MoviesFragment>(
+        changeFragment<MoviesFragment>(
             container = R.id.framenav,
-            bundle = bundle,
+            bundle = bundleOf(MOVIE_TYPE to type),
             animation = NavigationAnimation.SLIDE_LEFT
         )
-
-//        val movieListsFragment = MoviesFragment()
-//        movieListsFragment.arguments = bundle
-//        parentFragmentManager.beginTransaction().add(R.id.framenav, movieListsFragment)
-//            .addToBackStack(null).commit()
     }
 
     private fun observeData() {
         accountViewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
-                is AccountViewModel.State.AccountResult -> {
+                is AccountState.AccountResult -> {
                     setUserData(result.data)
                 }
-                is AccountViewModel.State.AccountLocalResult -> {
+                is AccountState.AccountLocalResult -> {
                     username.text = result.username
                 }
-                is AccountViewModel.State.LogOutSuccessful -> {
+                is AccountState.LogOutSuccessful -> {
                     val intent = Intent(requireContext(), SignInActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
                     requireActivity().finish()
                 }
-                is AccountViewModel.State.LogOutFailed -> {
+                is AccountState.LogOutFailed -> {
                     Toast.makeText(requireContext(), "Log out failed", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -133,11 +130,13 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
 
     private fun setUserData(account: Account) {
         username.text = account.name
-//        if (account.avatar?.gravatar != null) {
-//            Picasso.get()
-//                .load(GRAVATAR_URL + account.avatar.gravatar + ".jpg")
-//                .into(profileImage)
-//        }
+        if (account.avatar?.gravatar != null) {
+            if (account.avatar.gravatar.hash != GRAVATAR_DEFAULT_HASH) {
+                Picasso.get()
+                    .load(GRAVATAR_URL + account.avatar.gravatar + ".jpg")
+                    .into(profileImage)
+            }
+        }
     }
 
     private fun logOut() {
@@ -194,4 +193,5 @@ class AccountFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
         alphaAnimation.fillAfter = true
         v.startAnimation(alphaAnimation)
     }
+
 }

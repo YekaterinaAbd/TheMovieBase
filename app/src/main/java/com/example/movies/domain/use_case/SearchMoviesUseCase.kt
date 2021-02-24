@@ -8,4 +8,7 @@ class SearchMoviesUseCase(
 ) {
     suspend fun searchMovies(query: String?, page: Int) =
         movieRepository.searchMovies(API_KEY, query, page)
+
+    suspend fun discoverMovies(page: Int, genres: String? = null, keywords: String? = null) =
+        movieRepository.discoverMovies(API_KEY, page, genres, keywords)
 }

@@ -4,16 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="24dp"
-    android:background="@color/lightColorBackground"
-    android:fitsSystemWindows="true"
+    android:background="@color/lightBlue"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/lightColorBackground">
+        android:background="@drawable/gradient_background">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -29,7 +27,6 @@
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:elevation="0dp"
                 app:title="Search" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -48,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:background="@drawable/search_background"
+            android:background="@drawable/rounded_corners_background"
             android:clickable="true"
             android:elevation="1dp"
             android:focusable="true"
@@ -59,6 +56,7 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
+            android:backgroundTint="?attr/colorBackground"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -88,7 +86,7 @@
                         android:fontFamily="@font/quicksand"
                         android:text="Recent Queries"
                         android:textAllCaps="true"
-                        android:textColor="@color/lightColorSecondaryText"
+                        android:textColor="@color/gray"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -104,7 +102,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="4dp"
                         android:src="@drawable/ic_cancel"
-                        app:tint="@color/lightColorSecondaryText" />
+                        app:tint="@color/gray" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -135,7 +133,7 @@
                         android:fontFamily="@font/quicksand"
                         android:text="Recent Movies"
                         android:textAllCaps="true"
-                        android:textColor="@color/lightColorSecondaryText"
+                        android:textColor="@color/gray"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -151,7 +149,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="4dp"
                         android:src="@drawable/ic_cancel"
-                        app:tint="@color/lightColorSecondaryText" />
+                        app:tint="@color/gray" />
 
                 </LinearLayout>
 
@@ -169,18 +167,11 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-        <!--            android:id="@+id/swipeRefreshLayout"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent">-->
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/film_object_view" />
-
-        <!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
     </LinearLayout>
 

@@ -11,8 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingEnd="16dp">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tvTitle"
@@ -28,7 +27,7 @@
             android:textColor="?attr/colorPrimaryText"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/verticalDots"
             app:layout_constraintStart_toEndOf="@+id/poster"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Title" />
@@ -38,14 +37,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:fontFamily="@font/quicksand"
             android:maxLines="1"
             android:textColor="?attr/colorPrimaryText"
             android:textSize="13sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/ivWatchlist"
+            app:layout_constraintEnd_toEndOf="@+id/tvTitle"
             app:layout_constraintStart_toStartOf="@+id/tvReleaseDate"
             app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate"
             tools:text="genres" />
@@ -62,7 +60,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             tools:text="release year" />
 
-
         <ImageView
             android:id="@+id/poster"
             android:layout_width="80dp"
@@ -71,7 +68,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/luffy"
             tools:srcCompat="@drawable/luffy" />
 
         <TextView
@@ -89,9 +85,21 @@
             tools:text="9.2" />
 
         <ImageView
+            android:id="@+id/verticalDots"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_vertical_dots"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvTitle"
+            tools:visibility="visible" />
+
+        <ImageView
             android:id="@+id/ivWatchlist"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="12dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -104,6 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="12dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -121,7 +130,7 @@
             android:fontFamily="@font/quicksand"
             android:gravity="center_vertical"
             tools:text="| 8.0"
-            android:textColor="@color/colorRating"
+            android:textColor="@color/orange"
             android:textSize="15sp"
             android:textStyle="bold"
             android:visibility="gone"

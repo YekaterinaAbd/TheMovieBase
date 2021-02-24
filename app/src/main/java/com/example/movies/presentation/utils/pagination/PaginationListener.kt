@@ -8,7 +8,7 @@ abstract class PaginationListener(
 ) : RecyclerView.OnScrollListener() {
 
     companion object {
-        val PAGE_START = 1
+        const val PAGE_START = 1
         private const val PAGE_SIZE = 20
     }
 

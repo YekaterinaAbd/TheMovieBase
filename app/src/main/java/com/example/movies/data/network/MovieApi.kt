@@ -39,14 +39,16 @@ interface MovieApi {
     suspend fun getFavouriteMovies(
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("sort_by") sortBy: String?
     ): Response<Movies>
 
     @GET("account/{account_id}/watchlist/movies")
     suspend fun getMoviesWatchList(
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("sort_by") sortBy: String?
     ): Response<Movies>
 
     @GET("account/{account_id}/rated/movies")
@@ -123,5 +125,13 @@ interface MovieApi {
         @Query("api_key") key: String,
         @Query("query") query: String?,
         @Query("page") page: Int
+    ): Response<Movies>
+
+    @GET("discover/movie")
+    suspend fun discoverMovies(
+        @Query("api_key") key: String,
+        @Query("page") page: Int,
+        @Query("with_genres") genres: String?,
+        @Query("with_keywords") keywords: String?
     ): Response<Movies>
 }

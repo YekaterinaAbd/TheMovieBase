@@ -6,7 +6,7 @@ import androidx.paging.PageKeyedDataSource
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.use_case.SearchMoviesUseCase
 import com.example.movies.presentation.model.GenresList
-import com.example.movies.presentation.ui.MovieState
+import com.example.movies.presentation.ui.LoadingState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -27,13 +27,13 @@ class SearchDataSource(
         GenresList.getGenres()
     }
 
-    private var _state = MutableLiveData<MovieState>()
+    private var _state = MutableLiveData<LoadingState>()
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Movie>
     ) {
-        updateState(MovieState.ShowLoading)
+        updateState(LoadingState.ShowLoading)
         scope.launch {
             try {
                 val response = searchUseCase.searchMovies(query, FIRST_PAGE) ?: emptyList()
@@ -42,18 +42,18 @@ class SearchDataSource(
                 }
                 callback.onResult(response, null, FIRST_PAGE + 1)
             } catch (e: Exception) {
-                updateState(MovieState.Error(e.message))
+                updateState(LoadingState.Error(e.message))
             }
-            updateState(MovieState.HideLoading)
+            updateState(LoadingState.HideLoading)
         }
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
         scope.launch {
             if (params.key != FIRST_PAGE) {
-                updateState(MovieState.ShowPageLoading)
+                updateState(LoadingState.ShowPageLoading)
             } else {
-                updateState(MovieState.HideLoading)
+                updateState(LoadingState.HideLoading)
             }
             try {
                 val response = searchUseCase.searchMovies(query, params.key) ?: emptyList()
@@ -63,15 +63,15 @@ class SearchDataSource(
                 val key = if (response.isNotEmpty()) params.key + 1 else null
                 callback.onResult(response, key)
             } catch (e: Exception) {
-                updateState(MovieState.Error(e.message))
+                updateState(LoadingState.Error(e.message))
             }
-            updateState(MovieState.HidePageLoading)
+            updateState(LoadingState.HidePageLoading)
         }
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {}
 
-    private fun updateState(state: MovieState) {
+    private fun updateState(state: LoadingState) {
         getState().postValue(state)
     }
 

@@ -8,14 +8,15 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.example.movies.R
 import com.example.movies.core.NavigationAnimation
-import com.example.movies.core.extensions.replaceFragments
+import com.example.movies.core.extensions.changeFragment
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesType
+import com.example.movies.presentation.ui.MoviesState
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.movie_details.MovieDetailsFragment
-import com.example.movies.presentation.utils.constants.INTENT_KEY
+import com.example.movies.presentation.utils.constants.LOG_MOVIE_ID
+import com.example.movies.presentation.utils.constants.LOG_MOVIE_TITLE
 import com.example.movies.presentation.utils.constants.MOVIE_ID
-import com.example.movies.presentation.utils.constants.MOVIE_TITLE
 import com.example.movies.presentation.utils.widgets.MoviesListView
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.android.inject
@@ -24,7 +25,6 @@ class MainListsFragment : Fragment() {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
-  //  private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var topMoviesView: MoviesListView
     private lateinit var currentMoviesView: MoviesListView
     private lateinit var upcomingMoviesView: MoviesListView
@@ -32,13 +32,13 @@ class MainListsFragment : Fragment() {
 
     private val moviesListViewModel: MoviesListViewModel by inject()
 
-    private val itemClickListener = object : SimpleItemClickListener {
+    private val itemClickListener = object : HorizontalFilmsAdapter.ItemClickListener {
         override fun itemClick(id: Int?) {
             if (id == null) return
             //logEvent(MOVIE_CLICKED, item)
-            parentFragmentManager.replaceFragments<MovieDetailsFragment>(
+            changeFragment<MovieDetailsFragment>(
                 container = R.id.framenav,
-                bundle = bundleOf(INTENT_KEY to id),
+                bundle = bundleOf(MOVIE_ID to id),
                 animation = NavigationAnimation.CENTER
             )
         }
@@ -59,7 +59,6 @@ class MainListsFragment : Fragment() {
     }
 
     private fun bindViews(view: View) {
-        // swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         topMoviesView = view.findViewById(R.id.topMovies)
         currentMoviesView = view.findViewById(R.id.currentMovies)
         upcomingMoviesView = view.findViewById(R.id.upcomingMovies)
@@ -67,32 +66,27 @@ class MainListsFragment : Fragment() {
 
         topMoviesView.apply {
             setData(MoviesType.TOP)
-            setListener(parentFragmentManager)
+            setListener(this@MainListsFragment)
             setAdapter(itemClickListener)
         }
 
         currentMoviesView.apply {
             setData(MoviesType.CURRENT)
-            setListener(parentFragmentManager)
+            setListener(this@MainListsFragment)
             setAdapter(itemClickListener)
         }
 
         upcomingMoviesView.apply {
             setData(MoviesType.UPCOMING)
-            setListener(parentFragmentManager)
+            setListener(this@MainListsFragment)
             setAdapter(itemClickListener)
         }
 
         popularMoviesView.apply {
             setData(MoviesType.POPULAR)
-            setListener(parentFragmentManager)
+            setListener(this@MainListsFragment)
             setAdapter(itemClickListener)
         }
-
-//        swipeRefreshLayout.setOnRefreshListener {
-//            clear()
-//            getMovies()
-//        }
     }
 
     private fun getMovies() {
@@ -106,13 +100,6 @@ class MainListsFragment : Fragment() {
         moviesListViewModel.getMovies(type, 1)
     }
 
-    private fun clear() {
-        topMoviesView.clearAdapter()
-        currentMoviesView.clearAdapter()
-        upcomingMoviesView.clearAdapter()
-        popularMoviesView.clearAdapter()
-    }
-
     private fun showSkeletonScreen() {
         topMoviesView.showSkeletonScreen()
         currentMoviesView.showSkeletonScreen()
@@ -120,25 +107,15 @@ class MainListsFragment : Fragment() {
         popularMoviesView.showSkeletonScreen()
     }
 
-    private fun hideSkeletonScreen() {
-        topMoviesView.hideSkeletonScreen()
-        currentMoviesView.hideSkeletonScreen()
-        upcomingMoviesView.hideSkeletonScreen()
-        popularMoviesView.hideSkeletonScreen()
-    }
-
     private fun observe() {
         moviesListViewModel.liveData.observe(viewLifecycleOwner, { result ->
             when (result) {
-                is MoviesListViewModel.State.ShowLoading -> {
-                    //swipeRefreshLayout.isRefreshing = true
+                is MoviesState.ShowLoading -> {
                     showSkeletonScreen()
                 }
-                is MoviesListViewModel.State.HideLoading -> {
-                    // swipeRefreshLayout.isRefreshing = false
-                    //  hideSkeletonScreen()
+                is MoviesState.HideLoading -> {
                 }
-                is MoviesListViewModel.State.Result -> {
+                is MoviesState.Result -> {
                     if (result.type == MoviesType.TOP) {
                         topMoviesView.hideSkeletonScreen()
                         addToAdapter(topMoviesView, result.moviesList)
@@ -169,8 +146,8 @@ class MainListsFragment : Fragment() {
 
     private fun logEvent(logMessage: String, item: Movie) {
         val bundle = bundleOf(
-            MOVIE_ID to item.id.toString(),
-            MOVIE_TITLE to item.title
+            LOG_MOVIE_ID to item.id.toString(),
+            LOG_MOVIE_TITLE to item.title
         )
         firebaseAnalytics.logEvent(logMessage, bundle)
     }

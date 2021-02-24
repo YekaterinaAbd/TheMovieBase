@@ -4,7 +4,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightColorBackground">
+    android:background="@color/lightBlue">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:fontFamily="@font/quicksand_semi_bold"
             android:text="@string/details_error_text"
             android:textAlignment="center"
-            android:textColor="@color/lightColorPrimaryText"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
 

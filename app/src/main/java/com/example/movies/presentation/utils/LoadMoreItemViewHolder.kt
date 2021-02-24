@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
-import com.example.movies.presentation.ui.MovieState
+import com.example.movies.presentation.ui.LoadingState
 
 class LoadMoreItemViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -14,9 +14,9 @@ class LoadMoreItemViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
         if (state == null) {
             progressBar.visibility = View.GONE
         }
-        if (state == MovieState.ShowPageLoading) {
+        if (state == LoadingState.ShowPageLoading) {
             progressBar.visibility = View.VISIBLE
-        } else if (state == MovieState.HidePageLoading) {
+        } else if (state == LoadingState.HidePageLoading) {
             progressBar.visibility = View.GONE
         }
     }

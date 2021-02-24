@@ -21,6 +21,7 @@ import com.example.movies.presentation.utils.constants.MEDIA_TYPE
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import retrofit2.Response
 
 class MovieRepositoryImpl(
@@ -44,32 +45,34 @@ class MovieRepositoryImpl(
         movieDao.getMovies(type.name).map { localMovieMapper.from(it) }
 
     private suspend fun getMoviesByType(
-        type: MoviesType, apiKey: String, page: Int, sessionId: String
+        type: MoviesType, apiKey: String, page: Int, sessionId: String, sortBy: String?
     ): Response<Movies> {
         return when (type) {
             TOP -> api.getTopMovies(apiKey, page)
             CURRENT -> api.getCurrentMovies(apiKey, page)
-            FAVOURITES -> api.getFavouriteMovies(apiKey, sessionId, page)
+            FAVOURITES -> api.getFavouriteMovies(apiKey, sessionId, page, sortBy)
             POPULAR -> api.getPopularMovies(apiKey, page)
             UPCOMING -> api.getUpcomingMovies(apiKey, page)
-            WATCH_LIST -> api.getMoviesWatchList(apiKey, sessionId, page)
+            WATCH_LIST -> api.getMoviesWatchList(apiKey, sessionId, page, sortBy)
             RATED -> api.getRatedMovies(apiKey, sessionId, page)
         }
     }
 
     override suspend fun getMovies(
-        type: MoviesType, apiKey: String, page: Int, sessionId: String
+        type: MoviesType, apiKey: String, page: Int, sessionId: String, sortBy: String?
     ): MoviesAnswer = withContext(Dispatchers.IO) {
         try {
-            val response = getMoviesByType(type, apiKey, page, sessionId)
-            if (response.isSuccessful) {
-                val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-                val totalPages = response.body()?.totalPages ?: 0
-                insertToDatabase(list, type)
-                return@withContext MoviesAnswer(list, DataSource.REMOTE, page, totalPages)
-            } else {
-                val list = getFromDatabase(type)
-                return@withContext MoviesAnswer(list, DataSource.LOCAL, page, 1)
+            withTimeout(5_000) {
+                val response = getMoviesByType(type, apiKey, page, sessionId, sortBy)
+                if (response.isSuccessful) {
+                    val list = response.body()?.movieList?.map { remoteMovieMapper.from(it) }
+                    val totalPages = response.body()?.totalPages ?: 0
+                    insertToDatabase(list, type)
+                    return@withTimeout MoviesAnswer(list, DataSource.REMOTE, page, totalPages)
+                } else {
+                    val list = getFromDatabase(type)
+                    return@withTimeout MoviesAnswer(list, DataSource.LOCAL, page, 1)
+                }
             }
         } catch (e: Exception) {
             val list = getFromDatabase(type)
@@ -80,10 +83,11 @@ class MovieRepositoryImpl(
     override suspend fun updateIsFavourite(movie: FavouriteMovie, sessionId: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                updateRemoteFavourites(API_KEY, sessionId, movie)
-                updateLocalMovieIsFavourite(movie.favourite, movie.movieId)
-                return@withContext true
-
+                withTimeout(5_000) {
+                    updateRemoteFavourites(API_KEY, sessionId, movie)
+                    updateLocalMovieIsFavourite(movie.favourite, movie.movieId)
+                    return@withTimeout true
+                }
             } catch (e: Exception) {
                 updateLocalMovieIsFavourite(movie.favourite, movie.movieId)
                 insertLocalMovieStatus(
@@ -98,10 +102,11 @@ class MovieRepositoryImpl(
     override suspend fun updateIsInWatchList(movie: WatchListMovie, sessionId: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                updateRemoteWatchList(API_KEY, sessionId, movie)
-                updateLocalMovieIsInWatchList(movie.watchlist, movie.movieId)
-                return@withContext true
-
+                withTimeout(5_000) {
+                    updateRemoteWatchList(API_KEY, sessionId, movie)
+                    updateLocalMovieIsInWatchList(movie.watchlist, movie.movieId)
+                    return@withTimeout true
+                }
             } catch (e: Exception) {
                 updateLocalMovieIsInWatchList(movie.watchlist, movie.movieId)
                 insertLocalMovieStatus(
@@ -183,15 +188,19 @@ class MovieRepositoryImpl(
 
     override suspend fun getRemoteMovie(id: Int, apiKey: String): MovieDetails? =
         withContext(Dispatchers.IO) {
-            return@withContext try {
-                val response = api.getMovieById(id, apiKey)
-                if (response.isSuccessful) {
-                    val movie = response.body()
-                    if (movie != null) insertRecentMovie(movie)
-                    movie
-                } else null
+            try {
+                withTimeout(10_000) {
+                    val response = api.getMovieById(id, apiKey)
+                    if (response.isSuccessful) {
+                        val movie = response.body()
+                        if (movie != null) insertRecentMovie(movie)
+                        return@withTimeout movie
+                    } else {
+                        return@withTimeout null
+                    }
+                }
             } catch (e: Exception) {
-                null
+                return@withContext null
             }
         }
 
@@ -214,27 +223,28 @@ class MovieRepositoryImpl(
             try {
                 val response = api.getSimilarMovies(id, apiKey)
                 if (response.isSuccessful) {
-                    return@withContext response.body()?.movieList?.map { remoteMovieMapper.from(it) }
+                    return@withContext response.body()?.movieList?.map {
+                        remoteMovieMapper.from(it)
+                    }
                 } else {
                     return@withContext emptyList<Movie>()
                 }
             } catch (e: Exception) {
                 return@withContext emptyList<Movie>()
-
             }
         }
 
-    override suspend fun getKeywords(id: Int, apiKey: String): List<KeyWord>? =
+    override suspend fun getKeywords(id: Int, apiKey: String): List<Keyword>? =
         withContext(Dispatchers.IO) {
             try {
                 val response = api.getMovieKeywords(id, apiKey)
                 if (response.isSuccessful) {
                     return@withContext response.body()?.keywordsList
                 } else {
-                    return@withContext emptyList<KeyWord>()
+                    return@withContext emptyList<Keyword>()
                 }
             } catch (e: Exception) {
-                return@withContext emptyList<KeyWord>()
+                return@withContext emptyList<Keyword>()
             }
         }
 
@@ -274,13 +284,13 @@ class MovieRepositoryImpl(
 
     override suspend fun getMovieStates(
         movieId: Int, apiKey: String, sessionId: String
-    ): MovieStatus? = withContext(Dispatchers.IO) {
-        try {
+    ): MovieStatus? {
+        return try {
             val response = api.getMovieStates(movieId, apiKey, sessionId)
-            if (response.isSuccessful) return@withContext response.body()
-            else return@withContext null
+            if (response.isSuccessful) response.body()
+            else null
         } catch (e: Exception) {
-            return@withContext null
+            null
         }
     }
 
@@ -288,11 +298,28 @@ class MovieRepositoryImpl(
         apiKey: String, query: String?, page: Int
     ): List<Movie>? {
         return try {
-            val response = api.searchMovies(apiKey, query, page)
-            if (response.isSuccessful) {
-                response.body()?.movieList?.map { remoteMovieMapper.from(it) }
-            } else null
-        } catch (e: java.lang.Exception) {
+            withTimeout(10_000) {
+                val response = api.searchMovies(apiKey, query, page)
+                if (response.isSuccessful) {
+                    response.body()?.movieList?.map { remoteMovieMapper.from(it) }
+                } else null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    override suspend fun discoverMovies(
+        apiKey: String, page: Int, genres: String?, keywords: String?
+    ): List<Movie>? {
+        return try {
+            withTimeout(10_000) {
+                val response = api.discoverMovies(apiKey, page, genres, keywords)
+                if (response.isSuccessful) {
+                    response.body()?.movieList?.map { remoteMovieMapper.from(it) }
+                } else null
+            }
+        } catch (e: Exception) {
             null
         }
     }
