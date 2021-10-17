@@ -1,6 +1,5 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:fontFamily">@font/quicksand</item>
@@ -21,27 +20,16 @@
         <item name="buttonStyle">@style/ButtonStyle</item>
     </style>
 
-    <style name="AppThemeDark" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:fontFamily">@font/quicksand</item>
-
-        <item name="colorPrimary">@color/lightColorPrimary</item>
-        <item name="colorAccent">@color/darkColorAccent</item>
-        <item name="colorPrimaryDark">@color/darkColorPrimary</item>
-
-        <item name="colorBackground">@color/darkBlack</item>
-        <item name="colorPrimaryText">@color/white</item>
-        <item name="colorSecondaryText">@color/lightGray</item>
-        <item name="colorItems">@color/darkColorPrimary</item>
-        <item name="colorAccount">@color/darkColorPrimary</item>
-        <item name="colorButtons">@color/blueButtons</item>
-        <item name="colorSecondaryIcons">@color/blue</item>
-        <item name="colorRating">@color/green</item>
-        <item name="colorUnselectedIcons">@color/white</item>
-        <item name="themeSwitchIcon">@drawable/ic_moon</item>
-    </style>
-
     <style name="AppThemeLight.Launcher" parent="AppThemeLight">
         <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
+
+    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog" />
+
+    <style name="Dialog.Transparent">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
     </style>
 
     <style name="collapsedToolbarStyle">
@@ -90,6 +78,13 @@
         <item name="android:dropDownHorizontalOffset">-16dp</item>
         <item name="android:fontFamily">@font/quicksand_semi_bold</item>
         <item name="android:itemTextAppearance">@style/ItemTextStyle.AppTheme</item>
+    </style>
+
+    <style name="Widget.TextInputLayout.Outlined" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="cornerSize">3dp</item>
+        <item name="boxStrokeColor">@drawable/color_text_input_layout</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
     </style>
 
 </resources>

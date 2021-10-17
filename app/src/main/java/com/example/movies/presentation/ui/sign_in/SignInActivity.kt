@@ -4,100 +4,99 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.view.View
-import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.core.widget.doBeforeTextChanged
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.movies.R
 import com.example.movies.core.extensions.navigateTo
+import com.example.movies.core.extensions.toast
+import com.example.movies.core.view.LoaderDialog
 import com.example.movies.data.network.SIGN_UP_URL
+import com.example.movies.databinding.ActivitySignInBinding
 import com.example.movies.presentation.ui.MainActivity
 import com.example.movies.presentation.ui.SignInState
-import com.example.movies.presentation.ui.markers.MarkersViewModel
-import com.example.movies.presentation.utils.constants.LOG_SIGNED_IN
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
 import org.koin.android.ext.android.inject
 
-class SignInActivity : AppCompatActivity() {
+class SignInActivity : AppCompatActivity(R.layout.activity_sign_in) {
 
-    private lateinit var wrongDataText: TextView
-    private lateinit var signInButton: Button
-    private lateinit var username: EditText
-    private lateinit var password: EditText
-    private lateinit var registrationLink: TextView
-    private lateinit var progressBar: ProgressBar
+    private val binding by viewBinding(ActivitySignInBinding::bind)
+    private var loader: LoaderDialog? = null
 
     private val signInViewModel: SignInViewModel by inject()
-    private val markersViewModel: MarkersViewModel by inject()
-
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private val topic = "movies"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in)
+        setTheme(R.style.AppThemeLight)
         subscribeToTopic()
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-        markersViewModel.fillDatabase()
-        signIn()
         bindViews()
+        observeViewModel()
     }
 
     private fun subscribeToTopic() {
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
     }
 
+    private fun bindViews() = with(binding) {
+        editTextUsername.text = SpannableStringBuilder(signInViewModel.getSavedUsername())
+        editTextPassword.text = SpannableStringBuilder(signInViewModel.getSavedPassword())
 
-    private fun bindViews() {
-        username = findViewById(R.id.evUsername)
-        username.text = SpannableStringBuilder(signInViewModel.getSavedUsername())
-        password = findViewById(R.id.evPassword)
-        password.text = SpannableStringBuilder(signInViewModel.getSavedPassword())
-        signInButton = findViewById(R.id.btnSignIn)
-        wrongDataText = findViewById(R.id.tvWrongData)
-        registrationLink = findViewById(R.id.tvAccountLink)
+        editTextUsername.doBeforeTextChanged { _, _, _, _ ->
+            hideDataError()
+        }
 
-        progressBar = findViewById(R.id.progressBar)
-        progressBar.visibility = View.GONE
+        editTextPassword.doBeforeTextChanged { _, _, _, _ ->
+            hideDataError()
+        }
 
-        registrationLink.setOnClickListener {
-            val browserIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse(SIGN_UP_URL))
+        textSignUpLink.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(SIGN_UP_URL))
+            browserIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
             startActivity(browserIntent)
         }
 
-        signInButton.setOnClickListener {
-            signIn()
-            signInViewModel.createTokenRequest(username.text.toString(), password.text.toString())
-
-            val bundle = Bundle()
-            firebaseAnalytics.logEvent(LOG_SIGNED_IN, bundle)
+        buttonSignIn.setOnClickListener {
+            hideDataError()
+            val username = editTextUsername.text.toString().trim()
+            val password = editTextPassword.text.toString().trim()
+            signInViewModel.createTokenRequest(username, password)
         }
     }
 
-    private fun signIn() {
-        signInViewModel.liveData.observe(this, Observer { result ->
+    private fun observeViewModel() {
+        signInViewModel.liveData.observe(this) { result ->
+            showLoader(result is SignInState.ShowLoading)
             when (result) {
-                is SignInState.ShowLoading -> {
-                    progressBar.visibility = View.VISIBLE
-                }
-                is SignInState.HideLoading -> {
-                    progressBar.visibility = View.GONE
-                }
                 is SignInState.FailedLoading -> {
-                    Toast.makeText(this, getString(R.string.error_occurred), Toast.LENGTH_SHORT)
-                        .show()
+                    toast(getString(R.string.error_occurred))
                 }
                 is SignInState.WrongDataProvided -> {
-                    wrongDataText.text = getString(R.string.wrong_data)
+                    showDataError()
                 }
                 is SignInState.Result -> {
                     navigateTo<MainActivity>()
                     finish()
                 }
             }
-        })
+        }
+    }
+
+    private fun showLoader(show: Boolean) {
+        if (loader == null) {
+            loader = LoaderDialog(this)
+        }
+        loader?.showOrHide(show)
+    }
+
+    private fun showDataError() {
+        binding.layoutUsername.error = " "
+        binding.layoutPassword.error = " "
+    }
+
+    private fun hideDataError() {
+        binding.layoutUsername.error = null
+        binding.layoutPassword.error = null
     }
 }
