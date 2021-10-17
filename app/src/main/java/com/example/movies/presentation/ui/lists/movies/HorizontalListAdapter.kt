@@ -8,10 +8,10 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
+import com.example.movies.core.extensions.Side
+import com.example.movies.core.extensions.setMargin
 import com.example.movies.data.network.IMAGE_URL
 import com.example.movies.domain.model.Movie
-import com.example.movies.presentation.utils.extensions.Side
-import com.example.movies.presentation.utils.extensions.setMargin
 import com.squareup.picasso.Picasso
 
 class HorizontalFilmsAdapter(

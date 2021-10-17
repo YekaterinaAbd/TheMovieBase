@@ -1,8 +1,7 @@
 package com.example.movies.presentation.ui
 
-//import com.example.kino.presentation.ThemeViewModel
-
 import android.os.Bundle
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -10,46 +9,23 @@ import com.example.movies.R
 import com.example.movies.presentation.ui.account.AccountFragment
 import com.example.movies.presentation.ui.lists.movies.MainListsFragment
 import com.example.movies.presentation.ui.lists.search.SearchFragment
-import com.example.movies.presentation.utils.constants.LOG_MAIN_PAGE_CLICKED
-import com.example.movies.presentation.utils.constants.LOG_PROFILE_PAGE_CLICKED
-import com.example.movies.presentation.utils.constants.LOG_SEARCH_PAGE_CLICKED
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.android.material.navigation.NavigationBarView
 
 class MainActivity : AppCompatActivity() {
 
-    // private lateinit var themeModeImage: ImageView
-    private var themeModeState: Boolean = true //false == DarkTheme, true = LightTheme
-    private var themeMode: Int = 0
-
     private val fragmentManager: FragmentManager = supportFragmentManager
-    private var activeFragment: Fragment = MainListsFragment()
+
     private val mainListsFragment: Fragment = MainListsFragment()
     private var searchFragment: Fragment = SearchFragment()
     private var accountFragment: Fragment = AccountFragment()
 
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
-    // private val themeViewModel: ThemeViewModel by inject()
+    private var activeFragment: Fragment = mainListsFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        themeViewModel.getTheme()
-//        themeViewModel.themeStateLiveData.value?.let { themeModeState = it }
-//        themeMode = if (!themeModeState) {
-//            R.style.AppThemeDark
-//        } else {
-//            R.style.AppThemeLight
-//        }
-//        super.setTheme(themeMode)
-
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppThemeLight)
         setContentView(R.layout.activity_main)
-//
-//        window.setFlags(
-//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-//        )
-
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         createFragments()
         bindViews()
@@ -57,68 +33,53 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindViews() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNavigation.setOnNavigationItemSelectedListener(navListener)
-
-        //toolbar = findViewById(R.id.toolbar)
-        //themeModeImage = findViewById(R.id.themeModeImage)
-//        themeModeImage.setOnClickListener {
-//            if (themeMode == R.style.AppThemeLight) {
-//                themeMode = R.style.AppThemeDark
-//                themeModeState = false
-//            } else {
-//                themeMode = R.style.AppThemeLight
-//                themeModeState = true
-//            }
-//            themeViewModel.setThemeState(themeModeState)
-//            updateActivity()
-//        }
-    }
-
-//    private fun updateActivity() {
-//        val intent = intent
-//        finish()
-//        startActivity(intent)
-//    }
-
-
-    private fun logEvent(logMessage: String) {
-        val bundle = Bundle()
-        firebaseAnalytics.logEvent(logMessage, bundle)
+        bottomNavigation.setOnItemSelectedListener(navListener)
     }
 
     private fun createFragments() {
-        fragmentManager.beginTransaction().add(R.id.frame, mainListsFragment).commit()
+        fragmentManager.beginTransaction().add(R.id.frame, mainListsFragment)
+            .commit()
         fragmentManager.beginTransaction().add(R.id.frame, accountFragment).hide(accountFragment)
             .commit()
-        fragmentManager.beginTransaction().add(R.id.frame, searchFragment)
-            .hide(searchFragment).commit()
+        fragmentManager.beginTransaction().add(R.id.frame, searchFragment).hide(searchFragment)
+            .commit()
     }
 
-    private val navListener =
-        BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.films -> {
-                    logEvent(LOG_MAIN_PAGE_CLICKED)
-                    fragmentManager.beginTransaction().hide(activeFragment).show(mainListsFragment)
-                        .commit()
+    private val navListener = NavigationBarView.OnItemSelectedListener { item ->
+        with(fragmentManager) {
+            when (Page.valueOf(item.itemId)) {
+                Page.Main -> {
+                    replaceFragments(activeFragment, mainListsFragment)
                     activeFragment = mainListsFragment
-                    return@OnNavigationItemSelectedListener true
+                    return@OnItemSelectedListener true
                 }
-                R.id.search -> {
-                    logEvent(LOG_SEARCH_PAGE_CLICKED)
-                    fragmentManager.beginTransaction().hide(activeFragment).show(searchFragment)
-                        .commit()
+                Page.Search -> {
+                    replaceFragments(activeFragment, searchFragment)
                     activeFragment = searchFragment
-                    return@OnNavigationItemSelectedListener true
+                    return@OnItemSelectedListener true
                 }
-                R.id.account -> {
-                    logEvent(LOG_PROFILE_PAGE_CLICKED)
-                    fragmentManager.beginTransaction().hide(activeFragment).show(accountFragment)
-                        .commit()
+                Page.Account -> {
+                    replaceFragments(activeFragment, accountFragment)
                     activeFragment = accountFragment
-                    return@OnNavigationItemSelectedListener true
+                    return@OnItemSelectedListener true
                 }
             }
-            return@OnNavigationItemSelectedListener false
         }
+    }
+
+    enum class Page(@IdRes val id: Int) {
+
+        Main(R.id.films),
+        Search(R.id.search),
+        Account(R.id.account);
+
+        companion object {
+            fun valueOf(@IdRes id: Int) = values().first { it.id == id }
+        }
+
+    }
+
+    private fun FragmentManager.replaceFragments(currentFragment: Fragment, newFragment: Fragment) {
+        this.beginTransaction().hide(currentFragment).show(newFragment).commit()
+    }
 }

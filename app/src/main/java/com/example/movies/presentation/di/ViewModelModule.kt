@@ -1,6 +1,5 @@
 package com.example.movies.presentation.di
 
-import com.example.movies.presentation.ThemeViewModel
 import com.example.movies.presentation.ui.account.AccountViewModel
 import com.example.movies.presentation.ui.lists.MoviesListViewModel
 import com.example.movies.presentation.ui.lists.search.SearchViewModel
@@ -32,5 +31,4 @@ val viewModelModule = module {
     viewModel { AccountViewModel(accountUseCase = get()) }
     viewModel { MarkersViewModel(markerRepository = get()) }
     viewModel { SignInViewModel(loginUseCase = get(), localLoginDataUseCase = get()) }
-    viewModel { ThemeViewModel(accountUseCase = get()) }
 }
